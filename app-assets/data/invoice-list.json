@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "responsive_id": null,
+      "invoice_id": 4477,
+      "issued_date": "12/13/2019",
+      "client_name": "Roxy Floodgate",
+      "email": "roxyfloodgate@email.com",
+      "service": "Software Development",
+      "total": 3428,
+      "avatar": "",
+      "invoice_status": "Paid",
+      "balance": "$724",
+      "due_date": "04/23/2019"
+    }
+  ]
+}
