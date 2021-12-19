@@ -9,13 +9,16 @@
     <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Login Page - Vuexy - Bootstrap HTML admin template</title>
+    <title>Invoice List - Vuexy - Bootstrap HTML admin template</title>
     <link rel="apple-touch-icon" href=" app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href=" app-assets/images/ico/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href=" app-assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href=" app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css" href=" app-assets/vendors/css/tables/datatable/extensions/dataTables.checkboxes.css">
+    <link rel="stylesheet" type="text/css" href=" app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -29,95 +32,523 @@
 
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href=" app-assets/css/core/menu/menu-types/vertical-menu.css">
-    <link rel="stylesheet" type="text/css" href=" app-assets/css/plugins/forms/form-validation.css">
-    <link rel="stylesheet" type="text/css" href=" app-assets/css/pages/authentication.css">
+    <link rel="stylesheet" type="text/css" href=" app-assets/css/pages/app-invoice-list.css">
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href=" assets/css/style.css">
     <!-- END: Custom CSS-->
+    <script src="https://www.paypal.com/sdk/js?client-id=AUaxNQWpGhbqIoYtlTqu07qlurXpzLrJF-B-53uW43TDolWiY4dOfF_1R4aYdbCPfEcHWQzvbtxGJWq0&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
 
 </head>
 <!-- END: Head-->
 
 <!-- BEGIN: Body-->
 
-<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
+<body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="">
+
+    <!-- BEGIN: Header-->
+    <nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
+        <div class="navbar-container d-flex content">
+            <div class="bookmark-wrapper d-flex align-items-center">
+                <ul class="nav navbar-nav d-xl-none">
+                    <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon" data-feather="menu"></i></a></li>
+                </ul>
+                
+                
+            </div>
+            <ul class="nav navbar-nav align-items-center ms-auto">
+               
+             
+               
+              
+                <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">John Doe</span><span class="user-status">Admin</span></div><span class="avatar"><img class="round" src=" app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a class="dropdown-item" href="page-profile.html"><i class="me-50" data-feather="user"></i> Profile</a><a class="dropdown-item" href="app-email.html"><i class="me-50" data-feather="mail"></i> Inbox</a><a class="dropdown-item" href="app-todo.html"><i class="me-50" data-feather="check-square"></i> Task</a><a class="dropdown-item" href="app-chat.html"><i class="me-50" data-feather="message-square"></i> Chats</a>
+                        <div class="dropdown-divider"></div><a class="dropdown-item" href="page-account-settings-account.html"><i class="me-50" data-feather="settings"></i> Settings</a><a class="dropdown-item" href="page-pricing.html"><i class="me-50" data-feather="credit-card"></i> Pricing</a><a class="dropdown-item" href="page-faq.html"><i class="me-50" data-feather="help-circle"></i> FAQ</a><a class="dropdown-item" href="auth-login-cover.html"><i class="me-50" data-feather="power"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <ul class="main-search-list-defaultlist d-none">
+        <li class="d-flex align-items-center"><a href="#">
+                <h6 class="section-label mt-75 mb-0">Files</h6>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src=" app-assets/images/icons/xls.png" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Two new item submitted</p><small class="text-muted">Marketing Manager</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;17kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src=" app-assets/images/icons/jpg.png" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">52 JPG file Generated</p><small class="text-muted">FontEnd Developer</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;11kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src=" app-assets/images/icons/pdf.png" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">25 PDF File Uploaded</p><small class="text-muted">Digital Marketing Manager</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;150kb</small>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
+                <div class="d-flex">
+                    <div class="me-75"><img src=" app-assets/images/icons/doc.png" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Anna_Strong.doc</p><small class="text-muted">Web Designer</small>
+                    </div>
+                </div><small class="search-data-size me-50 text-muted">&apos;256kb</small>
+            </a></li>
+        <li class="d-flex align-items-center"><a href="#">
+                <h6 class="section-label mt-75 mb-0">Members</h6>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img src=" app-assets/images/portrait/small/avatar-s-8.jpg" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">John Doe</p><small class="text-muted">UI designer</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img src=" app-assets/images/portrait/small/avatar-s-1.jpg" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Michal Clark</p><small class="text-muted">FontEnd Developer</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img src=" app-assets/images/portrait/small/avatar-s-14.jpg" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Milena Gibson</p><small class="text-muted">Digital Marketing Manager</small>
+                    </div>
+                </div>
+            </a></li>
+        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
+                <div class="d-flex align-items-center">
+                    <div class="avatar me-75"><img src=" app-assets/images/portrait/small/avatar-s-6.jpg" alt="png" height="32"></div>
+                    <div class="search-data">
+                        <p class="search-data-title mb-0">Anna Strong</p><small class="text-muted">Web Designer</small>
+                    </div>
+                </div>
+            </a></li>
+    </ul>
+    <ul class="main-search-list-defaultlist-other-list d-none">
+        <li class="auto-suggestion justify-content-between"><a class="d-flex align-items-center justify-content-between w-100 py-50">
+                <div class="d-flex justify-content-start"><span class="me-75" data-feather="alert-circle"></span><span>No results found.</span></div>
+            </a></li>
+    </ul>
+    <!-- END: Header-->
+
+
+    <!-- BEGIN: Main Menu-->
+    <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav flex-row">
+                <li class="nav-item me-auto"><a class="navbar-brand" href="./"><span class="brand-logo">
+                    <img src="app-assets/images/logo/logo.png" class="round" alt="" width="100" height ="auto"></span>
+                        <h2 class="brand-text">Mosqueda</h2>
+                    </a></li>
+                <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pe-0" data-bs-toggle="collapse"><i class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i><i class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary" data-feather="disc" data-ticon="disc"></i></a></li>
+            </ul>
+        </div>
+        <div class="shadow-bottom"></div>
+        <div class="main-menu-content">
+            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+                
+                <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Menu</span><i data-feather="more-horizontal"></i>
+                </li>
+                <li><a class="d-flex align-items-center" href="invoices.html"><i data-feather="book"></i><span class="menu-item text-truncate" data-i18n="Analytics">Invoices</span></a>
+                </li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="invoices.html"><i data-feather='bar-chart-2'></i><span class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
+                </li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="invoices.html"><i data-feather='archive'></i><span class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
+                </li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="invoices.html"><i data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment Methods</span></a>
+                </li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="invoices.html"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- END: Main Menu-->
+
     <!-- BEGIN: Content-->
     <div class="app-content content ">
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
-        <div class="content-wrapper">
+        <div class="content-wrapper container-xxl p-0">
             <div class="content-header row">
             </div>
             <div class="content-body">
-                <div class="auth-wrapper auth-basic px-2">
-                    <div class="auth-inner my-2">
-                        <!-- Login basic -->
-                        <div class="card mb-0">
-                            <div class="card-body">
-                              
-                                <a href="./" class="brand-logo">
-                                    <img src="app-assets/images/logo/logo.png" class="round" alt="" width="100" height ="auto">
-                                   
-                                </a>
-
-                                <h4 class="card-title mb-1">Welcome to Mosqueda Córdova! 👋</h4>
-                                <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
-
-                                <form class="auth-login-form mt-2" action="invoices.html" method="POST">
-                                    <div class="mb-1">
-                                        <label for="login-email" class="form-label">Email</label>
-                                        <input type="text" class="form-control" id="login-email" name="login-email" placeholder="john@example.com" aria-describedby="login-email" tabindex="1" autofocus />
-                                    </div>
-
-                                    <div class="mb-1">
-                                        <div class="d-flex justify-content-between">
-                                            <label class="form-label" for="login-password">Password</label>
-                                            <a href="auth-forgot-password-basic.html">
-                                                <small>Forgot Password?</small>
-                                            </a>
+                <section class="invoice-preview-wrapper">
+                    <div class="row invoice-preview">
+                        <!-- Invoice -->
+                        <div class="col-xl-9 col-md-8 col-12">
+                            <div class="card invoice-preview-card">
+                                <div class="card-body invoice-padding pb-0">
+                                    <!-- Header starts -->
+                                    <div class="d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
+                                        <div>
+                                            <div class="logo-wrapper">
+                                                <img src="app-assets/images/logo/logo.png" class="round" alt="" width="100" height ="auto">
+                                                <h3 class="text-primary invoice-logo">Mosqueda</h3>
+                                            </div>
+                                            <p class="card-text mb-25">Office 149, 450 South Brand Brooklyn</p>
+                                            <p class="card-text mb-25">San Diego County, CA 91905, USA</p>
+                                            <p class="card-text mb-0">+1 (123) 456 7891, +44 (876) 543 2198</p>
                                         </div>
-                                        <div class="input-group input-group-merge form-password-toggle">
-                                            <input type="password" class="form-control form-control-merge" id="login-password" name="login-password" tabindex="2" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="login-password" />
-                                            <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                                        <div class="mt-md-0 mt-2">
+                                            <h4 class="invoice-title">
+                                                Invoice
+                                                <span class="invoice-number">#3492</span>
+                                            </h4>
+                                            <div class="invoice-date-wrapper">
+                                                <p class="invoice-date-title">Date Issued:</p>
+                                                <p class="invoice-date">25/08/2020</p>
+                                            </div>
+                                            <div class="invoice-date-wrapper">
+                                                <p class="invoice-date-title">Due Date:</p>
+                                                <p class="invoice-date">29/08/2020</p>
+                                            </div>
                                         </div>
                                     </div>
-                                   
-                                    <button class="btn btn-primary w-100" tabindex="4">Sign in</button>
-                                </form>
+                                    <!-- Header ends -->
+                                </div>
 
-                               
-                               
+                                <hr class="invoice-spacing" />
 
-                              
+                                <!-- Address and Contact starts -->
+                                <div class="card-body invoice-padding pt-0">
+                                    <div class="row invoice-spacing">
+                                        <div class="col-xl-8 p-0">
+                                            <h6 class="mb-2">Invoice To:</h6>
+                                            <h6 class="mb-25">Thomas shelby</h6>
+                                            <p class="card-text mb-25">Shelby Company Limited</p>
+                                            <p class="card-text mb-25">Small Heath, B10 0HF, UK</p>
+                                            <p class="card-text mb-25">718-986-6062</p>
+                                            <p class="card-text mb-0">peakyFBlinders@gmail.com</p>
+                                        </div>
+                                        <div class="col-xl-4 p-0 mt-xl-0 mt-2">
+                                            <h6 class="mb-2">Payment Details:</h6>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="pe-1">Total Due:</td>
+                                                        <td><span class="fw-bold">$12,110.55</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1">Bank name:</td>
+                                                        <td>American Bank</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1">Country:</td>
+                                                        <td>United States</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1">IBAN:</td>
+                                                        <td>ETD95476213874685</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="pe-1">SWIFT code:</td>
+                                                        <td>BR91905</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Address and Contact ends -->
+
+                                <!-- Invoice Description starts -->
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="py-1">Task description</th>
+                                                <th class="py-1">Rate</th>
+                                                <th class="py-1">Hours</th>
+                                                <th class="py-1">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="py-1">
+                                                    <p class="card-text fw-bold mb-25">Native App Development</p>
+                                                    <p class="card-text text-nowrap">
+                                                        Developed a full stack native app using React Native, Bootstrap & Python
+                                                    </p>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">$60.00</span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">30</span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">$1,800.00</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-bottom">
+                                                <td class="py-1">
+                                                    <p class="card-text fw-bold mb-25">Ui Kit Design</p>
+                                                    <p class="card-text text-nowrap">Designed a UI kit for native app using Sketch, Figma & Adobe XD</p>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">$60.00</span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">20</span>
+                                                </td>
+                                                <td class="py-1">
+                                                    <span class="fw-bold">$1200.00</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="card-body invoice-padding pb-0">
+                                    <div class="row invoice-sales-total-wrapper">
+                                        <div class="col-md-6 order-md-1 order-2 mt-md-0 mt-3">
+                                            <p class="card-text mb-0">
+                                                <span class="fw-bold">Salesperson:</span> <span class="ms-75">Alfie Solomons</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 d-flex justify-content-end order-md-2 order-1">
+                                            <div class="invoice-total-wrapper">
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Subtotal:</p>
+                                                    <p class="invoice-total-amount">$1800</p>
+                                                </div>
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Discount:</p>
+                                                    <p class="invoice-total-amount">$28</p>
+                                                </div>
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Tax:</p>
+                                                    <p class="invoice-total-amount">21%</p>
+                                                </div>
+                                                <hr class="my-50" />
+                                                <div class="invoice-total-item">
+                                                    <p class="invoice-total-title">Total:</p>
+                                                    <p class="invoice-total-amount">$1690</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Invoice Description ends -->
+
+                                <hr class="invoice-spacing" />
+
+                                <!-- Invoice Note starts -->
+                                <div class="card-body invoice-padding pt-0">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="fw-bold">Note:</span>
+                                            <span>It was a pleasure working with you and your team. We hope you will keep us in mind for future freelance
+                                                projects. Thank You!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Invoice Note ends -->
                             </div>
                         </div>
-                        <!-- /Login basic -->
+                        <!-- /Invoice -->
+
+                        <!-- Invoice Actions -->
+                        <div class="col-xl-3 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <button class="btn btn-primary w-100 mb-75" data-bs-toggle="modal" data-bs-target="#send-invoice-sidebar">
+                                        Send Invoice
+                                    </button>
+                                    <button class="btn btn-outline-secondary w-100 btn-download-invoice mb-75">Download</button>
+                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-print.html" target="_blank"> Print </a>
+                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-edit.html"> Edit </a>
+                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#add-payment-sidebar">
+                                        Add Payment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Invoice Actions -->
+                    </div>
+                </section>
+
+                <!-- Send Invoice Sidebar -->
+                <div class="modal modal-slide-in fade" id="send-invoice-sidebar" aria-hidden="true">
+                    <div class="modal-dialog sidebar-lg">
+                        <div class="modal-content p-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                            <div class="modal-header mb-1">
+                                <h5 class="modal-title">
+                                    <span class="align-middle">Send Invoice</span>
+                                </h5>
+                            </div>
+                            <div class="modal-body flex-grow-1">
+                                <form>
+                                    <div class="mb-1">
+                                        <label for="invoice-from" class="form-label">From</label>
+                                        <input type="text" class="form-control" id="invoice-from" value="shelbyComapny@email.com" placeholder="company@email.com" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="invoice-to" class="form-label">To</label>
+                                        <input type="text" class="form-control" id="invoice-to" value="qConsolidated@email.com" placeholder="company@email.com" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="invoice-subject" class="form-label">Subject</label>
+                                        <input type="text" class="form-control" id="invoice-subject" value="Invoice of purchased Admin Templates" placeholder="Invoice regarding goods" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label for="invoice-message" class="form-label">Message</label>
+                                        <textarea class="form-control" name="invoice-message" id="invoice-message" cols="3" rows="11" placeholder="Message...">
+Dear Queen Consolidated,
+
+Thank you for your business, always a pleasure to work with you!
+
+We have generated a new invoice in the amount of $95.59
+
+We would appreciate payment of this invoice by 05/11/2019</textarea>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span class="badge badge-light-primary">
+                                            <i data-feather="link" class="me-25"></i>
+                                            <span class="align-middle">Invoice Attached</span>
+                                        </span>
+                                    </div>
+                                    <div class="mb-1 d-flex flex-wrap mt-2">
+                                        <button type="button" class="btn btn-primary me-1" data-bs-dismiss="modal">Send</button>
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- /Send Invoice Sidebar -->
+
+                <!-- Add Payment Sidebar -->
+                <div class="modal modal-slide-in fade" id="add-payment-sidebar" aria-hidden="true">
+                    <div class="modal-dialog sidebar-lg">
+                        <div class="modal-content p-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                            <div class="modal-header mb-1">
+                                <h5 class="modal-title">
+                                    <span class="align-middle">Add Payment</span>
+                                </h5>
+                            </div>
+                            <div class="modal-body flex-grow-1">
+                                <form>
+                                    <div class="mb-1">
+                                        <input id="balance" class="form-control" type="text" value="Invoice Balance: 5000.00" disabled />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="amount">Payment Amount</label>
+                                        <input id="amount" class="form-control" type="number" placeholder="$1000" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="payment-date">Payment Date</label>
+                                        <input id="payment-date" class="form-control date-picker" type="text" />
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="payment-method">Payment Method</label>
+                                        <select class="form-select" id="payment-method">
+                                            <option value="" selected disabled>Select payment method</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Bank Transfer">Bank Transfer</option>
+                                            <option value="Debit">Debit</option>
+                                            <option value="Credit">Credit</option>
+                                            <option value="Paypal">Paypal</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="payment-note">Internal Payment Note</label>
+                                        <textarea class="form-control" id="payment-note" rows="5" placeholder="Internal Payment Note"></textarea>
+                                    </div>
+                                    <div class="d-flex flex-wrap mb-0">
+                                        <button type="button" class="btn btn-primary me-1" data-bs-dismiss="modal">Send</button>
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Add Payment Sidebar -->
 
             </div>
         </div>
     </div>
     <!-- END: Content-->
 
+   
+ <!-- Modal -->
+ <div class="modal fade text-start" id="default" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel1">Method Pay</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="smart-button-container">
+                    <div style="text-align: center;">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Modal -->
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer class="footer footer-static footer-light">
+        <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="#">Mosqueda Córdova</a><span class="d-none d-sm-inline-block">, All rights Reserved</span></span></p>
+    </footer>
+    <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
+    <!-- END: Footer-->
+
 
     <!-- BEGIN: Vendor JS-->
-    <script src=" app-assets/vendors/js/vendors.min.js"></script>
+    <script src="app-assets/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
 
     <!-- BEGIN: Page Vendor JS-->
-    <script src=" app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <script src="app-assets/vendors/js/extensions/moment.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
-    <script src=" app-assets/js/core/app-menu.js"></script>
-    <script src=" app-assets/js/core/app.js"></script>
+    <script src="app-assets/js/core/app-menu.js"></script>
+    <script src="app-assets/js/core/app.js"></script>
     <!-- END: Theme JS-->
 
     <!-- BEGIN: Page JS-->
-    <script src=" app-assets/js/scripts/pages/auth-login.js"></script>
+    <script src="app-assets/js/scripts/pages/app-invoice-list.js"></script>
     <!-- END: Page JS-->
 
     <script>
