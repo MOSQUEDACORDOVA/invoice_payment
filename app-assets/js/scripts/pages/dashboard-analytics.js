@@ -38,7 +38,7 @@ $(window).on('load', function () {
   setTimeout(function () {
     toastr['success'](
       'You have successfully logged in to Vuexy. Now you can start to explore!',
-      '👋 Welcome John Doe!',
+      '👋 Welcome Santo Riboli!',
       {
         closeButton: true,
         tapToDismiss: false,
