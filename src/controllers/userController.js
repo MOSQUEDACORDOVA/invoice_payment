@@ -67,7 +67,8 @@ exports.loginUser2 = (req, res) => {
         return next(err);
       }
       console.log(user)
-      res.redirect('/dashboard')
+
+   res.redirect('/dashboard/'+req.body.email)   
     });
   })(req, res);
 };
@@ -211,52 +212,71 @@ exports.sendTokenValidate = async (req, res) => {
   console.log(resetUrl);
 };
 exports.resetPasswordForm = async (req, res) => {
-  const usuario = await Usuarios.findOne({
-    where: {
-      token: req.params.token,
-    },
-  });
+  // const usuario = await Usuarios.findOne({
+  //   where: {
+  //     token: req.params.token,
+  //   },
+  // });
 
-  // no se encontro el usuario
-  if (!usuario) {
-    req.flash("error", "No válido");
-    res.redirect("/search-account");
-  }
-
+  // // no se encontro el usuario
+  // if (!usuario) {
+  //   req.flash("error", "No válido");
+  //   res.redirect("/search-account");
+  // }
+let email = req.params.email
   // Formulario para generar password
   res.render("reset-password", {
-    pageName: "Restablecer contraseña",
+    pageName: "Set Password",
     layout: "page-form",
+    email
   });
 };
 
 // Cambiar el password
 exports.updatePassword = async (req, res) => {
   // Verifica token y fecha de expiracion-
-  const usuario = await Usuarios.findOne({
-    where: {
-      token: req.params.token,
-      expiration: {
-        [Op.gte]: Date.now(),
-      },
-    },
-  });
+  // const usuario = await Usuarios.findOne({
+  //   where: {
+  //     token: req.params.token,
+  //     expiration: {
+  //       [Op.gte]: Date.now(),
+  //     },
+  //   },
+  // });
 
-  if (!usuario) {
-    req.flash("error", "No valido");
-    res.redirect("search-account");
-  }
-
+  // if (!usuario) {
+  //   req.flash("error", "No valido");
+  //   res.redirect("search-account");
+  // }
+let password_new, email, token, query_consulting
   // Hashear el password
-  usuario.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-  usuario.token = null;
-  usuario.expiration = null;
+  password_new = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+  email = req.body.email
+  query_consulting =`YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
+  // usuario.token = null;
+  // usuario.expiration = null;
 
   // Guardamos el nuevo password
-  await usuario.save();
-
+ let save_pass = JSON.parse(await request({
+  uri: URI + query_consulting,
+  method:'PUT',
+  insecure: true,
+  rejectUnauthorized: false,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': '*/*',
+    'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    body:{
+      "PASS": password_new,
+    },
+  json: true, // Para que lo decodifique automáticamente 
+}).then(saved => { //Get the mapping loggin
+ return JSON.stringify(saved)
+  }))
+console.log(save_pass)
   req.flash("success", "Tu contraseña se modifico correctamente");
-  res.redirect("/login");
+  //res.redirect("/login");
 };
 
 // Cerrar sesión

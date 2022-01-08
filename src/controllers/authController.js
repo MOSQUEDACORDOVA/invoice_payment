@@ -7,13 +7,13 @@ exports.authenticatedUser = async (req, res, next) => {
 	// Autenticado
 	if(req.isAuthenticated()) {
 		
-		usuario = await Usuarios.findOne({where: {email: req.user.email}});
-		console.log(req.user)
-		usuario.save(function(err) {
-			if (err) console.log(err);
-			return done(null, usuario);
-		});
-		res.locals.user = req.user;
+		// usuario = await Usuarios.findOne({where: {email: req.user.email}});
+		// console.log(req.user)
+		// usuario.save(function(err) {
+		// 	if (err) console.log(err);
+		// 	return done(null, usuario);
+		// });
+		// res.locals.user = req.user;
 		return next();
 	}
 

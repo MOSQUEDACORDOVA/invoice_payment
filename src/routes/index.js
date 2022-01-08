@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const userController = require('../controllers/userController');
 const landingController = require('../controllers/landingController');
-//const authController = require('../controllers/authController');
+const authController = require('../controllers/authController');
 const dashboardController = require('../controllers/dashboardController');
 const FileController = require('../models/upload');
 const fileController = new FileController();
@@ -21,7 +21,12 @@ router.get('/close-session', userController.closeSesion);
 router.get('/register', userController.formCreateUser);
 router.post('/register', userController.createUser);
 
+// Set Password
+router.get('/resetpassform/:email', userController.resetPasswordForm);
+router.post('/new-pass-save', userController.updatePassword);
+
 //dash
 router.get('/dashboard', dashboardController.dashboard);
+router.get('/dashboard/:email',authController.authenticatedUser, dashboardController.dashboard);
 
 module.exports = router;
