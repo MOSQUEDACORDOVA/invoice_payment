@@ -1,4 +1,4 @@
- <!-- BEGIN: Content-->
+<!-- BEGIN: Content-->
     <div class="app-content content ">
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
@@ -8,6 +8,23 @@
             <div class="content-body">
                 <section class="invoice-preview-wrapper">
                     <div class="row invoice-preview">
+                                                <!-- Invoice Actions -->
+                        <div class="col-xl-3 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    {{!-- <button class="btn btn-primary w-100 mb-75" data-bs-toggle="modal" data-bs-target="#send-invoice-sidebar">
+                                        Send Invoice
+                                    </button>
+                                    <button class="btn btn-outline-secondary w-100 btn-download-invoice mb-75">Download</button>
+                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-print.html" target="_blank"> Print </a>
+                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-edit.html"> Edit </a> --}}
+                                    <a class="btn btn-success w-100"  href="/payments_methods/{{user.EMAIL}}">
+                                        Add Payment
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Invoice Actions -->
                         <!-- Invoice -->
                         <div class="col-xl-9 col-md-8 col-12">
                             <div class="card invoice-preview-card">
@@ -17,24 +34,23 @@
                                         <div>
                                             <div class="logo-wrapper">
                                                 <img src="app-assets/images/logo/logo.png" class="round" alt="" width="100" height ="auto">
-                                                <h3 class="text-primary invoice-logo">Winery</h3>
+                                                <h3 class="text-primary invoice-logo">SAN ANTONIO WINERY INC.</h3>
                                             </div>
-                                            <p class="card-text mb-25">Office 149, 450 South Brand Brooklyn</p>
-                                            <p class="card-text mb-25">San Diego County, CA 91905, USA</p>
-                                            <p class="card-text mb-0">+1 (123) 456 7891, +44 (876) 543 2198</p>
+                                            <p class="card-text mb-25">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
+                                            <p class="card-text mb-0">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
                                         </div>
                                         <div class="mt-md-0 mt-2">
                                             <h4 class="invoice-title">
-                                                Invoice
-                                                <span class="invoice-number">#3492</span>
+                                                Invoice:
+                                                <span class="invoice-number">{{inv_detail.NUM}}</span>
                                             </h4>
                                             <div class="invoice-date-wrapper">
                                                 <p class="invoice-date-title">Date Issued:</p>
-                                                <p class="invoice-date">25/08/2020</p>
+                                                <p class="invoice-date">{{inv_detail.INVDAT}}</p>
                                             </div>
                                             <div class="invoice-date-wrapper">
                                                 <p class="invoice-date-title">Due Date:</p>
-                                                <p class="invoice-date">29/08/2020</p>
+                                                <p class="invoice-date">{{inv_detail.DUDDAT}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -48,13 +64,13 @@
                                     <div class="row invoice-spacing">
                                         <div class="col-xl-8 p-0">
                                             <h6 class="mb-2">Invoice To:</h6>
-                                            <h6 class="mb-25">Thomas shelby</h6>
-                                            <p class="card-text mb-25">Shelby Company Limited</p>
-                                            <p class="card-text mb-25">Small Heath, B10 0HF, UK</p>
-                                            <p class="card-text mb-25">718-986-6062</p>
-                                            <p class="card-text mb-0">peakyFBlinders@gmail.com</p>
+                                            <h6 class="mb-25">{{inv_detail.BPCINV}}</h6>
+                                            <p class="card-text mb-25">{{inv_detail.BPCINV_REF.$description}}</p>
+                                            <p class="card-text mb-25"> </p>
+                                            <p class="card-text mb-25"> </p>
+                                            <p class="card-text mb-0"> </p>
                                         </div>
-                                        <div class="col-xl-4 p-0 mt-xl-0 mt-2">
+                                        <div class="col-xl-4 p-0 mt-xl-0 mt-2 d-none">
                                             <h6 class="mb-2">Payment Details:</h6>
                                             <table>
                                                 <tbody>
@@ -90,52 +106,39 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th class="py-1">Task description</th>
-                                                <th class="py-1">Rate</th>
-                                                <th class="py-1">Hours</th>
-                                                <th class="py-1">Total</th>
+                                                <th class="py-1">Products</th>
+                                                <th class="py-1">QTY</th>
+                                                <th class="py-1">PRICE</th>
+                                                <th class="py-1">Sub-Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{#each inv_detail.SIVSID as |details i|}}
                                             <tr>
-                                                <td class="py-1">
-                                                    <p class="card-text fw-bold mb-25">Native App Development</p>
+                                                <td class="py-1 border-bottom">
+                                                    <p class="card-text fw-bold mb-25">{{ITMREF_REF.$description}}</p>
                                                     <p class="card-text text-nowrap">
-                                                        Developed a full stack native app using React Native, Bootstrap & Python
+                                                        {{ITMDES}}
                                                     </p>
                                                 </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">$60.00</span>
+                                                <td class="py-1 border-bottom">
+                                                    <span class="fw-bold">{{QTY}}</span>
                                                 </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">30</span>
+                                                <td class="py-1 border-bottom">
+                                                    <span class="fw-bold">${{GROPRI}}</span>
                                                 </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">$1,800.00</span>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-bottom">
-                                                <td class="py-1">
-                                                    <p class="card-text fw-bold mb-25">Ui Kit Design</p>
-                                                    <p class="card-text text-nowrap">Designed a UI kit for native app using Sketch, Figma & Adobe XD</p>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">$60.00</span>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">20</span>
-                                                </td>
-                                                <td class="py-1">
-                                                    <span class="fw-bold">$1200.00</span>
+                                                <td class="py-1 border-bottom">
+                                                    <span class="fw-bold">${{AMTNOTLIN}}</span>
                                                 </td>
                                             </tr>
+                                            {{/each}}
                                         </tbody>
                                     </table>
                                 </div>
 
                                 <div class="card-body invoice-padding pb-0">
                                     <div class="row invoice-sales-total-wrapper">
-                                        <div class="col-md-6 order-md-1 order-2 mt-md-0 mt-3">
+                                        <div class="col-md-6 order-md-1 order-2 mt-md-0 mt-3 d-none">
                                             <p class="card-text mb-0">
                                                 <span class="fw-bold">Salesperson:</span> <span class="ms-75">Alfie Solomons</span>
                                             </p>
@@ -144,20 +147,20 @@
                                             <div class="invoice-total-wrapper">
                                                 <div class="invoice-total-item">
                                                     <p class="invoice-total-title">Subtotal:</p>
-                                                    <p class="invoice-total-amount">$1800</p>
+                                                    <p class="invoice-total-amount">${{inv_detail.AMTNOT}}</p>
                                                 </div>
                                                 <div class="invoice-total-item">
                                                     <p class="invoice-total-title">Discount:</p>
-                                                    <p class="invoice-total-amount">$28</p>
+                                                    <p class="invoice-total-amount">$0</p>
                                                 </div>
                                                 <div class="invoice-total-item">
                                                     <p class="invoice-total-title">Tax:</p>
-                                                    <p class="invoice-total-amount">21%</p>
+                                                    <p class="invoice-total-amount"></p>
                                                 </div>
                                                 <hr class="my-50" />
                                                 <div class="invoice-total-item">
                                                     <p class="invoice-total-title">Total:</p>
-                                                    <p class="invoice-total-amount">$1690</p>
+                                                    <p class="invoice-total-amount">${{inv_detail.AMTATI}}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,8 +175,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <span class="fw-bold">Note:</span>
-                                            <span>It was a pleasure working with you and your team. We hope you will keep us in mind for future freelance
-                                                projects. Thank You!</span>
+                                            <span>Thank You!</span>
                                         </div>
                                     </div>
                                 </div>
@@ -182,23 +184,7 @@
                         </div>
                         <!-- /Invoice -->
 
-                        <!-- Invoice Actions -->
-                        <div class="col-xl-3 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
-                            <div class="card">
-                                <div class="card-body">
-                                    <button class="btn btn-primary w-100 mb-75" data-bs-toggle="modal" data-bs-target="#send-invoice-sidebar">
-                                        Send Invoice
-                                    </button>
-                                    <button class="btn btn-outline-secondary w-100 btn-download-invoice mb-75">Download</button>
-                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-print.html" target="_blank"> Print </a>
-                                    <a class="btn btn-outline-secondary w-100 mb-75" href="./app-invoice-edit.html"> Edit </a>
-                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#add-payment-sidebar">
-                                        Add Payment
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Invoice Actions -->
+
                     </div>
                 </section>
 

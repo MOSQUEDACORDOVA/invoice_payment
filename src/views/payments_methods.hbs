@@ -1,0 +1,127 @@
+    <!-- BEGIN: Content-->
+    <div class="app-content content ">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper container-xxl p-0">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <section class="invoice-preview-wrapper">
+                    <div class="row invoice-preview">
+                   
+                        <!-- payment methods -->
+                        <div class="card">
+                            <div class="card-header border-bottom">
+                                <h4 class="card-title">Payment Methods</h4>
+                            </div>
+                            <div class="card-body my-1 py-25">
+                                <div class="row gx-4">
+                                    <div class="col-lg-6">
+                                        <form id="creditCardForm" class="row gx-2 gy-1 validate-form" method="post" action="/add_method_pay">
+                                            <div class="col-12">
+                                                <div class="form-check form-check-inline mb-1">
+                                                    <input name="collapsible-payment" class="form-check-input" type="radio" id="collapsible-payment-cc" checked />
+                                                    <label class="form-check-label" for="collapsible-payment-cc">Credit/Debit/ATM Card</label>
+                                                </div>
+                                                <div class="form-check form-check-inline mb-1 d-none">
+                                                    <input name="collapsible-payment" class="form-check-input" type="radio" value="" id="collapsible-payment-cash" />
+                                                    <label class="form-check-label" for="collapsible-payment-cash">PayPal account</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mt-0">
+                                                <label class="form-label" for="addCardNumber">Card Number</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input id="addCardNumber" name="addCard" class="form-control add-credit-card-mask" type="text" placeholder="5637 8172 1290 7898" aria-describedby="addCard2" data-msg="Please enter your credit card number" />
+                                                    <span class="input-group-text cursor-pointer p-25" id="addCard2">
+                                                        <span class="add-card-type"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="addCardName">Name On Card</label>
+                                                <input type="text" id="addCardName" class="form-control" placeholder="Santo Riboli" />
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <label class="form-label" for="addCardExpiryDate">Exp. Date</label>
+                                                <input type="text" id="addCardExpiryDate" class="form-control add-expiry-date-mask" placeholder="MM/YY" />
+                                            </div>
+
+                                            <div class="col-6 col-md-3">
+                                                <label class="form-label" for="addCardCvv">CVV</label>
+                                                <input type="text" id="addCardCvv" class="form-control add-cvv-code-mask" maxlength="3" placeholder="cvv" />
+                                            </div>
+
+                                            <div class="col-12 d-none">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="form-check form-switch form-check-primary me-25">
+                                                        <input type="checkbox" class="form-check-input" id="addSaveCard" checked />
+                                                        <label class="form-check-label" for="addSaveCard">
+                                                            <span class="switch-icon-left"><i data-feather="check"></i></span>
+                                                            <span class="switch-icon-right"><i data-feather="x"></i></span>
+                                                        </label>
+                                                    </div>
+                                                    <label class="form-check-label fw-bolder" for="addSaveCard"> Save Card for future billing? </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mt-2 pt-1">
+                                                <button type="submit" class="btn btn-primary me-1">Save Changes</button>
+                                                <button type="reset" class="btn btn-outline-secondary">Discard</button>
+                                            </div>
+                                            <div></div>
+                                            <input type="hidden" />
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-6 mt-2 mt-lg-0">
+                                        <h6 class="fw-bolder mb-2">My Cards</h6>
+                                        <div class="added-cards">
+                                            {{#each pay_methods as |card i|}}
+                                            <div class="cardMaster rounded border p-2 mb-1">
+                                                <div class="d-flex justify-content-between flex-sm-row flex-column">
+                                                    <div class="card-information">
+                                                        <img class="mb-1 img-fluid" src="../../app-assets/images/icons/payments/{{#GetCardType CARDNO}}{{/GetCardType}}.png" alt="Master Card" />
+                                                        <div class="d-flex align-items-center mb-50">
+                                                            <h6 class="mb-0">{{NAME}}</h6>
+                                                            <span class="badge badge-light-primary ms-50">Primary</span>
+                                                        </div>
+                                                        <span class="card-number">{{#cardHide CARDNO}}{{/cardHide}}</span>
+                                                    </div>
+                                                    <div class="d-flex flex-column text-start text-lg-end">
+                                                        <div class="d-flex order-sm-0 order-1 mt-1 mt-sm-0">
+                                                            <button class="btn btn-outline-primary me-75 edit_credit_card" data-name="{{NAME}}" data-number="{{CARDNO}}" data-exp ="{{EXPDAT}}">
+                                                                Edit
+                                                            </button>
+                                                            <button class="btn btn-outline-secondary">Delete</button>
+                                                        </div>
+                                                        <span class="mt-2">Card expires at {{EXPDAT}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / payment methods -->
+
+                    </div>
+                </section>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+    <script>
+$('.edit_credit_card').on('click', (e)=>{
+    let card_number = e.currentTarget.dataset['number']
+    let exp = e.currentTarget.dataset['exp']
+    let name = e.currentTarget.dataset['name']
+
+    $('#addCardNumber').val(card_number)
+$('#addCardName').val(name)
+$('#addCardExpiryDate').val(exp)
+})
+    </script>

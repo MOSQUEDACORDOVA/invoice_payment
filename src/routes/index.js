@@ -28,5 +28,12 @@ router.post('/new-pass-save', userController.updatePassword);
 //dash
 router.get('/dashboard', dashboardController.dashboard);
 router.get('/dashboard/:email',authController.authenticatedUser, dashboardController.dashboard);
+router.get('/close_invoices/:email',authController.authenticatedUser, dashboardController.close_invoices);
+router.get('/invoiceO_detail/:inv_num',authController.authenticatedUser, dashboardController.inoviceO_detail);
+router.get('/invoiceC_detail/:inv_num',authController.authenticatedUser, dashboardController.inoviceC_detail);
+
+//PAYMENTS METHODS
+router.get('/payments_methods/:email',authController.authenticatedUser, dashboardController.pay_methods);
+
 
 module.exports = router;

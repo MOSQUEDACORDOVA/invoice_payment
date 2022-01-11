@@ -60,6 +60,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
           width: '80px',
           orderable: false,
           render: function (data, type, full, meta) {
+            console.log(full)
             return (
               '<div id="smart-button-container">'+
              '<div style="text-align: center;">'+
@@ -69,8 +70,8 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
               '<a class="me-1 d-none" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Mail">' +
               feather.icons['send'].toSvg({ class: 'font-medium-2 text-body' }) +
               '</a>' +
-              '<a class="me-25" href="' +
-              invoicePreview +
+              '<a class="me-25" href="/invoiceC_detail/' +
+              full[0] +
               '" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Invoice">' +
               feather.icons['eye'].toSvg({ class: 'font-medium-2 text-body' }) +
               '</a>' +
@@ -166,11 +167,11 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
         // Adding role filter once table initialized
         this.api()
-          .columns(7)
+          .columns(3)
           .every(function () {
             var column = this;
             var select = $(
-              '<select id="UserRole" class="form-select ms-50 text-capitalize"><option value=""> Select Status </option></select>'
+              '<select id="UserRole" class="form-select ms-50 text-capitalize"><option value=""> Select company </option></select>'
             )
               .appendTo('.invoice_status')
               .on('change', function () {

@@ -124,11 +124,11 @@
                 
                 <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Menu</span><i data-feather="more-horizontal"></i>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="/dashboard/{{user.EMAIL}}" ><i data-feather='bar-chart-2'></i><span class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
+                <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/dashboard/{{user.EMAIL}}" ><i data-feather='bar-chart-2'></i><span class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather='archive'></i><span class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
+                <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/close_invoices/{{user.EMAIL}}"><i data-feather='archive'></i><span class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment Methods</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.EMAIL}}"><i data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment Methods</span></a>
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
                 </li>
