@@ -31,7 +31,7 @@
                                             <div class="col-12 mt-0">
                                                 <label class="form-label" for="addCardNumber">Card Number</label>
                                                 <div class="input-group input-group-merge">
-                                                    <input id="addCardNumber" name="addCard" class="form-control add-credit-card-mask" type="text" placeholder="5637 8172 1290 7898" aria-describedby="addCard2" data-msg="Please enter your credit card number" />
+                                                    <input id="addCardNumber" name="addCard" class="form-control add-credit-card-mask" type="text" placeholder="5637 8172 1290 7898" aria-describedby="addCard2" data-msg="Please enter your credit card number" required />
                                                     <span class="input-group-text cursor-pointer p-25" id="addCard2">
                                                         <span class="add-card-type"></span>
                                                     </span>
@@ -40,17 +40,17 @@
 
                                             <div class="col-md-6">
                                                 <label class="form-label" for="addCardName">Name On Card</label>
-                                                <input type="text" id="addCardName" class="form-control" placeholder="Santo Riboli" />
+                                                <input type="text" id="addCardName"  name="addCardName" class="form-control" placeholder="Santo Riboli"  required/>
                                             </div>
 
                                             <div class="col-6 col-md-3">
                                                 <label class="form-label" for="addCardExpiryDate">Exp. Date</label>
-                                                <input type="text" id="addCardExpiryDate" class="form-control add-expiry-date-mask" placeholder="MM/YY" />
+                                                <input type="text" id="addCardExpiryDate" name="addCardExpiryDate" class="form-control add-expiry-date-mask" placeholder="MM/YY"  required maxlength="5"/>
                                             </div>
 
                                             <div class="col-6 col-md-3">
                                                 <label class="form-label" for="addCardCvv">CVV</label>
-                                                <input type="text" id="addCardCvv" class="form-control add-cvv-code-mask" maxlength="3" placeholder="cvv" />
+                                                <input type="text" id="addCardCvv"  name="addCardCvv" class="form-control add-cvv-code-mask" maxlength="3" placeholder="cvv"  required/>
                                             </div>
 
                                             <div class="col-12 d-none">
@@ -83,16 +83,16 @@
                                                         <img class="mb-1 img-fluid" src="../../app-assets/images/icons/payments/{{#GetCardType CARDNO}}{{/GetCardType}}.png" alt="Master Card" />
                                                         <div class="d-flex align-items-center mb-50">
                                                             <h6 class="mb-0">{{NAME}}</h6>
-                                                            <span class="badge badge-light-primary ms-50">Primary</span>
+                                                           {{#primary_payment PAYID}}{{/primary_payment}} 
                                                         </div>
                                                         <span class="card-number">{{#cardHide CARDNO}}{{/cardHide}}</span>
                                                     </div>
                                                     <div class="d-flex flex-column text-start text-lg-end">
                                                         <div class="d-flex order-sm-0 order-1 mt-1 mt-sm-0">
-                                                            <button class="btn btn-outline-primary me-75 edit_credit_card" data-name="{{NAME}}" data-number="{{CARDNO}}" data-exp ="{{EXPDAT}}">
+                                                            <button class="btn btn-outline-primary me-75 edit_credit_card" data-name="{{NAME}}" data-number="{{CARDNO}}" data-exp ="{{EXPDAT}}" data-id ="{{PAYID}}">
                                                                 Edit
                                                             </button>
-                                                            <button class="btn btn-outline-secondary">Delete</button>
+                                                            <a class="btn btn-outline-secondary" href="/delete_payM/{{PAYID}}">Delete</a>
                                                         </div>
                                                         <span class="mt-2">Card expires at {{EXPDAT}}</span>
                                                     </div>
@@ -119,9 +119,28 @@ $('.edit_credit_card').on('click', (e)=>{
     let card_number = e.currentTarget.dataset['number']
     let exp = e.currentTarget.dataset['exp']
     let name = e.currentTarget.dataset['name']
-
+    let id = e.currentTarget.dataset['id']
     $('#addCardNumber').val(card_number)
 $('#addCardName').val(name)
 $('#addCardExpiryDate').val(exp)
+$('#creditCardForm').removeAttr('action')
+$('#creditCardForm').attr('action', '/edit_apy_method')
+console.log($('#pay_id'))
+if ($('#pay_id')){
+    $('#pay_id').remove()
+}
+var IDPay = $(`<input type=\"text\" value="${id}" id="pay_id" name="payID" class="d-none"/>`);
+
+$('#creditCardForm').append(IDPay)
+})
+
+$('#addCardExpiryDate').on('keyup',(e) =>{
+    let valor = e.target.value 
+    console.log(valor.length)
+    if (valor.length == 2){
+        valor += '/'
+    }
+    console.log(valor)
+    $('#addCardExpiryDate').val(valor)
 })
     </script>

@@ -1,0 +1,16 @@
+@media(max-width: 1000px) {
+    table thead tr th, table.dataTable thead th {
+        font-size: 12px;
+    }
+    table tbody tr td, table.dataTable tbody td {
+        font-size: 12px;
+    }
+}
+@media(max-width: 768px) {
+    table thead tr th, table.dataTable thead th {
+        font-size: 10px;
+    }
+    table tbody tr td, table.dataTable tbody td {
+        font-size: 11px;
+    }
+}

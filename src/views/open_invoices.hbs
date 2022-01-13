@@ -1,18 +1,15 @@
 <!-- BEGIN: Content-->
 
     <div class="app-content content ">
-        <div class="content-overlay"></div>
-        <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
-            <div class="content-header row">
-            </div>
             <div class="content-body">
                 <section class="invoice-list-wrapper">
                     <div class="card">
-                        <div class="card-datatable table-responsive">
-                            <table class="invoice-list-table table">
+                        <div class="table-responsive">
+                            <table class="table" id="invoiceTable">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Invoice number</th>
                                         <th>Ref</th>
                                         <th>Sold to</th>
@@ -26,9 +23,10 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="table-white-space">
                                     {{#each inv_wofilter as |invoces i|}}
 <tr>
+    <td>{{NUM}}</td>
     <td>{{NUM}}</td>
     <td>{{INVREF}}</td>
     <td>{{BPCORD}}</td>
@@ -73,5 +71,5 @@
         </div>
     </div>
 </div>
-<input value="{{inv_filtering}}" id="invoices_list">    
+<input value="{{inv_filtering}}" class="d-none" id="invoices_list">    
  <!-- Modal -->

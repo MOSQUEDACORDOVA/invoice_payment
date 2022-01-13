@@ -20,7 +20,6 @@ function table_invoices(a){
   if (dtInvoiceTable.length) {
     var dtInvoice = dtInvoiceTable.DataTable({
      // ajax: array_inv, // JSON file to add data
-      autoWidth: false,
       columnDefs: [
         {
           targets:4,
@@ -50,7 +49,7 @@ let diff_days = today.diff(moment(data), 'days')
 let amt_st = full[7].slice(1)
 let amt_wt = full[9].slice(1)
 let tax = parseFloat(amt_wt) - parseFloat(amt_st)
-   return tax.toFixed(2);
+   return '$' + tax.toFixed(2);
   }
 },
         {
@@ -125,14 +124,14 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
       buttons: [
         {
           text: 'Add Invoice',
-          className: 'btn btn-primary btn-add-record ms-2',
+          className: 'btn btn-primary btn-add-record ms-2 d-none',
           action: function (e, dt, button, config) {
             window.location = invoiceAdd;
           }
         }
       ],
       // For responsive popup
-      responsive: {
+      /*responsive: {
         details: {
           display: $.fn.dataTable.Responsive.display.modal({
             header: function (row) {
@@ -162,7 +161,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             return data ? $('<table class="table"/>').append('<tbody>' + data + '</tbody>') : false;
           }
         }
-      },
+      },*/
       initComplete: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
         // Adding role filter once table initialized
@@ -192,6 +191,8 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
       }
     });
+    $('#DataTables_Table_0_info').addClass('py-2')
+    document.getElementById('DataTables_Table_0_info').parentElement.parentElement.classList.add('align-items-center')
   }
 }
 

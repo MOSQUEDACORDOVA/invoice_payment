@@ -15,10 +15,13 @@
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/vendors.min.css">
-        <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+    <!-- END: Vendor CSS-->
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/extensions/dataTables.checkboxes.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
-    <!-- END: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/authentication.css">
 
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/bootstrap.css">
@@ -29,10 +32,9 @@
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/bordered-layout.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/semi-dark-layout.css">
 
-    <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/authentication.css">
+
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/main.css">
     <!-- END: Page CSS-->
 <!-- PER MODULES -->
 {{#if invoice}}
@@ -43,7 +45,7 @@
 <!-- END: Head--><!-- END: Head-->
 <!-- BEGIN: Body-->
 
-<body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" >
+<body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  menu-collapsed" data-open="click" data-menu="vertical-menu-modern" >
 {{#if menu}}
 {{>menu}}
 {{/if}}

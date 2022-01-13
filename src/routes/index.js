@@ -34,6 +34,8 @@ router.get('/invoiceC_detail/:inv_num',authController.authenticatedUser, dashboa
 
 //PAYMENTS METHODS
 router.get('/payments_methods/:email',authController.authenticatedUser, dashboardController.pay_methods);
-
+router.post('/add_method_pay',authController.authenticatedUser, dashboardController.add_pay_methods);
+router.post('/edit_apy_method',authController.authenticatedUser, dashboardController.edit_pay_methods);
+router.get('/delete_payM/:IDPay',authController.authenticatedUser, dashboardController.delete_pay_methods);
 
 module.exports = router;

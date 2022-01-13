@@ -112,7 +112,7 @@ exports.close_invoices = async (req, res) => {
     inv_wofilter = inv_wofilter['$resources']
 
     //HERE RENDER PAGE AND INTRO INFO
-  res.render("open_invoices", {
+  res.render("close_invoices", {
     pageName: "Closed Invoices",
     dashboardPage: true,
     menu:true,
@@ -221,6 +221,146 @@ console.log(pay_methods)
     user,
     pay_methods,
   });
+
+
+  });
+  
+};
+exports.add_pay_methods = async (req, res) => {
+  const user = res.locals.user['$resources'][0];
+  const {addCard,addCardName,addCardExpiryDate,addCardCvv} = req.body
+  //console.log(user)
+  let query_consulting= "&where=EMAIL eq '"+ user.EMAIL +"'"
+  let count =1000
+  console.log(query_consulting)
+const payIDs =  JSON.parse(await request({
+  uri: URI + 'YPORTALPAY?representation=YPORTALPAY.$query&count='+count+" "+ query_consulting,
+  method:'GET',
+  insecure: true,
+  rejectUnauthorized: false,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+  json: true, // Para que lo decodifique automáticamente 
+}).then(list_pays => { //Get the mapping loggin
+  console.log('---------------------')
+  console.log(list_pays)
+ return JSON.stringify(list_pays)
+  }))
+let IDPay = 0
+for (let i = 0; i < payIDs['$resources'].length; i++) {
+  IDPay = parseInt(payIDs['$resources'][i]['PAYID'])
+  if (payIDs['$resources'][i]['CARDNO'] === addCard) {
+    console.log('Card Number exist')
+  req.flash("error", "Card Number exist, try another");
+  return res.redirect('/payments_methods/'+user.EMAIL)
+  }
+}
+console.log(IDPay)
+IDPay = parseInt(IDPay)+1
+    request({
+      uri: URI + 'YPORTALPAY?representation=YPORTALPAY.$create',
+      method:'POST',
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+        },
+        body:{
+          "EMAIL": user.EMAIL,
+          "PAYID":IDPay,
+          "BPCNUM":"",
+          "CARDNO": addCard,
+          "CVC": addCardCvv,
+          "EXPDAT": addCardExpiryDate,
+          "NAME": addCardName,
+          "ADDLIG1":"",
+          "ADDLIG2":"",
+          "ADDLIG3":"",
+          "CTY":"",
+          "SAT":"",
+          "ZIP":"",
+          "CRY":""
+        },
+      json: true, // Para que lo decodifique automáticamente 
+    }).then(added_pay_methods => {// response
+//console.log(added_pay_methods)
+req.flash("success", "Card added");
+res.redirect('/payments_methods/'+user.EMAIL)
+
+
+  });
+  
+};
+exports.edit_pay_methods = async (req, res) => {
+  const user = res.locals.user['$resources'][0];
+  const {addCard,addCardName,addCardExpiryDate,addCardCvv, payID} = req.body
+  //console.log(user)
+  let query_consulting= "&where=EMAIL eq '"+ user.EMAIL +"'"
+  let count =1000
+  console.log(query_consulting)
+
+    request({
+      uri: URI + `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+      method:'PUT',
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+        },
+        body:{
+          "BPCNUM":"",
+          "CARDNO": addCard,
+          "CVC": addCardCvv,
+          "EXPDAT": addCardExpiryDate,
+          "NAME": addCardName,
+          "ADDLIG1":"",
+          "ADDLIG2":"",
+          "ADDLIG3":"",
+          "CTY":"",
+          "SAT":"",
+          "ZIP":"",
+          "CRY":""
+        },
+      json: true, // Para que lo decodifique automáticamente 
+    }).then(added_pay_methods => {// response
+//console.log(added_pay_methods)
+req.flash("success", "Card edited");
+res.redirect('/payments_methods/'+user.EMAIL)
+
+
+  });
+  
+};
+exports.delete_pay_methods = async (req, res) => {
+  const user = res.locals.user['$resources'][0];
+  const payID = req.params.IDPay
+  //console.log(user)
+  let query_consulting= "&where=EMAIL eq '"+ user.EMAIL +"'"
+  let count =1000
+  console.log(query_consulting)
+
+    request({
+      uri: URI + `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+      method:'DELETE',
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+        },
+      json: true, // Para que lo decodifique automáticamente 
+    }).then(delete_pay_methods => {// response
+console.log(delete_pay_methods)
+req.flash("success", "Card deleted");
+res.redirect('/payments_methods/'+user.EMAIL)
 
 
   });

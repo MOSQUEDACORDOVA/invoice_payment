@@ -90,6 +90,28 @@ module.exports = {
 			return "Visa Electron";
 	
 		return "";
+	},
+
+	format_date: (date) =>{
+		if (date == '0000-00-00') {
+			return '0000-00-00';
+		}
+		console.log(date)
+		return moment(date).format('MM/DD/YYYY');
+	},
+	tax_calculate:  (mountWOT, mountWT) =>{
+	
+let tax = parseFloat(mountWT) - parseFloat(mountWOT)
+   return tax.toFixed(2);
+	},
+	primary_payment: (id)=>{
+		if (id == 1) {
+			return `<span class="badge badge-light-primary ms-50">Primary</span>`
+		}
+	},
+	decimals:(mount)=>{
+
+		return parseFloat(mount.toFixed(2))+".00"
 	}
 	
 }
