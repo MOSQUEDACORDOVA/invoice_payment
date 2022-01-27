@@ -32,20 +32,45 @@
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/bordered-layout.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/themes/semi-dark-layout.css">
 
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/sweetalert2.min.css">
+
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
 
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/main.css">
     <!-- END: Page CSS-->
+{{#if pay_invoices}}
+     <!-- BEGIN: Page CSS-->
+      <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/wizard/bs-stepper.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/toastr.min.css">
+    <!-- END: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-ecommerce.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/pickers/form-pickadate.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-wizard.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-toastr.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-number-input.css">
+    <!-- END: Page CSS-->
+{{/if}}
 <!-- PER MODULES -->
 {{#if invoice}}
-<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css">
+<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css" >
 {{/if}}
+{{#if print_inv}}<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-print.css" media="print">{{/if}}
 </head>
 <!-- END: Head-->
 <!-- END: Head--><!-- END: Head-->
 <!-- BEGIN: Body-->
+{{#if print_inv}}<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">{{else}}
+<body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  menu-collapsed" data-open="click" data-menu="vertical-menu-modern" >    
+{{/if}}
 
-<body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  menu-collapsed" data-open="click" data-menu="vertical-menu-modern" >
+{{#if print_inv}}{{else}}
 {{#if menu}}
 {{>menu}}
+{{/if}}   
 {{/if}}
+

@@ -25,11 +25,11 @@ function table_invoices(a){
           // For Checkboxes
           targets: 0,
           orderable: false,
-          searchable: false,
+          searchable: true,
           responsivePriority: 3,
           render: function (data, type, full, meta) {
             return (
-              '<div class="form-check"> <input class="form-check-input dt-checkboxes" type="checkbox" value="'+data+'" id="checkbox' +
+              '<div class="form-check"> <input class="form-check-input dt-checkboxes" name="invoicesCh" type="checkbox" value="'+data+'" id="checkbox' +
               data +
               '" /><label class="form-check-label" for="checkbox' +
               data +
@@ -64,10 +64,11 @@ let diff_days = today.diff(moment(data), 'days')
   }
 },
 {
-  targets:8,
+  targets:9,
   render: function(data, type, full, meta){
-let amt_st = full[7].slice(1)
-let amt_wt = full[9].slice(1)
+    //console.log(full)
+let amt_st = full[9]
+let amt_wt = full[10].slice(1)
 let tax = parseFloat(amt_wt) - parseFloat(amt_st)
    return '$'+tax.toFixed(2);
   }
@@ -142,10 +143,28 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
       // Buttons with Dropdown
       buttons: [
         {
-          text: 'Add Invoice',
-          className: 'btn btn-primary btn-add-record ms-2 d-none',
+          text: 'Pay Invoice(s)',
+          className: 'btn btn-primary btn-add-record ms-2',
           action: function (e, dt, button, config) {
-            window.location = invoiceAdd;
+            let valoresCheck = [];
+            dtInvoice.$('input[type="checkbox"]').each(function(){
+                 // If checkbox is checked
+                 if(this.checked){
+                    // Create a hidden element
+                    valoresCheck.push(this.value)
+                 }
+           });
+                      console.log(valoresCheck)
+
+            if (valoresCheck.length == 0) {    
+              
+              Swal.fire('Please select at least one invoice ')
+          
+              return
+            }else{
+              $("#ids_invoices").val(valoresCheck);
+              $("#pay_invoices_form").submit();
+            }
           }
         }
       ],
@@ -221,4 +240,5 @@ $(function () {
 
   // datatable
 table_invoices()
+
 });

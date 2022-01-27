@@ -1,57 +1,60 @@
 <!-- BEGIN: Content-->
 
-    <div class="app-content content ">
-        <div class="content-wrapper container-xxl p-0">
-            <div class="content-body">
-                <section class="invoice-list-wrapper">
-                    <div class="card">
-                        <div class="table-responsive">
-                            <table class="table" id="invoiceTable">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Invoice number</th>
-                                        <th>Ref</th>
-                                        <th>Sold to</th>
-                                        <th>Company Name</th>
-                                        <th>Due</th>
-                                        <th>Date</th>
-                                        <th>Age day</th>
-                                        <th>Amt</th>
-                                        <th>Tax</th>
-                                        <th>Total</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-white-space">
-                                    {{#each inv_wofilter as |invoces i|}}
-<tr>
-    <td>{{NUM}}</td>
-    <td>{{NUM}}</td>
-    <td>{{INVREF}}</td>
-    <td>{{BPCORD}}</td>
-    <td>{{BPCORD_REF.$description}}</td>
-    <td>{{DUDDAT}}</td>
-    <td>{{INVDAT}}</td>
-    <td>{{INVDAT}}</td>
-    <td>{{CUR_REF.$symbol}}{{AMTNOT}}</td>
-    <td>{{AMTNOT}}</td>
-    <td>{{CUR_REF.$symbol}}{{AMTATI}}</td>
-    <td></td>
-</tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
+<div class="app-content content ">
+    <div class="content-wrapper container-xxl p-0">
+        <div class="content-body">
+            <section class="invoice-list-wrapper">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table" id="invoiceTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Invoice number</th>
+                                    <th>Ref</th>
+                                    <th>Sold to</th>
+                                    <th>Company Name</th>
+                                    <th>Invoice Date</th>
+                                    <th>Due Date</th>
+                                    <th>Aged day</th>
+                                    <th>Open Amt</th>
+                                    <th>Tax</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-white-space">
+                                {{#each inv_wofilter as |invoces i|}}
+                                <tr>
+                                    <td>{{NUM}}</td>
+                                    <td>{{NUM}}</td>
+                                    <td>{{INVREF}}</td>
+                                    <td>{{BPCORD}}</td>
+                                    <td>{{BPCORD_REF.$description}}</td>
+                                    <td>{{INVDAT}}</td>
+                                    <td>{{DUDDAT}}</td>
+                                    <td>{{INVDAT}}</td>
+                                    <td>{{CUR_REF.$symbol}}{{#decimals OPENLOC}}{{/decimals}}</td>
+                                    <td>{{AMTNOT}}</td>
+                                    <td>{{CUR_REF.$symbol}}{{#decimals AMTATI}}{{/decimals}}</td>
+                                    <td></td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
                     </div>
-                </section>
+                </div>
+            </section>
 
-            </div>
         </div>
     </div>
-    <!-- END: Content-->
-	 <!-- Modal -->
- <div class="modal fade text-start" id="default" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
+</div>
+<!-- END: Content-->
+<form action="/pay_invoices" method="post" id="pay_invoices_form">
+    <input id="ids_invoices" name="ids_invoices" hidden>
+</form>
+<!-- Modal -->
+<div class="modal fade text-start" id="default" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -71,5 +74,5 @@
         </div>
     </div>
 </div>
-<input value="{{inv_filtering}}" class="d-none" id="invoices_list">    
- <!-- Modal -->
+<input value="{{inv_filtering}}" class="d-none" id="invoices_list">
+<!-- Modal -->

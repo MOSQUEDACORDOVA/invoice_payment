@@ -27,15 +27,26 @@ router.post('/new-pass-save', userController.updatePassword);
 
 //dash
 router.get('/dashboard', dashboardController.dashboard);
-router.get('/dashboard/:email',authController.authenticatedUser, dashboardController.dashboard);
-router.get('/close_invoices/:email',authController.authenticatedUser, dashboardController.close_invoices);
-router.get('/invoiceO_detail/:inv_num',authController.authenticatedUser, dashboardController.inoviceO_detail);
-router.get('/invoiceC_detail/:inv_num',authController.authenticatedUser, dashboardController.inoviceC_detail);
+router.get('/dashboard/:email', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/close_invoices/:email', authController.authenticatedUser, dashboardController.close_invoices);
+router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
+router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
 //PAYMENTS METHODS
-router.get('/payments_methods/:email',authController.authenticatedUser, dashboardController.pay_methods);
-router.post('/add_method_pay',authController.authenticatedUser, dashboardController.add_pay_methods);
-router.post('/edit_apy_method',authController.authenticatedUser, dashboardController.edit_pay_methods);
-router.get('/delete_payM/:IDPay',authController.authenticatedUser, dashboardController.delete_pay_methods);
+router.get('/payments_methods/:email', authController.authenticatedUser, dashboardController.pay_methods);
+router.post('/add_method_pay', authController.authenticatedUser, dashboardController.add_pay_methods);
+router.post('/edit_apy_method', authController.authenticatedUser, dashboardController.edit_pay_methods);
+router.get('/delete_payM/:IDPay', authController.authenticatedUser, dashboardController.delete_pay_methods);
 
+//PAY INVOICES
+router.post('/pay_invoices', authController.authenticatedUser, dashboardController.pay_invoices);
+router.post('/process_payment', authController.authenticatedUser, dashboardController.process_payment);
+router.post('/applied_amount', authController.authenticatedUser, dashboardController.applied_amount);
+
+//upload-file
+router.post('/upload-file', fileController.uploadFile);
+router.post('/save-pic-profile', authController.authenticatedUser, dashboardController.save_PicProfile);
+
+//PRINTS
+router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardController.printInvoice);
 module.exports = router;

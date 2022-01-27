@@ -1,0 +1,834 @@
+<style>
+    .ecommerce-application .list-view .ecommerce-card {
+        grid-template-columns: 2fr 2fr;
+    }
+
+    .ecommerce-application .checkout-items .ecommerce-card .delivery-date {
+        margin-top: 0.5rem;
+    }
+
+    .ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
+        display: grid;
+        grid-template-columns: 0.5fr 0.8fr;
+        padding: 0.5rem;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .ecommerce-application .list-view .ecommerce-card .item-options {
+        padding: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        .ecommerce-application .list-view .ecommerce-card {
+            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .ecommerce-application .checkout-items .ecommerce-card .item-options .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+<!-- BEGIN: Content-->
+<div class="app-content content ecommerce-application">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper container-xxl p-0">
+        <div class="content-header row">
+            <div class="content-header-left col-md-9 col-12 mb-2">
+                <div class="row breadcrumbs-top">
+                    <div class="col-12">
+                        <h2 class="content-header-title float-start mb-0">Checkout</h2>
+                        <div class="breadcrumb-wrapper">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/dashboard/{{user.EMAIL}}">Home</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
+                {{!-- <div class="mb-1 breadcrumb-right">
+                    <div class="dropdown">
+                        <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                data-feather="grid"></i></button>
+                        <div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="app-todo.html"><i
+                                    class="me-1" data-feather="check-square"></i><span
+                                    class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i
+                                    class="me-1" data-feather="message-square"></i><span
+                                    class="align-middle">Chat</span></a><a class="dropdown-item"
+                                href="app-email.html"><i class="me-1" data-feather="mail"></i><span
+                                    class="align-middle">Email</span></a><a class="dropdown-item"
+                                href="app-calendar.html"><i class="me-1" data-feather="calendar"></i><span
+                                    class="align-middle">Calendar</span></a></div>
+                    </div>
+                </div> --}}
+            </div>
+        </div>
+        <div class="content-body">
+            <div class="bs-stepper checkout-tab-steps">
+                <!-- Wizard starts -->
+                <div class="bs-stepper-header">
+                    <div class="step" data-target="#step-cart" role="tab" id="step-cart-trigger">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">
+                                <i data-feather="shopping-cart" class="font-medium-3"></i>
+                            </span>
+                            <span class="bs-stepper-label">
+                                <span class="bs-stepper-title">Invoices</span>
+                                <span class="bs-stepper-subtitle">Your Invoices Selected</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    {{!--
+                    <div class="line">
+                        <i data-feather="chevron-right" class="font-medium-2"></i>
+                    </div>
+                    <div class="step" data-target="#step-address" role="tab" id="step-address-trigger">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">
+                                <i data-feather="home" class="font-medium-3"></i>
+                            </span>
+                            <span class="bs-stepper-label">
+                                <span class="bs-stepper-title">Address</span>
+                                <span class="bs-stepper-subtitle">Enter Your Address</span>
+                            </span>
+                        </button>
+                    </div> --}}
+                    <div class="line">
+                        <i data-feather="chevron-right" class="font-medium-2"></i>
+                    </div>
+                    <div class="step" data-target="#step-payment" role="tab" id="step-payment-trigger">
+                        <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">
+                                <i data-feather="credit-card" class="font-medium-3"></i>
+                            </span>
+                            <span class="bs-stepper-label">
+                                <span class="bs-stepper-title">Payment</span>
+                                <span class="bs-stepper-subtitle">Select Payment Method</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Wizard ends -->
+
+                <div class="bs-stepper-content">
+                    <!-- Checkout Place order starts -->
+                    <div id="step-cart" class="content" role="tabpanel" aria-labelledby="step-cart-trigger">
+                        <div id="place-orderx" class="list-view product-checkout">
+                            <!-- Checkout Place Order Left starts -->
+                            <div class="checkout-items">
+                                {{#each inv_wofilter as |invoice i|}}
+                                <div class="card ecommerce-card">
+                                    {{!-- <div class="item-img">
+                                        <a href="/invoiceO_detail/{{NUM}}" target="_blank">
+                                            <img src="../../../app-assets/images/logo/logo.png" alt="img-placeholder" />
+                                        </a>
+                                    </div> --}}
+                                    <div class="card-body">
+                                        <div class="item-name">
+                                            <h3 class="mb-0"><a href="/invoiceO_detail/{{NUM}}" class="text-body"
+                                                    target="_blank">{{NUM}}</a></h3>
+                                            <span class="item-company">To <span href="#"
+                                                    class="company-name">{{BPCINV}}</span></span>
+
+                                        </div>
+                                        {{!-- <a class="text-success mb-1" href="/invoiceO_detail/{{NUM}}"
+                                            target="_blank">Details</a> --}}
+                                        <span class="delivery-date text-muted">Date: {{INVDAT}}</span>
+                                        {{!-- <span class="text-success">17% off 4 offers Available</span> --}}
+                                    </div>
+                                    <div class="item-options text-center">
+                                        <div class="item-wrapper">
+                                            <div class="item-cost" style="align-items: center;">
+                                                <label class="item-price" style="margin-right: 5px;">AMT: $</label>
+                                                <input type="text" name="applied_amount"
+                                                    placeholder="Amount to pay for this invoice"
+                                                    class="form-control applied_amount" id="appliedAmount{{i}}"
+                                                    value="{{OPENLOC}}" style="width: 6rem;"
+                                                    onchange="appliedAmount('{{OPENLOC}}','{{i}}','{{NUM}}')"
+                                                    data-amount="{{OPENLOC}}" data-id="{{i}}" />
+                                                <input type="text" id="previousAmt{{i}}" value="{{OPENLOC}}" hidden />
+                                                <input type="text" name="applied_amount"
+                                                    class="form-control applied_amountINV" value="{{NUM}}" hidden />
+                                                <input type="text" name="reasons" class="form-control reasons"
+                                                    id="reasons{{i}}" value="-" hidden />
+
+
+                                                <p class="card-text shipping">
+                                                    {{!-- <span class="badge rounded-pill badge-light-success">Free
+                                                        Shipping</span> --}}
+                                                </p>
+                                            </div>
+                                            <button type="button" class="btn btn-light remove-wishlist"
+                                                data-amount="{{AMTNOT}}" data-amwt="{{OPENLOC}}">
+                                                <i data-feather="x" class="align-middle me-25"></i>
+                                                <span>Remove</span>
+                                            </button>
+                                            {{!-- <button type="button" class="btn btn-primary btn-cart applied-amount"
+                                                data-inv="{{NUM}}" data-amount="{{AMTNOT}}" data-id="{{i}}"
+                                                data-amwt="{{OPENLOC}}" style="margin-top: 0;">
+                                                <i data-feather="minus-circle" class="align-middle me-25"></i>
+                                                <span class="text-truncate">Applied amount</span>
+                                            </button> --}}
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                            <!-- Checkout Place Order Left ends -->
+
+                            <!-- Checkout Place Order Right starts -->
+                            <div class="checkout-options">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        {{!-- <div class="coupons input-group input-group-merge">
+                                            <input type="text" class="form-control" placeholder="Coupons"
+                                                aria-label="Coupons" aria-describedby="input-coupons" />
+                                            <span class="input-group-text text-primary ps-1"
+                                                id="input-coupons">Apply</span>
+                                        </div> --}}
+                                        <hr />
+                                        <div class="price-details">
+                                            {{!-- <h6 class="price-title">Price Details</h6> --}}
+                                            <ul class="list-unstyled d-none">
+                                                <li class="price-detail">
+                                                    <div class="detail-title">Sub-Total</div>
+                                                    <div class="detail-amt">$<span
+                                                            id="Stotal_preview">{{subTotal}}</span></div>
+                                                </li>
+                                                <li class="price-detail">
+                                                    <div class="detail-title">Discount</div>
+                                                    <div class="detail-amt discount-amt text-success">0$</div>
+                                                </li>
+                                                <li class="price-detail">
+                                                    <div class="detail-title">Estimated Tax</div>
+                                                    <div class="detail-amt">$<span id="tax_preview">{{taxes}}</span>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            {{!--
+                                            <hr /> --}}
+                                            <ul class="list-unstyled">
+                                                <li class="price-detail">
+                                                    <div class="detail-title detail-total">Total payment</div>
+                                                    <div class="detail-amt fw-bolder">$<span class="total_preview"
+                                                            id="total_preview">{{Total}}</span></div>
+                                                </li>
+                                            </ul>
+                                            <button type="button" class="btn btn-primary w-100 btn-next place-order"
+                                                id="btnplaceOrder">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Checkout Place Order Right ends -->
+                            </div>
+                        </div>
+                        <!-- Checkout Place order Ends -->
+                    </div>
+                    <!-- Checkout Payment Starts -->
+                    <div id="step-payment" class="content" role="tabpanel" aria-labelledby="step-payment-trigger">
+                        <div id="checkout-payment" class="list-view product-checkout" onsubmit="return false;">
+                            <div class="payment-type">
+                                <div class="card">
+                                    <div class="card-header flex-column align-items-start">
+                                        <h4 class="card-title">Payment options</h4>
+                                        <p class="card-text text-muted mt-25">Be sure to click on correct payment option
+                                        </p>
+                                    </div>
+                                    <div class="card-body">
+
+                                        {{#each list_methods_par as |pay_met i|}}
+                                        <h6 class="card-holder-name my-75">{{#decryptData NAME}}{{/decryptData}}</h6>
+                                        <div class="form-check">
+                                            <input type="radio" id="{{PAYID}}" name="paymentOptions"
+                                                class="form-check-input paymentOptions"
+                                                data-card="{{#decryptData CARDNO}}{{/decryptData}}"
+                                                data-name="{{#decryptData NAME}}{{/decryptData}}"
+                                                data-exp="{{#decryptData EXPDAT}}{{/decryptData}}" data-id="{{PAYID}}"
+                                                data-zip="{{#decryptData ZIP}}{{/decryptData}}"
+                                                data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}" />
+                                            <label class="form-check-label" for="{{PAYID}}">
+                                                {{#GetCardType CARDNO}}{{/GetCardType}} {{#cardHide
+                                                CARDNO}}{{/cardHide}}
+                                            </label>
+                                        </div>
+                                        {{/each}}
+
+                                        <div class="customer-cvv mt-1 row row-cols-lg-auto">
+                                            <div class="col-3 d-flex align-items-center">
+                                                <label class="mb-50 form-label" for="card-holder-cvv">Enter CVV:</label>
+                                            </div>
+                                            <div class="col-4 p-0">
+                                                <input type="password" class="form-control mb-50 input-cvv"
+                                                    name="input-cvv" id="card-holder-cvv" maxlength="4" minlength="3"
+                                                    required />
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="button" class="btn btn-primary btn-cvv mb-50"
+                                                    id="btn_continue">Continue</button>
+                                            </div>
+                                        </div>
+                                        <hr class="my-2" />
+                                        <button class="btn btn-outline-primary waves-effect d-none" id="bn_loading"
+                                            disabled="" style="border: transparent !important;">
+                                            <span class="spinner-grow spinner-grow-sm" role="status"
+                                                aria-hidden="true"></span>
+                                            <span class="ms-25 align-middle">Processing payment, please wait..</span>
+                                        </button>
+                                        <div class="d-flex align-items-center">
+                                            <div class="form-check form-switch form-check-primary me-25">
+                                                <input type="checkbox" class="form-check-input diferentCardcheck"
+                                                    id="diferentCardcheck" />
+                                                <label class="form-check-label" for="diferentCardcheck">
+                                                    <span class="switch-icon-left"><i data-feather="check"></i></span>
+                                                    <span class="switch-icon-right"><i data-feather="x"></i></span>
+                                                </label>
+                                            </div>
+                                            <label class="form-check-label fw-bolder" for="diferentCardcheck"> Use
+                                                different card?</label>
+                                        </div>
+                                        <hr class="my-2" />
+                                        <div class="row gx-2 collapse" id="otherCard">
+                                            <form id="creditCardFormOther" class="row gx-2 gy-1 validate-form">
+                                                <input id="totalAmountcard" name="totalAmountcard" value="{{Total}}"
+                                                    class="totalAmountcard" hidden>
+                                                <input id="emailCard" name="emailCard" value="{{user.EMAIL}}" hidden>
+                                                <input class="invoicesToPay" name="inv" hidden>
+                                                <input class="amountsbyInv" name="appliedAmount" hidden>
+
+                                                <div class="col-12 mt-0">
+                                                    <label class="form-label" for="addCardNumber">Card Number</label>
+                                                    <div class="input-group ">
+                                                        <input id="addCardNumber" name="cardNumber"
+                                                            class="form-control add-credit-card-mask" type="number"
+                                                            placeholder="5637 8172 1290 7898"
+                                                            aria-describedby="addCard2"
+                                                            data-msg="Please enter your credit card number" required
+                                                            maxlength="16" />
+                                                        <span class="input-group-text cursor-pointer p-25"
+                                                            id="addCard2">
+                                                            <span class="add-card-type"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="addCardName">Name On Card</label>
+                                                    <input type="text" id="addCardName" name="cardName"
+                                                        class="form-control" placeholder="Santo Riboli" required />
+                                                </div>
+
+                                                <div class="col-6 col-md-3">
+                                                    <label class="form-label" for="addCardExpiryDate">Exp. Date</label>
+                                                    <input type="text" id="addCardExpiryDate" name="addCardExpiryDate"
+                                                        class="form-control add-expiry-date-mask" placeholder="MM/YY"
+                                                        required maxlength="5" />
+                                                    <input id="expMonthO" name="expMonth" hidden>
+                                                    <input id="expYearO" name="expYear" hidden>
+                                                </div>
+
+                                                <div class="col-6 col-md-3">
+                                                    <label class="form-label" for="addCardCvv">CVV</label>
+                                                    <input type="password" id="addCardCvv" name="cvv"
+                                                        class="form-control add-cvv-code-mask" maxlength="4"
+                                                        placeholder="cvv" minlength="3" required />
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <label class="form-label" for="addCardName">Address</label>
+                                                    <input type="text" id="addressCard" name="addressCard"
+                                                        class="form-control" placeholder="Address" />
+                                                </div>
+
+                                                <div class="col-12 col-md-3">
+                                                    <label class="form-label" for="addCardExpiryDate">ZIP</label>
+                                                    <input type="number" id="zipCode" name="zipCode"
+                                                        class="form-control" placeholder="ZIP Code" minlength="5" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="stateO">State</label>
+                                                    <select class="form-control" id="stateO" name="state">
+                                                        <optgroup label="US Insides Territories">
+                                                            <option value="AL">Alabama</option>
+                                                            <option value="AK">Alaska</option>
+                                                            <option value="AZ">Arizona</option>
+                                                            <option value="AR">Arkansas</option>
+                                                            <option value="CA">California</option>
+                                                            <option value="CO">Colorado</option>
+                                                            <option value="CT">Connecticut</option>
+                                                            <option value="DE">Delaware</option>
+                                                            <option value="DC">District Of Columbia</option>
+                                                            <option value="FL">Florida</option>
+                                                            <option value="GA">Georgia</option>
+                                                            <option value="HI">Hawaii</option>
+                                                            <option value="ID">Idaho</option>
+                                                            <option value="IL">Illinois</option>
+                                                            <option value="IN">Indiana</option>
+                                                            <option value="IA">Iowa</option>
+                                                            <option value="KS">Kansas</option>
+                                                            <option value="KY">Kentucky</option>
+                                                            <option value="LA">Louisiana</option>
+                                                            <option value="ME">Maine</option>
+                                                            <option value="MD">Maryland</option>
+                                                            <option value="MA">Massachusetts</option>
+                                                            <option value="MI">Michigan</option>
+                                                            <option value="MN">Minnesota</option>
+                                                            <option value="MS">Mississippi</option>
+                                                            <option value="MO">Missouri</option>
+                                                            <option value="MT">Montana</option>
+                                                            <option value="NE">Nebraska</option>
+                                                            <option value="NV">Nevada</option>
+                                                            <option value="NH">New Hampshire</option>
+                                                            <option value="NJ">New Jersey</option>
+                                                            <option value="NM">New Mexico</option>
+                                                            <option value="NY">New York</option>
+                                                            <option value="NC">North Carolina</option>
+                                                            <option value="ND">North Dakota</option>
+                                                            <option value="OH">Ohio</option>
+                                                            <option value="OK">Oklahoma</option>
+                                                            <option value="OR">Oregon</option>
+                                                            <option value="PA">Pennsylvania</option>
+                                                            <option value="RI">Rhode Island</option>
+                                                            <option value="SC">South Carolina</option>
+                                                            <option value="SD">South Dakota</option>
+                                                            <option value="TN">Tennessee</option>
+                                                            <option value="TX">Texas</option>
+                                                            <option value="UT">Utah</option>
+                                                            <option value="VT">Vermont</option>
+                                                            <option value="VA">Virginia</option>
+                                                            <option value="WA">Washington</option>
+                                                            <option value="WV">West Virginia</option>
+                                                            <option value="WI">Wisconsin</option>
+                                                            <option value="WY">Wyoming</option>
+                                                        </optgroup>
+                                                        <optgroup label="US Outlying Territories">
+                                                            <option value="AS">American Samoa</option>
+                                                            <option value="GU">Guam</option>
+                                                            <option value="MP">Northern Mariana Islands</option>
+                                                            <option value="PR">Puerto Rico</option>
+                                                            <option value="UM">United States Minor Outlying Islands
+                                                            </option>
+                                                            <option value="VI">Virgin Islands</option>
+                                                        </optgroup>
+
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="cityO">City</label>
+                                                    <input type="text" id="cityO" name="city" class="form-control"
+                                                        placeholder="City" />
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check form-switch form-check-primary me-25">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                id="addSaveCard" />
+                                                            <label class="form-check-label" for="addSaveCard">
+                                                                <span class="switch-icon-left"><i
+                                                                        data-feather="check"></i></span>
+                                                                <span class="switch-icon-right"><i
+                                                                        data-feather="x"></i></span>
+                                                            </label>
+                                                        </div>
+                                                        <label class="form-check-label fw-bolder" for="addSaveCard">
+                                                            Save Card for future billing? </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-2 pt-1">
+                                                    <button type="button" class="btn btn-primary me-1"
+                                                        id="payotherCard">Process payment</button>
+                                                    <button type="reset"
+                                                        class="btn btn-outline-secondary">Discard</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class="amount-payable checkout-options">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">Payment details</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled price-details">
+                                            <li class="price-detail">
+                                                <div class="details-title">Paying amount for <span
+                                                        id="item_preview">{{items}}</span> Invoices </div>
+                                                <div class="detail-amt">
+                                                    <strong>$<span class="total_preview">{{Total}}</span></strong>
+                                                </div>
+                                            </li>
+                                            {{!-- <li class="price-detail">
+                                                <div class="details-title">Delivery Charges</div>
+                                                <div class="detail-amt discount-amt text-success">Free</div>
+                                            </li> --}}
+                                        </ul>
+                                        {{!--
+                                        <hr />
+                                        <ul class="list-unstyled price-details">
+                                            <li class="price-detail">
+                                                <div class="details-title">Amount Payable</div>
+                                                <div class="detail-amt fw-bolder">$<span
+                                                        class="total_preview">{{Total}}</span></div>
+                                            </li>
+                                        </ul> --}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        </form>
+                    </div>
+                    <!-- Checkout Payment Ends -->
+                    <!-- </div> -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade text-start modal-primary" id="primary" tabindex="-1" aria-labelledby="myModalLabel160"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            {{!-- <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel160">Primary Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> --}}
+            <div class="modal-body text-center">
+                <div class="spinner-border text-center" role="status" style="width: 10rem;height: 10rem;">
+
+                </div>
+                <span class="visually-">Processing payment, please wait..</span>
+            </div>
+            {{!-- <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+            </div> --}}
+        </div>
+    </div>
+</div>
+<div class="d-none">
+    <form id="form_processPay">
+        <input id="paymentID" name="paymentID">
+        <input id="cardNumber" name="cardNumber">
+        <input id="cardName" name="cardName">
+        <input id="expMonth" name="expMonth">
+        <input id="expYear" name="expYear">
+        <input id="cvv" name="cvv">
+        <input type="text" id="addressCardP" name="addressCard" />
+        <input type="text" id="cityP" name="city" />
+        <input type="text" id="stateP" name="state" />
+        <input type="number" id="zipCodeP" name="zipCode" class="form-control" placeholder="ZIP Code" />
+        <input id="totalAmountcard" name="totalAmountcard" value="{{Total}}" class="totalAmountcard">
+        <input id="emailCard" name="emailCard" value="{{user.EMAIL}}">
+        <input class="invoicesToPay" name="inv">
+        <input class="amountsbyInv" name="appliedAmount">
+    </form>
+    <form id="applied_amtform" onsubmit="return false">
+        <input id="amtInvs" name="amount">
+        <input class="invoicesToPay" name="inv">
+        <input class="amountsbyInv" name="appliedAmount">
+        <input id="reasonLessAmta" name="shortDesc">
+    </form>
+
+</div>
+
+<!-- END: Content-->
+<script>
+    $('.paymentOptions').on('click', (e) => {
+        let cardNumber = e.currentTarget.dataset['card'],
+            carName = e.currentTarget.dataset['name'],
+            cardExp = e.currentTarget.dataset['exp'],
+            paymentID = e.currentTarget.dataset['id'],
+            zip = e.currentTarget.dataset['zip'],
+            address = e.currentTarget.dataset['address'],
+            city = e.currentTarget.dataset['city'],
+            state = e.currentTarget.dataset['state'];
+
+        let split_exp = cardExp.split('/')
+        $('#paymentID').val(paymentID)
+        $('#cardNumber').val(cardNumber)
+        $('#cardName').val(carName)
+        $('#cityP').val(city)
+        $('#stateP').val(state)
+        $('#expMonth').val(split_exp[0])
+        $('#expYear').val(split_exp[1])
+        $('#addressCardP').val(address)
+        $('#zipCodeP').val(zip)
+    })
+
+    $('#card-holder-cvv').on('keyup', (e) => {
+        $('#cvv').val(e.target.value)
+    })
+
+    $('#btn_continue').on('click', (e) => {
+
+        if ($('#totalAmountcard').val() == 0) {
+            Swal.fire("The amount to pay must be greater than zero.!!")
+            return
+        }
+        if ($('#cardNumber').val() == "") {
+            Swal.fire("You must select a payment method")
+            $('.paymentOptions').focus()
+            return
+        }
+        if ($('#card-holder-cvv').val() == "") {
+            Swal.fire("You must enter the cvv of your credit card..!!")
+            $('#card-holder-cvv').focus()
+            return
+        }
+
+        sendformO('form_processPay')
+    })
+
+
+    $('#diferentCardcheck').on('change', (e) => {
+        if ($('#diferentCardcheck').is(':checked')) {
+            $('#otherCard').removeClass('collapse')
+            return
+        }
+        $('#otherCard').addClass('collapse')
+
+    })
+    $('#payotherCard').on('click', (e) => {
+
+        if ($('#totalAmountcard').val() == 0) {
+            Swal.fire("The amount to pay must be greater than zero.!!")
+            return
+        }
+
+        if ($('#addCardNumber').val() == "") {
+            Swal.fire("You must card Number")
+            $('#addCardNumber').focus()
+            return
+        }
+        if ($('#addCardName').val() == "") {
+            Swal.fire("You must a card name")
+            $('#addCardName').focus()
+            return
+        }
+        if ($('#addCardExpiryDate').val() == "") {
+            Swal.fire("You must enter the Exp of your credit card..!!")
+            $('#addCardExpiryDate').focus()
+            return
+        }
+        if ($('#addCardCvv').val() == "") {
+            Swal.fire("You must enter the cvv of your credit card..!!")
+            $('#addCardCvv').focus()
+            return
+        }
+
+        if ($('#addSaveCard').is(':checked')) {
+            $.ajax({
+                url: `/add_method_pay`,
+                type: 'POST',
+                data: $('#creditCardFormOther').serialize(),
+                beforeSend: function () {
+                    // setting a timeout
+                    $('#bn_loading').removeClass('d-none')
+                    $('#primary').modal('show')
+                },
+                success: function (data, textStatus, jqXHR) {
+
+                    if (data.msg) {
+                        Swal.fire(data.msg)
+                        return
+                    }
+                    $('#bn_loading').removeClass('d-none')
+                    $('#primary').modal('show')
+                    sendformO('creditCardFormOther')
+                    return
+                },
+                error: function (jqXHR, textStatus) {
+                    console.log('error:' + jqXHR)
+                }
+            })
+        } else {
+            sendformO('creditCardFormOther')
+        }
+
+    })
+    $('#addCardExpiryDate').on('keyup', (e) => {
+        let valor = e.target.value
+        if (valor.length == 2) {
+            if (valor > 12) {
+                $('#addCardExpiryDate').val('')
+                $('#expMonthO').val('')
+                return false
+            }
+            $('#expMonthO').val(valor)
+            valor += '/'
+        }
+        if (valor.length > 3) {
+            $('#expYearO').val(valor[3] + valor[4])
+        }
+        $('#addCardExpiryDate').val(valor)
+    })
+
+    $(`#btnplaceOrder`).click(() => {
+        var applied_amountPlus = [], applied_amountINV = [], reasons = [], amountInvs = []
+        $('.applied_amount').each(function () {
+            amountInvs.push($(this).data('amount'))
+            applied_amountPlus.push($(this).val())
+        })
+        $('#amtInvs').val(amountInvs.toString())
+        $('.amountsbyInv').val(applied_amountPlus.toString())
+
+        $('.applied_amountINV').each(function () {
+            applied_amountINV.push($(this).val())
+        })
+        $('.invoicesToPay').val(applied_amountINV.toString())
+        $('.reasons').each(function () {
+            reasons.push($(this).val())
+        })
+        $('#reasonLessAmta').val(reasons.toString())
+
+        $.ajax({
+            url: `/applied_amount`,
+            type: 'POST',
+            data: $('#applied_amtform').serialize(),
+            success: function (data, textStatus, jqXHR) {
+                console.log(data)
+            },
+            error: function (jqXHR, textStatus) {
+                console.log('error:' + jqXHR)
+            }
+        });
+    })
+    const sendformO = (form) => {
+
+        $.ajax({
+            url: `/process_payment`,
+            type: 'POST',
+            data: $(`#${form}`).serialize(),
+            beforeSend: function () {
+                // setting a timeout
+                $('#bn_loading').removeClass('d-none')
+                $('#primary').modal('show')
+            },
+            success: function (data, textStatus, jqXHR) {
+                console.log(data)
+                let process_payment_success
+                if (data.response['status'] == 201) {
+                    if (data.data['status'] == 'AUTHORIZED') {
+                        process_payment_success = data.data['processorInformation']
+                        $('#bn_loading').addClass('d-none')
+                        $('#primary').modal('hide')
+                        //console.log(data.paymentx3S[0]['status'])
+                        if (data.paymentx3S[0]['status'] == "1") {
+                            Swal.fire('Process payment success!')
+                            window.location.href = "/dashboard/{{user.EMAIL}}"
+                        } else {
+                            Swal.fire('Payment AUTHORIZED, but something is wrong whit SOAP, please contact support- LOGNUM: ' + data.SystemLogL)
+                            $('#btn_continue').attr('disabled', true)
+                            console.log(data.paymentx3S)
+                        }
+
+                    } else {
+                        $('#bn_loading').addClass('d-none')
+                        $('#primary').modal('hide')
+                        Swal.fire({
+                            icon: 'error',
+                            title: data.data['status'],
+                            text: data.data['errorInformation']['message'],
+                        })
+                    }
+                }
+                if (data.response['status'] == 400) {
+
+                    let res_parse = JSON.parse(data.response['text'])
+                    console.log(res_parse)
+                    $('#bn_loading').addClass('d-none')
+                    $('#primary').modal('hide')
+                    if (res_parse['reason'] == "MISSING_FIELD") {
+                        Swal.fire({
+                            icon: 'error',
+                            title: res_parse['status'],
+                            text: `${res_parse['message']} (${res_parse['details'][0]['field']})`,
+                        })
+                        return
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: res_parse['status'],
+                        text: `${res_parse['message']}`,
+                    })
+                }
+            },
+            error: function (jqXHR, textStatus) {
+                console.log('error:' + jqXHR)
+            }
+        });
+    }
+
+    var appliedAmount = async (amount, id, inv, amwt) => {
+        console.log(amount)
+        let previousAmt = $(`#previousAmt${id}`).val();
+        let newAmount = $(`#appliedAmount${id}`).val();
+        let currentSub = $('#Stotal_preview').text()
+        let currentTotal = $('#total_preview').text()
+        let currentTax = $('#tax_preview').text()
+        let newSub = 0, newTotal = 0, newTax = 0
+        if (newAmount == "") {
+            Swal.fire(`Please enter a new applied amount`)
+            return
+        }
+        if (newAmount < amount) {
+            const { value: reason } = await Swal.fire({
+                title: 'Please enter a reason for short pay.',
+                input: 'text',
+                inputLabel: 'Reason',
+                //inputValue: inputValue,
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to write something!'
+                    }
+                }
+            })
+
+            if (!reason) {
+                $(`#appliedAmount${id}`).val(amount)
+            }
+            if (reason) {
+                console.log(reason)
+                newSub = parseFloat(previousAmt) - parseFloat(newAmount)
+                newTotal = parseFloat(currentTotal) - parseFloat(newSub)
+                newTax = parseFloat(newTotal) - parseFloat(newSub)
+                $(`#previousAmt${id}`).val(newAmount)
+                $('.totalAmountcard').val((newTotal).toFixed(2))
+                $('.total_preview').text((newTotal).toFixed(2))
+                $(`#reasons${id}`).val(reason)
+            }
+        } else {
+            newSub = parseFloat(previousAmt) - parseFloat(newAmount)
+            newTotal = parseFloat(currentTotal) - parseFloat(newSub)
+            $(`#previousAmt${id}`).val(newAmount)
+            $('.total_preview').text((newTotal).toFixed(2))
+            $('.totalAmountcard').val((newTotal).toFixed(2))
+            $(`#reasons${id}`).val('-')
+        }
+    }
+
+</script>

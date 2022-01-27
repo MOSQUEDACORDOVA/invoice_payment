@@ -8,6 +8,11 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('./config/passport');
 const fileupload = require('express-fileupload');
+var Connection = require('tedious').Connection;  
+const db = require('./config/db')
+
+  
+
 
 // Crear el servidor de express
 const app = express();

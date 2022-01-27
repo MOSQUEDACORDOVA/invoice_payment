@@ -1,0 +1,170 @@
+<style>
+    .invoices-details-colums{
+        display: grid;
+    grid-template-columns: 2fr 2fr 2fr;
+    }
+    .col-per{
+    width: 0.5rem !important;
+    padding: 0.72rem 0.5rem !important;
+    }
+       .col-per2{
+    width: 0.8% !important;
+    }
+</style>
+
+
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <div class="invoice-print p-3">
+                    <div class="invoice-header d-flex justify-content-between flex-md-row flex-column">
+                        <div>
+                            <div class="d-flex mb-1">
+                               
+                                 <div class="logo-wrapper">
+                                            <img src="../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="345"
+                                                height="auto">
+                                        </div>
+                                        
+                            </div>
+                            <p class="card-text mb-25">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
+                                        <p class="card-text mb-0">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
+                        </div>
+                        <div class="mt-md-0 mt-2">
+                            <h4 class="invoice-title">
+                                            Invoice:
+                                            <span class="invoice-number">{{inv_detail.NUM}}</span>
+                                        </h4>
+                                        <div class="invoice-date-wrapper">
+                                            <p class="invoice-date-title">Date Issued: {{#format_date
+                                                inv_detail.INVDAT}} {{/format_date}}</p>
+                                        </div>
+                                        <div class="invoice-date-wrapper">
+                                            <p class="invoice-date-title">Due Date: {{#format_date
+                                                inv_detail.SIVYPORINV.0.DUDDAT}}{{/format_date}}</p>
+                                        </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-1" />
+
+                    <div class="row pb-2" style="margin-left: 2rem;">
+                        <div class="row invoice-spacing invoices-details-colums">
+                                    <div class="col-xl-8 p-0">
+                                        <h6 class="mb-25">Invoice Address:</h6>
+                                        <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}} {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}</h6>
+                                        <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}}, {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
+                                        <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
+                                    </div>
+                                     <div class="col-xl-6 p-0">
+                                        <h6 class="mb-25">Ship to:</h6>
+                                        <h6 class="card-text mb-25">{{inv_detail.BPCORD}}</h6>
+                                        <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}} {{inv_detail.BPDADDLIG3}}</p>
+                                        <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}} {{inv_detail.BPDPOSCOD}}</p>
+                                        <p class="card-text mb-25">{{inv_detail.BPDCRYNAM}}</p>
+
+                                    </div>
+                                    <div class="col-xl-4 p-0">
+                                        <h6 class="mb-2">Invoice Details:</h6>
+                                        <p class="card-text mb-25">Unpaid Amount: ${{inv_detail.SIVYPORINV.0.OPENLOC}}
+                                        </p>
+                                        <p class="card-text mb-25">Last Payment Date: {{#format_date
+                                            inv_detail.SIVYPORINV.0.LASTPAYDAT}}{{/format_date}} </p>
+                                        <p class="card-text mb-25"> </p>
+                                        <p class="card-text mb-0"> </p>
+
+                                    </div>
+                                </div>
+                    </div>
+
+                    <div class="table-responsive mt-1">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-1 col-per">Products</th>
+                                            <th class="py-1 col-per text-center " style="width: 2% !important;">Sales Order #</th>
+
+
+                                            <th class="py-1 col-per text-center col-per2">QTY</th>
+                                            <th class="py-1 col-per text-center col-per2">PRICE</th>
+                                            <th class="py-1 col-per text-center col-per2">CRV/Unit</th>
+                                            <th class="py-1 col-per text-center" >Sub-Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each inv_detail.SIVSID as |details i|}}
+                                        <tr>
+                                            <td class="col-1 col-per">
+                                                <p class="card-text fw-bold mb-25">{{ITMREF}}</p>
+                                                <p class="card-text ">{{ITMDES}}</p>
+                                            </td>
+                                            <td class="col-1 text-center col-per">
+                                                <span class="fw-bold">{{SOHNUM}}</span>
+                                            </td>
+
+
+                                            <td class="col-1 text-center col-per col-per2">
+                                                <span class="fw-bold">{{QTY}}</span>
+                                            </td>
+                                            <td class="col-1 text-center col-per col-per2">
+                                                <span class="fw-bold">${{#decimals GROPRI}}{{/decimals}}</span>
+                                            </td>
+                                            <td class="col-1 text-center col-per col-per2">
+                                                <span class="fw-bold">${{#decimals DISCRGVAL3}}{{/decimals}}</span>
+                                            </td>
+                                            <td class="col-1 text-center col-per">
+                                                <span class="fw-bold">${{#decimals AMTNOTLIN}}{{/decimals}}</span>
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                    </div>
+
+                    <div class="row invoice-sales-total-wrapper mt-1">
+                        <div class="col-md-4 order-md-1 order-2 mt-md-0 mt-3">
+                            <p class="card-text mb-0 d-none"><span class="fw-bold">Salesperson:</span> <span class="ms-75">Alfie Solomons</span></p>
+                        </div>
+                        <div class="col-md-3 d-flex order-md-2">
+                            <div class="invoice-total-wrapper">
+                                <div class="invoice-total-item">
+                                    <p class="invoice-total-title">Subtotal:</p>
+                                    <p class="invoice-total-amount">${{#decimals inv_detail.AMTNOT}}{{/decimals}}</p>
+                                </div>
+                                <div class="invoice-total-item">
+                                    <p class="invoice-total-title">Discount:</p>
+                                    <p class="invoice-total-amount">$0</p>
+                                </div>
+                                <div class="invoice-total-item">
+                                    <p class="invoice-total-title">Tax:</p>
+                                    <p class="invoice-total-amount">${{#tax_calculate inv_detail.AMTNOT
+                                                    inv_detail.AMTATI}} {{/tax_calculate}}</p>
+                                </div>
+                                <hr class="my-50" />
+                                <div class="invoice-total-item">
+                                    <p class="invoice-total-title">Total:</p>
+                                    <p class="invoice-total-amount">${{#decimals inv_detail.AMTATI}}{{/decimals}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-2" />
+
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="fw-bold">Note:</span>
+                            <span>It was a pleasure working with you and your team. Thank You!</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+<!-- END: Content-->

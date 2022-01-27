@@ -10,7 +10,7 @@ var hoy = moment();
 const request = require("request-promise");
 // Modelo a auntenticar
 const URI = 'https://sawoffice.technolify.com:8443/api1/x3/erp/SAWTEST1/'
-
+const { encrypt, decrypt } = require('../controllers/crypto');
 // Loca strategy - Login con credenciales propios
 passport.use(
 	new LocalStrategy(
@@ -34,8 +34,15 @@ passport.use(
 					  },
 					json: true, // Para que lo decodifique automáticamente 
 				  })
-				  //console.log(user)
-				return done(null, user);
+				  let decryptPass = decrypt(user['$resources'][0]['PASS'])
+				  if (password== decryptPass) {
+					return done(null, user);
+				  }else{
+					return done(null, false, {
+						message: 'Password wrong'
+					}); 
+				  }
+				
 			}catch(err) {
 				return done(null, false, {
 					message: 'User not exist'

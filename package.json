@@ -16,6 +16,9 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "countup.js": "^2.0.8",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
+    "cybersource-rest-client": "^0.0.34",
     "dotenv": "^8.2.0",
     "emailjs": "^3.6.0",
     "emojize": "^0.2.0",
@@ -23,9 +26,11 @@
     "express-fileupload": "^1.2.1",
     "express-handlebars": "^5.3.0",
     "express-session": "^1.17.1",
+    "fast-xml-parser": "^4.0.1",
     "fbgraph": "^1.4.4",
     "html-pdf": "^3.0.1",
     "iconv": "^3.0.0",
+    "jwk-to-pem": "^2.0.5",
     "mercadopago": "^1.5.7",
     "mixcloud-audio": "0.0.3",
     "moment": "^2.29.1",
@@ -42,10 +47,13 @@
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "sequelize": "^6.6.2",
+    "sequelize": "^6.13.0",
     "soundcloud": "^3.3.2",
     "soundcloud-downloader": "^1.0.0",
-    "sweetalert2": "^11.0.8"
+    "sweetalert2": "^11.0.8",
+    "tedious": "^14.0.0",
+    "xml2js": "^0.4.23",
+    "xmlbuilder2": "^3.0.2"
   },
   "keywords": []
 }
