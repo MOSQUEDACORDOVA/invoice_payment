@@ -49,6 +49,16 @@
             "date": 1643226812819,
             "name": "log\\cybs-2022-01-26.log",
             "hash": "6905eab7c0b70d0d611935a4eb5266e3"
+        },
+        {
+            "date": 1643317253330,
+            "name": "log\\cybs-2022-01-27.log",
+            "hash": "37a351562447cb502a55ca674d36fec5"
+        },
+        {
+            "date": 1643386413110,
+            "name": "log\\cybs-2022-01-28.log",
+            "hash": "e3d7c727baa6175d85585b0b542bc48d"
         }
     ]
 }

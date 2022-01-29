@@ -23,11 +23,13 @@
     <script src="../../../app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone.min.js"></script>
     <!-- END: Page Vendor JS-->
-
+    <script src="../../../app-assets/vendors/js/extensions/jquery.contextMenu.min.js"></script>
+    <script src="../../../app-assets/vendors/js/extensions/jquery.ui.position.min.js"></script>
     <script src="../../../app-assets/vendors/js/forms/wizard/bs-stepper.min.js"></script>
     <script src="../../../app-assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
     <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
     <script src="../../../app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+   
 
     <!-- BEGIN: Theme JS-->
     <script src="../../../app-assets/js/core/app-menu.js"></script>
@@ -43,6 +45,9 @@
     {{/if}}
     {{#if invoiceO}}
         <script src="../../../assets/data/app-invoice-listO.js"></script>
+    {{/if}}
+    {{#if payments}}
+        <script src="../../../assets/data/payments.js"></script>
     {{/if}}
     {{#if print_inv}}<script src="../../../app-assets/js/scripts/pages/app-invoice-print.js"></script>{{/if}}
 

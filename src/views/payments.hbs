@@ -1,51 +1,36 @@
 <!-- BEGIN: Content-->
-<style>
-    .block{
-        pointer-events: none;
-    color: #ffcc9a;
-    }
-</style>
+<input id="payments" value="{{payments}}" hidden>
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
             <section class="invoice-list-wrapper">
                 <div class="card">
                     <div class="table-responsive">
-                        <table class="table" id="invoiceTable">
+                        <table class="table" id="paymentsTable">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>Invoice number</th>
-                                    <th>Ref</th>
-                                    <th>Sold to</th>
-                                    <th>Company Name</th>
-                                    <th>Invoice Date</th>
-                                    <th>Due Date</th>
-                                    <th>Aged day</th>
-                                    <th>Open Amt</th>
-                                    <th>Tax</th>
-                                    <th>Total</th>
-                                    <th>Payment Status</th>
+                                    <th>pmtKey</th>
+                                    <th>TransactionID</th>
+                                    <th>Amount</th>
+                                    <th>Processor Status</th>
+                                    <th>Status Desc</th>
+                                    <th>Date Processed</th>
+                                    <th>Invoices</th>                               
                                 </tr>
                             </thead>
-                            <tbody class="table-white-space">
-                                {{#each inv_wofilter as |invoces i|}}
+                            {{!-- <tbody class="table-white-space">
+                                {{#each payments as |pays i|}}
                                 <tr>
-                                    <td>{{NUM}}</td>
-                                    <td>{{NUM}}</td>
-                                    <td>{{INVREF}}</td>
-                                    <td>{{BPCORD}}</td>
-                                    <td>{{BPCORD_REF.$description}}</td>
-                                    <td>{{INVDAT}}</td>
-                                    <td>{{DUDDAT}}</td>
-                                    <td>{{INVDAT}}</td>
-                                    <td>{{CUR_REF.$symbol}}{{#decimals OPENLOC}}{{/decimals}}</td>
-                                    <td>{{AMTNOT}}</td>
-                                    <td>{{CUR_REF.$symbol}}{{#decimals AMTATI}}{{/decimals}}</td>
-                                    <td>{{NUM}}</td>
+                                    <td>{{pmtKey}}</td>
+                                    <td>{{TransactionID}}</td>
+                                    <td>${{#decimals TranAmount}}{{/decimals}}</td>
+                                    <td>{{ProcessorStatus}}</td>
+                                    <td>{{ProcessorStatusDesc}}</td>
+                                    <td>{{#format_date DateProcessesed}} {{/format_date}}</td>
+                                    <td>{{#each tPaymentApplication as |invs i|}}<span id="{{INVOICENUM}}" class="invocesS" data-status="{{Status}}">{{INVOICENUM}}</span>{{/each}}</td>
                                 </tr>
                                 {{/each}}
-                            </tbody>
+                            </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -99,5 +84,5 @@
         </div>
     </div>
 </div>
-<input value="{{paymentsL}}" class="d-none" id="payments">
+<input value="{{inv_filtering}}" class="d-none" id="invoices_list">
 <!-- Modal -->

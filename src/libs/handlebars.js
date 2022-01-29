@@ -103,7 +103,6 @@ module.exports = {
 		if (date == '0000-00-00') {
 			return '';
 		}
-		console.log(date)
 		return moment(date).format('MM/DD/YYYY');
 	},
 	tax_calculate: (mountWOT, mountWT) => {
@@ -119,6 +118,9 @@ module.exports = {
 	decimals: (mount) => {
 
 		return Number.parseFloat(mount).toFixed(2)
-	}
+	},
+	JSONparse: (obj) => {
 
+		return JSON.parse(obj)
+	}
 }

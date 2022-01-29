@@ -3,6 +3,7 @@ const userController = require('../controllers/userController');
 const landingController = require('../controllers/landingController');
 const authController = require('../controllers/authController');
 const dashboardController = require('../controllers/dashboardController');
+const mailCtrl = require('../controllers/mailCtrl');
 const FileController = require('../models/upload');
 const fileController = new FileController();
 
@@ -32,6 +33,8 @@ router.get('/close_invoices/:email', authController.authenticatedUser, dashboard
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
+router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
+
 //PAYMENTS METHODS
 router.get('/payments_methods/:email', authController.authenticatedUser, dashboardController.pay_methods);
 router.post('/add_method_pay', authController.authenticatedUser, dashboardController.add_pay_methods);
@@ -49,4 +52,11 @@ router.post('/save-pic-profile', authController.authenticatedUser, dashboardCont
 
 //PRINTS
 router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardController.printInvoice);
+
+//payments
+router.get('/payments/:email', authController.authenticatedUser, dashboardController.payments);
+
+//Mails
+router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);
+router.post('/send_email_errorX3', authController.authenticatedUser, mailCtrl.errorPaymentX3);
 module.exports = router;

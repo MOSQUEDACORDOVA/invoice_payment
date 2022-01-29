@@ -14,3 +14,15 @@
         font-size: 11px;
     }
 }
+
+.expanded .navbar-header.expanded .navbar-brand .brand-logo img {
+    width: 100%;
+    max-width: unset;
+    object-fit: cover;
+  }
+.expanded .navbar-header.expanded {
+    margin-bottom: 30px;
+  }
+  .brand-logo img {
+    transition: .3s ease all;
+  }

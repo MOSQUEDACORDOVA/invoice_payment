@@ -6,20 +6,20 @@ var dtInvoiceTable = $('#invoiceTable'),
     invoiceAdd = 'invoice.html',
     invoiceEdit = 'app-invoice-edit.html';
 function table_invoices(a){
-  let value = $('#invoices_list').val()
-  let array_inv = ""
+  let value = $('#payments').val()
+  let arrPayments = ""
   // if (a) {
     
-  //   array_inv = JSON.parse(value)
+  //   arrPayments = JSON.parse(value)
 
   // }else{
-  //   array_inv = JSON.parse(value.replace(/&quot;/g,'"'))
+  //   arrPayments = JSON.parse(value.replace(/&quot;/g,'"'))
   // }
-  array_inv = JSON.parse(value)
-  console.log(array_inv)
+  arrPayments = JSON.parse(value)
+  console.log(arrPayments)
   if (dtInvoiceTable.length) {
     var dtInvoice = dtInvoiceTable.DataTable({
-     // ajax: array_inv, // JSON file to add data
+     // data: array_inv, // JSON file to add data
       columnDefs: [
         {
           // For Checkboxes
@@ -39,6 +39,13 @@ function table_invoices(a){
           checkboxes: {
             selectAllRender:
               '<div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="form-check-label" for="checkboxSelectAll"></label></div>'
+          }
+        },
+        {
+          targets:1,
+          render: function(data, type, full, meta){
+       let link =`<a class="me-25" href="/invoiceO_detail/${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Invoice">${data}</a>`
+           return link;
           }
         },
         {
@@ -76,47 +83,38 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
         {
           // Actions
           targets: -1,
-          title: 'Actions',
-          width: '80px',
-          orderable: false,
+         // visible:false,
+         // title: 'Actions',
+         // width: '80px',
+         // orderable: false,
           render: function (data, type, full, meta) {
-            return (
-              '<div id="smart-button-container">'+
-             '<div style="text-align: center;">'+
-                  '<div id="paypal-button-container"></div>'+
-              '</div>'+
-         '</div><div class="d-flex align-items-center col-actions">' +
-              '<a class="me-1 d-none" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Mail">' +
-              feather.icons['send'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<a class="me-25" href="/invoiceO_detail/' +
-              full[0] +
-              '" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Invoice">' +
-              feather.icons['eye'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<div class="dropdown d-none">' +
-              '<a class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
-              feather.icons['more-vertical'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<div class="dropdown-menu dropdown-menu-end">' +
-              '<a href="#" class="dropdown-item">' +
-              feather.icons['download'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Download</a>' +
-              '<a href="' +
-              invoiceEdit +
-              '" class="dropdown-item">' +
-              feather.icons['edit'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Edit</a>' +
-              '<a href="#" class="dropdown-item">' +
-              feather.icons['trash'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Delete</a>' +
-              '<a href="#" class="dropdown-item d-none">' +
-              feather.icons['copy'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Duplicate</a>' +
-              '</div>' +
-              '</div>' +
-              '</div>'
-            );
+            let status ="NOT PAYMENT"
+            for (let i = 0; i < arrPayments.length; i++) {
+              for (let j = 0; j < arrPayments[i]['tPaymentApplication'].length; j++) {
+                console.log(arrPayments[i]['tPaymentApplication'])
+                if (arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'] == data) {
+                    switch (arrPayments[i]['tPaymentApplication'][j]['Status']) {
+                      case 'AUTHORIZED':
+                        status ="AUTHORIZED"
+                        break;
+                        case 'DECLINED':
+                          status ="DECLINED"
+                          break;
+                      default:
+                        status ="SOAP ERROR"
+                        break;
+                    }
+                }
+              }              
+            }
+            var statusClass = {
+              "SOAP ERROR": { title: 'SOAP ERROR', class: 'badge-light-warning' },
+              "AUTHORIZED": { title: 'AUTHORIZED', class: 'badge-light-success' },
+              "DECLINED": { title: 'DECLINED', class: 'badge-light-danger' },
+              "NOT PAYMENT": { title: 'NOT PAYMENT', class: 'badge-light-info' },
+            };
+           let showStatus = `<span class="badge rounded-pill ${statusClass[status].class} " > ${statusClass[status].title}</span>`
+            return showStatus
           }
         }
       ],
@@ -139,7 +137,27 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
           previous: '&nbsp;',
           next: '&nbsp;'
         }
-      },
+      }, 
+      rowCallback: function (row, data) {
+       console.log(data)
+       let Soaperr
+       for (let i = 0; i < arrPayments.length; i++) {
+        for (let j = 0; j < arrPayments[i]['tPaymentApplication'].length; j++) {
+         // console.log(arrPayments[i]['tPaymentApplication'])
+          if (arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'] == data[11]) {
+            console.log(arrPayments[i]['tPaymentApplication'][j]['Status'])
+
+            if (arrPayments[i]['tPaymentApplication'][j]['Status'] == "AUTHORIZED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "DECLINED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "NOT PAYMENT") {
+              
+              
+            }else{
+              $(row).addClass('block'); 
+            }
+          }
+        }              
+      }
+
+    },
       // Buttons with Dropdown
       buttons: [
         {
@@ -162,6 +180,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
           
               return
             }else{
+              $('#wait_modal').modal('show')
               $("#ids_invoices").val(valoresCheck);
               $("#pay_invoices_form").submit();
             }

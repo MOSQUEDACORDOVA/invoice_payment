@@ -36,6 +36,9 @@
             margin-bottom: 0.5rem;
         }
     }
+      .ecommerce-application .checkout-items .ecommerce-card .item-company, .ecommerce-application .checkout-items .ecommerce-card .item-rating {
+    margin-bottom: 0 !important;
+}
 </style>
 <!-- BEGIN: Content-->
 <div class="app-content content ecommerce-application">
@@ -43,7 +46,7 @@
     <div class="header-navbar-shadow"></div>
     <div class="content-wrapper container-xxl p-0">
         <div class="content-header row">
-            <div class="content-header-left col-md-9 col-12 mb-2">
+           {{!----<div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
                         <h2 class="content-header-title float-start mb-0">Checkout</h2>
@@ -55,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>---}}
             <div class="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
                 {{!-- <div class="mb-1 breadcrumb-right">
                     <div class="dropdown">
@@ -78,13 +81,13 @@
         <div class="content-body">
             <div class="bs-stepper checkout-tab-steps">
                 <!-- Wizard starts -->
-                <div class="bs-stepper-header">
+                <div class="bs-stepper-header p-0">
                     <div class="step" data-target="#step-cart" role="tab" id="step-cart-trigger">
                         <button type="button" class="step-trigger">
                             <span class="bs-stepper-box">
                                 <i data-feather="shopping-cart" class="font-medium-3"></i>
                             </span>
-                            <span class="bs-stepper-label">
+                            <span class="bs-stepper-label my-0">
                                 <span class="bs-stepper-title">Invoices</span>
                                 <span class="bs-stepper-subtitle">Your Invoices Selected</span>
                             </span>
@@ -114,7 +117,7 @@
                             <span class="bs-stepper-box">
                                 <i data-feather="credit-card" class="font-medium-3"></i>
                             </span>
-                            <span class="bs-stepper-label">
+                            <span class="bs-stepper-label my-0">
                                 <span class="bs-stepper-title">Payment</span>
                                 <span class="bs-stepper-subtitle">Select Payment Method</span>
                             </span>
@@ -130,28 +133,30 @@
                             <!-- Checkout Place Order Left starts -->
                             <div class="checkout-items">
                                 {{#each inv_wofilter as |invoice i|}}
-                                <div class="card ecommerce-card">
+                                <div class="card ecommerce-card mb-1">
                                     {{!-- <div class="item-img">
                                         <a href="/invoiceO_detail/{{NUM}}" target="_blank">
                                             <img src="../../../app-assets/images/logo/logo.png" alt="img-placeholder" />
                                         </a>
                                     </div> --}}
-                                    <div class="card-body">
-                                        <div class="item-name">
-                                            <h3 class="mb-0"><a href="/invoiceO_detail/{{NUM}}" class="text-body"
-                                                    target="_blank">{{NUM}}</a></h3>
-                                            <span class="item-company">To <span href="#"
-                                                    class="company-name">{{BPCINV}}</span></span>
+                                    <div class="card-body p-1">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="item-name d-flex align-items-center">
+                                                <h3 class="mb-0"><a href="/invoiceO_detail/{{NUM}}" class="text-body"
+                                                        target="_blank">{{NUM}}</a></h3>
+                                                <span class="item-company ms-1">To <span href="#"
+                                                        class="company-name">{{BPCINV}}</span></span>
 
+                                            </div>
+                                            {{!-- <a class="text-success mb-1" href="/invoiceO_detail/{{NUM}}"
+                                                target="_blank">Details</a> --}}
+                                            <span class="delivery-date text-muted m-0">Date: {{INVDAT}}</span>
+                                            {{!-- <span class="text-success">17% off 4 offers Available</span> --}}
                                         </div>
-                                        {{!-- <a class="text-success mb-1" href="/invoiceO_detail/{{NUM}}"
-                                            target="_blank">Details</a> --}}
-                                        <span class="delivery-date text-muted">Date: {{INVDAT}}</span>
-                                        {{!-- <span class="text-success">17% off 4 offers Available</span> --}}
                                     </div>
                                     <div class="item-options text-center">
                                         <div class="item-wrapper">
-                                            <div class="item-cost" style="align-items: center;">
+                                            <div class="item-cost d-flex align-items-center justify-content-center">
                                                 <label class="item-price" style="margin-right: 5px;">AMT: $</label>
                                                 <input type="text" name="applied_amount"
                                                     placeholder="Amount to pay for this invoice"
@@ -171,7 +176,7 @@
                                                         Shipping</span> --}}
                                                 </p>
                                             </div>
-                                            <button type="button" class="btn btn-light remove-wishlist"
+                                            <button type="button" class="btn btn-sm btn-light remove-wishlist"
                                                 data-amount="{{AMTNOT}}" data-amwt="{{OPENLOC}}">
                                                 <i data-feather="x" class="align-middle me-25"></i>
                                                 <span>Remove</span>
@@ -260,6 +265,7 @@
                                                 data-name="{{#decryptData NAME}}{{/decryptData}}"
                                                 data-exp="{{#decryptData EXPDAT}}{{/decryptData}}" data-id="{{PAYID}}"
                                                 data-zip="{{#decryptData ZIP}}{{/decryptData}}"
+                                                data-cvv="{{#decryptData CVC}}{{/decryptData}}"
                                                 data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}" />
                                             <label class="form-check-label" for="{{PAYID}}">
                                                 {{#GetCardType CARDNO}}{{/GetCardType}} {{#cardHide
@@ -550,6 +556,8 @@
         <input class="invoicesToPay" name="inv">
         <input class="amountsbyInv" name="appliedAmount">
         <input id="reasonLessAmta" name="shortDesc">
+        <input id="pmtKey" name="pmtKey"/>
+        <input id="status" name="status"/>
     </form>
 
 </div>
@@ -564,8 +572,9 @@
             zip = e.currentTarget.dataset['zip'],
             address = e.currentTarget.dataset['address'],
             city = e.currentTarget.dataset['city'],
-            state = e.currentTarget.dataset['state'];
-
+            state = e.currentTarget.dataset['state'],
+            cvv = e.currentTarget.dataset['cvv']
+$('#card-holder-cvv').val(cvv)
         let split_exp = cardExp.split('/')
         $('#paymentID').val(paymentID)
         $('#cardNumber').val(cardNumber)
@@ -576,11 +585,12 @@
         $('#expYear').val(split_exp[1])
         $('#addressCardP').val(address)
         $('#zipCodeP').val(zip)
+        $('#cvv').val(cvv)
     })
 
-    $('#card-holder-cvv').on('keyup', (e) => {
+   /* $('#card-holder-cvv').on('keyup', (e) => {
         $('#cvv').val(e.target.value)
-    })
+    })*/
 
     $('#btn_continue').on('click', (e) => {
 
@@ -704,17 +714,7 @@
         })
         $('#reasonLessAmta').val(reasons.toString())
 
-        $.ajax({
-            url: `/applied_amount`,
-            type: 'POST',
-            data: $('#applied_amtform').serialize(),
-            success: function (data, textStatus, jqXHR) {
-                console.log(data)
-            },
-            error: function (jqXHR, textStatus) {
-                console.log('error:' + jqXHR)
-            }
-        });
+
     })
     const sendformO = (form) => {
 
@@ -732,14 +732,23 @@
                 let process_payment_success
                 if (data.response['status'] == 201) {
                     if (data.data['status'] == 'AUTHORIZED') {
+                        $('#pmtKey').val(data.paymenKey.toString())
+                        $('#status').val(data.data['status'])
                         process_payment_success = data.data['processorInformation']
                         $('#bn_loading').addClass('d-none')
                         $('#primary').modal('hide')
                         //console.log(data.paymentx3S[0]['status'])
                         if (data.paymentx3S[0]['status'] == "1") {
+                            appliedAmountForm()
                             Swal.fire('Process payment success!')
-                            window.location.href = "/dashboard/{{user.EMAIL}}"
+                           // window.location.href = "/dashboard/{{user.EMAIL}}"
+                                  
                         } else {
+                        $('#pmtKey').val(data.paymenKey.toString())
+                        $('#status').val('AUTHORIZED-SOAP ERROR('+ data.SystemLogL+')')
+                        let paymenKey =data.paymenKey.toString()
+                            appliedAmountForm()
+                            sendEmailError(data.SystemLogL,paymenKey, '{{user.EMAIL}}',data.paymentx3S[0].error[0].message[0])
                             Swal.fire('Payment AUTHORIZED, but something is wrong whit SOAP, please contact support- LOGNUM: ' + data.SystemLogL)
                             $('#btn_continue').attr('disabled', true)
                             console.log(data.paymentx3S)
@@ -748,6 +757,9 @@
                     } else {
                         $('#bn_loading').addClass('d-none')
                         $('#primary').modal('hide')
+                         $('#pmtKey').val(data.paymenKey.toString())
+                        $('#status').val(data.data['status'])
+                            appliedAmountForm()
                         Swal.fire({
                             icon: 'error',
                             title: data.data['status'],
@@ -781,20 +793,48 @@
             }
         });
     }
+const sendEmailError = async (SystemLogNum,paymenKey, UserID,paymentx3SMessage)  =>{
+console.log(SystemLogNum)
+console.log(paymenKey)
+console.log(UserID)
+console.log(paymentx3SMessage)
 
+let data = new FormData()
+
+data.append('SystemLogNum',SystemLogNum)
+data.append('paymenKey',paymenKey)
+data.append('UserID',UserID)
+data.append('paymentx3SMessage',paymentx3SMessage)
+$.ajax({
+    url: `/send_email_errorX3`,
+    type: 'POST',
+    data: data,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (data, textStatus, jqXHR) {
+console.log(data)
+    },
+    error: function (jqXHR, textStatus) {
+      console.log('error:' + jqXHR)
+    }
+  });
+}
     var appliedAmount = async (amount, id, inv, amwt) => {
-        console.log(amount)
+        
         let previousAmt = $(`#previousAmt${id}`).val();
         let newAmount = $(`#appliedAmount${id}`).val();
         let currentSub = $('#Stotal_preview').text()
         let currentTotal = $('#total_preview').text()
         let currentTax = $('#tax_preview').text()
         let newSub = 0, newTotal = 0, newTax = 0
+        console.log(amount)
+        console.log(newAmount)
         if (newAmount == "") {
             Swal.fire(`Please enter a new applied amount`)
             return
         }
-        if (newAmount < amount) {
+        if (parseFloat(newAmount) < parseFloat(amount)) {
             const { value: reason } = await Swal.fire({
                 title: 'Please enter a reason for short pay.',
                 input: 'text',
@@ -810,6 +850,7 @@
 
             if (!reason) {
                 $(`#appliedAmount${id}`).val(amount)
+                return
             }
             if (reason) {
                 console.log(reason)
@@ -820,15 +861,33 @@
                 $('.totalAmountcard').val((newTotal).toFixed(2))
                 $('.total_preview').text((newTotal).toFixed(2))
                 $(`#reasons${id}`).val(reason)
+                return
             }
-        } else {
+        } 
+         if (parseFloat(newAmount) > parseFloat(amount)) {
+             Swal.fire('The amount must not be greater than the current')
+                $(`#appliedAmount${id}`).val(amount)
+                return
+        } 
+
             newSub = parseFloat(previousAmt) - parseFloat(newAmount)
             newTotal = parseFloat(currentTotal) - parseFloat(newSub)
             $(`#previousAmt${id}`).val(newAmount)
             $('.total_preview').text((newTotal).toFixed(2))
             $('.totalAmountcard').val((newTotal).toFixed(2))
             $(`#reasons${id}`).val('-')
-        }
     }
-
+const appliedAmountForm =async ()=>{
+                                 $.ajax({
+            url: `/applied_amount`,
+            type: 'POST',
+            data: $('#applied_amtform').serialize(),
+            success: function (data, textStatus, jqXHR) {
+                console.log(data)
+            },
+            error: function (jqXHR, textStatus) {
+                console.log('error:' + jqXHR)
+            }
+        });
+}
 </script>

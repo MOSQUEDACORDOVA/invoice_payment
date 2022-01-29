@@ -4,6 +4,7 @@ const request = require("request-promise");
 const URI = 'https://sawoffice.technolify.com:8443/api1/x3/erp/SAWTEST1/'
 var moment = require('moment-timezone');
 var DataBasequerys = require('../models/data')
+var DataBaseSq = require('../models/dataSequelize')
 const { encrypt, decrypt } = require('./crypto');
 var pdf = require('html-pdf');
 const xml2js = require('xml2js');
@@ -13,6 +14,21 @@ var cybersourceRestApi = require('cybersource-rest-client');
 var configuration = require('./ConfigurationPayment');
 const { parse } = require("path");
 
+exports.contactUs = async (req, res) => {
+
+  const user = res.locals.user['$resources'][0];
+  const pictureProfile = res.locals.user['$resources'][1]['pic']
+
+  res.render("contacts", {
+      pageName: "Contact Us",
+      dashboardPage: true,
+      menu: true,
+      contactUs: true,
+      user,
+      pictureProfile
+    });
+
+};
 
 exports.dashboard = async (req, res) => {
 
@@ -72,6 +88,7 @@ exports.dashboard = async (req, res) => {
     inv_wofilter = inv_wofilter['$resources']
     Description = "Open Invoices list success to X3", Status = 1, Comment = "Loading Page";
     SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+    var paymentsL = await DataBaseSq.Get_tPayments(UserID)
     //HERE RENDER PAGE AND INTRO INFO
   
     res.render("open_invoices", {
@@ -81,7 +98,7 @@ exports.dashboard = async (req, res) => {
       invoiceO: true,
       user,
       inv_wofilter, inv_filtering,
-      pictureProfile
+      pictureProfile,paymentsL
     });
 
 
@@ -564,7 +581,7 @@ exports.process_payment = async (req, res) => {
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
   console.log(req.body)
-  const { paymentID, cardNumber, cardName, expMonth, expYear, cvv, totalAmountcard, emailCard, addressCard, zipCode, state, city,inv, appliedAmount } = req.body
+  var { paymentID, cardNumber, cardName, expMonth, expYear, cvv, totalAmountcard, emailCard, addressCard, zipCode, state, city,inv, appliedAmount } = req.body
   var enable_capture = true
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "Preparing process payument";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
@@ -639,16 +656,25 @@ exports.process_payment = async (req, res) => {
         let TranAmount = parseFloat(totalAmountcard)
         var tPaymentSave
         var paymentx3S
+        var paymenKey
+        cardNumber = encrypt(cardNumber);
+        cvv = encrypt(cvv);
+       
+        zipCode = encrypt(zipCode);
+        cardName = encrypt(cardName);
         if (data.status == "AUTHORIZED") {
           descp = "Process status res: " + data.status
           comm = "Process payment success: OK"
-          Description = descp, Status = 1, Comment = comm;
+          Description = descp, Status = 1, Comment = comm, SessionKey = SessionKeyLog;
           SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
           console.log(data.orderInformation.amountDetails.totalAmount)
           console.log(TranAmount)
           let CCExpDate = expMonth + "/" + expYear
-          tPaymentSave = await DataBasequerys.tPayment(1, SessionKey, UserID, data.processorInformation.transactionId, TranAmount, data.processorInformation.approvalCode, data.submitTimeUtc, data.processorInformation.transactionId, data.status, data.status, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode)
-          console.log("--Sucess in SQL"+tPaymentSave)
+           CCExpDate = encrypt(CCExpDate);
+          tPaymentSave = await DataBaseSq.RegtPayment(1, SessionKey, UserID, data.processorInformation.transactionId, TranAmount, data.processorInformation.approvalCode, data.submitTimeUtc, data.processorInformation.transactionId, data.status, data.status, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode)
+          paymenKey =(JSON.parse(tPaymentSave)).pmtKey
+          console.log("--Sucess in SQL"+paymenKey)
+          
           console.log('\nData : ' + JSON.stringify(data));
           
           paymentx3S= await savePaymentX3(inv,appliedAmount,user['EMAIL'])
@@ -665,7 +691,7 @@ if (paymentx3S[0].status == "1") {
   Description = "SOAP status 0", Status = 0, Comment = "SOAP Failed: "+ JSON.stringify(paymentx3S[0].error[0].message[0]);
   SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
 }
-  return res.send({ error, data, response, paymentx3S,SystemLogL});
+  return res.send({ error, data, response, paymentx3S,SystemLogL, paymenKey});
         } else {
           descp = "Process status res: " + data.status
           comm = "Process payment reason:" + data.errorInformation.reason
@@ -673,9 +699,10 @@ if (paymentx3S[0].status == "1") {
           SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
           let CCExpDate = expMonth + "/" + expYear
           let today = new Date()
-          tPaymentSave = await DataBasequerys.tPayment(1, SessionKey, UserID, data.id, TranAmount, null, today, data.id, data.status, data.errorInformation.reason, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode)
+          tPaymentSave = await DataBaseSq.RegtPayment(0, SessionKey, UserID, data.id, TranAmount, null, today, data.id, data.status, data.errorInformation.reason, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode)
+          paymenKey =(JSON.parse(tPaymentSave)).pmtKey
           console.log(tPaymentSave)
-          return res.send({ error, data, response });
+          return res.send({ error, data, response,paymenKey });
         }
       }      
       
@@ -695,15 +722,15 @@ exports.applied_amount = async (req, res) => {
 
   console.log(req.body)
   var paymentAplication
-  var { inv, amount, shortDesc, appliedAmount } = req.body
+  var { inv, amount, shortDesc, appliedAmount, pmtKey,status} = req.body
 inv = inv.split(',');
 amount = amount.split(',');
 shortDesc =shortDesc. split(',');
 appliedAmount =appliedAmount. split(',');
 for (let i = 0; i < inv.length; i++) {
-  paymentAplication = await DataBasequerys.tPaymentApplication(inv[i], amount[i], shortDesc[i], appliedAmount[i])
+  paymentAplication = JSON.parse(await DataBaseSq.RegtPaymentApplication(inv[i], amount[i], shortDesc[i], appliedAmount[i],pmtKey,status))
 }
-  
+console.log("--here")
 
   console.log(paymentAplication)
   res.send({ data: paymentAplication })
@@ -864,6 +891,35 @@ exports.printInvoice = async (req, res) => {
   });
 
 };
+
+exports.payments = async (req, res) => {
+  const user = res.locals.user['$resources'][0];
+  const pictureProfile = res.locals.user['$resources'][1]['pic']
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  console.log(user)
+  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'"
+  let count = 1000
+  let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from X3", Status = 1, Comment = "Not comments";
+  var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  await DataBaseSq.Get_tPayments(UserID).then((payments)=>{
+res.render("payments", {
+      pageName: "Payments",
+      dashboardPage: true,
+      menu: true,
+      payments: true,
+      user,
+      pictureProfile,payments
+    });
+  })
+  // console.log(payments)
+  // console.log(payments[4].tPaymentApplication)
+  // payments = JSON.stringify(payments)
+    //HERE RENDER PAGE AND INTRO INFO
+    
+
+};
+
 // exports.pdfInvoice = async (req, res) => {
 //   const user = res.locals.user['$resources'][0];
 //   const pictureProfile = res.locals.user['$resources'][1]['pic']

@@ -49,7 +49,7 @@ module.exports = {
       var connection = new Connection(db);
       connection.on('connect', function(err) {  
         // If no error, then good to proceed.
-        var SessionKey
+        var KeyLog
       var request = new Request("INSERT INTO tSystemLog ( LogDate,IPAddress, UserID,  LogTypeKey,  SessionKey,  Description,  Status, Comment) VALUES (CURRENT_TIMESTAMP,@IPAddress,@UserID,@LogTypeKey, @SessionKey, @Description, @Status, @Comment) SELECT @@IDENTITY;;", function(err, response) {  
         if (err) {  
            console.log(err);}  
@@ -68,14 +68,14 @@ module.exports = {
           if (column.value === null) {  
             console.log('NULL');  
           } else {  
-            SessionKey = column.value
+            KeyLog = column.value
 
           }  
         });  
     });
         // Close the connection after the final event emitted by the request, after the callback passes
         request.on("requestCompleted", function (rowCount, more) {
-          resolve (SessionKey) 
+          resolve (KeyLog) 
           connection.close();
       });
       connection.execSql(request); 
@@ -243,6 +243,59 @@ if (type == 'insert') {
           // Close the connection after the final event emitted by the request, after the callback passes
           request.on("requestCompleted", function (rowCount, more) {
             resolve (result) 
+            connection.close();
+        });
+        connection.execSql(request); 
+      });
+      connection.connect();
+    });
+    },
+
+    Get_tPaymentApplication( email) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function(err) {  
+          // If no error, then good to proceed.
+        var request = new Request(`SELECT [PmtKey]
+        ,[PaymentStatus]
+        ,[CreateSessionKey]
+        ,[CreateDate]
+        ,[UserID]
+        ,[CustID]
+        ,[TransactionID]
+        ,[TranAmount]
+        ,[ProcessorKey]
+        ,[DateProcessesed]
+        ,[ProcessorTranID]
+        ,[ProcessorStatus]
+        ,[ProcessorStatusDesc]
+        ,[CCNo]
+        ,[CCExpDate]
+        ,[CCCV2]
+        ,[BilltoName]
+        ,[BillAddressLine1]
+        ,[BillPostalCode] FROM [X3Connect].[dbo].[tPayment] WHERE UserID = '${email}'`, function(err, response) {  
+          if (err) {  
+             console.log(err);}  
+             //reject(err)
+         }); 
+         var result = ""; 
+        var jsonArray = [] 
+         request.on('row', function(columns) {  
+          var rowObject ={};
+          columns.forEach(function(column) {
+              rowObject[column.metadata.colName] = column.value;
+          });
+          jsonArray.push(rowObject)   
+             //result ="";  
+         });  
+   
+         request.on('done', function(rowCount, more) {  
+         }); 
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve (jsonArray) 
             connection.close();
         });
         connection.execSql(request); 

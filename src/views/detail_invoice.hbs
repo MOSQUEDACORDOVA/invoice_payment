@@ -26,8 +26,8 @@
                                 </button> --}}
                                 <a class="btn btn-outline-secondary" href="/print-invoice/{{inv_detail.NUM}}"
                                     target="_blank" style="margin-right: 1rem"> Print </a>
-                                    <a class="btn btn-outline-secondary" href="./app-invoice-print.html"
-                                    target="_blank" style="margin-right: 1rem"> Download PDF </a>
+                                    {{!-- <a class="btn btn-outline-secondary" href="./app-invoice-print.html"
+                                    target="_blank" style="margin-right: 1rem"> Download PDF </a> --}}
                                 <form action="/pay_invoices" method="post" id="pay_invoices_form">
     <input id="ids_invoices" name="ids_invoices" value="{{inv_detail.NUM}}" hidden>
      <button class="btn btn-success w-100" >{{!--href="/payments_methods/{{user.EMAIL}}" --}}
@@ -78,13 +78,13 @@
                             <div class="card-body invoice-padding pt-0">
                                 <div class="row invoice-spacing invoices-details-colums">
                                     <div class="col-xl-8 p-0">
-                                        <h6 class="mb-25">Invoice Address:</h6>
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Address:</h6>
                                         <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}} {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}</h6>
                                         <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}}, {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
                                         <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
                                     </div>
                                      <div class="col-xl-6 p-0 mt-xl-0 mt-2">
-                                        <h6 class="mb-25">Ship to:</h6>
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Ship to:</h6>
                                         <h6 class="card-text mb-25">{{inv_detail.BPCORD}}</h6>
                                         <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}} {{inv_detail.BPDADDLIG3}}</p>
                                         <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}} {{inv_detail.BPDPOSCOD}}</p>
@@ -92,9 +92,8 @@
 
                                     </div>
                                     <div class="col-xl-4 p-0 mt-xl-0 mt-2">
-                                        <h6 class="mb-2">Invoice Details:</h6>
-                                        <p class="card-text mb-25">Unpaid Amount: ${{inv_detail.SIVYPORINV.0.OPENLOC}}
-                                        </p>
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Details:</h6>
+                                        <p class="card-text mb-25">Unpaid Amount: ${{inv_detail.SIVYPORINV.0.OPENLOC}}</p>
                                         <p class="card-text mb-25">Last Payment Date: {{#format_date
                                             inv_detail.SIVYPORINV.0.LASTPAYDAT}}{{/format_date}} </p>
                                         <p class="card-text mb-25"> </p>
@@ -176,8 +175,8 @@
                                             </div>
                                             <hr class="my-50" />
                                             <div class="invoice-total-item">
-                                                <p class="invoice-total-title">Total:
-                                                    <span>${{#decimals inv_detail.AMTATI}}{{/decimals}}</span>
+                                                <p class="invoice-total-title" style="font-weight: bold;">Total:
+                                                    <span >${{#decimals inv_detail.AMTATI}}{{/decimals}}</span>
                                                 </p>
                                             </div>
                                         </div>

@@ -10,7 +10,15 @@ const passport = require('./config/passport');
 const fileupload = require('express-fileupload');
 var Connection = require('tedious').Connection;  
 const db = require('./config/db')
-
+const dbSequelize = require('./config/dbSequelize')
+// Conect with sequelize
+dbSequelize.sync()
+ 	.then(() => {
+ 		console.log('Data Base SQL connected');
+ 	})
+ 	.catch(err => {
+ 		console.log('Error: ', err);
+ 	});
   
 
 

@@ -121,7 +121,7 @@
     <!-- BEGIN: Main Menu-->
     <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-collapsed" data-scroll-to-active="true">
         <div class="navbar-header">
-            <ul class="nav navbar-nav flex-row">
+            <ul class="nav navbar-nav flex-row box-logo">
                 <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard/{{user.EMAIL}}"><span class="brand-logo">
                     <img src="../../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="150" height ="auto"></span>
                         {{!--  --}}
@@ -139,9 +139,11 @@
                 </li>
                 <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/close_invoices/{{user.EMAIL}}"><i data-feather='archive'></i><span class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
                 </li>
+                 <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/payments/{{user.EMAIL}}"><i data-feather='layers'></i><span class="menu-title text-truncate" data-i18n="Email">Payments</span></a>
+                </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.EMAIL}}"><i data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment Methods</span></a>
                 </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
+                <li class="{{#if contactUs}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/contactUs"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
                 </li>
             </ul>
         </div>
