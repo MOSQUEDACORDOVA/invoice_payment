@@ -738,17 +738,24 @@ $('#card-holder-cvv').val(cvv)
                         $('#bn_loading').addClass('d-none')
                         $('#primary').modal('hide')
                         //console.log(data.paymentx3S[0]['status'])
-                        if (data.paymentx3S[0]['status'] == "1") {
+                        let statusX3=[]
+                        for (let i=0; i< data.paymentx3S.length ; i++){
+                            statusX3.push(data.paymentx3S[i]['status'])
+                        }
+                        $('#status').val(statusX3)
+                        const found = statusX3.find(element => element > 0);
+                        console.log(found)
+                        if (found == true) {
                             appliedAmountForm()
                             Swal.fire('Process payment success!')
                            // window.location.href = "/dashboard/{{user.EMAIL}}"
                                   
                         } else {
                         $('#pmtKey').val(data.paymenKey.toString())
-                        $('#status').val('AUTHORIZED-SOAP ERROR('+ data.SystemLogL+')')
+                        //$('#status').val('AUTHORIZED-ERROR('+ data.SystemLogL+')')
                         let paymenKey =data.paymenKey.toString()
                             appliedAmountForm()
-                            sendEmailError(data.SystemLogL,paymenKey, '{{user.EMAIL}}',data.paymentx3S[0].error[0].message[0])
+                           // sendEmailError(data.SystemLogL,paymenKey, '{{user.EMAIL}}',data.paymentx3S[0].error[0].message[0])
                             Swal.fire('Payment AUTHORIZED, but something is wrong whit SOAP, please contact support- LOGNUM: ' + data.SystemLogL)
                             $('#btn_continue').attr('disabled', true)
                             console.log(data.paymentx3S)

@@ -100,6 +100,9 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
                         case 'DECLINED':
                           status ="DECLINED"
                           break;
+                          case '1':
+                          status ="AUTHORIZED"
+                          break;
                       default:
                         status ="SOAP ERROR"
                         break;
@@ -108,10 +111,10 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
               }              
             }
             var statusClass = {
-              "SOAP ERROR": { title: 'SOAP ERROR', class: 'badge-light-warning' },
+              "SOAP ERROR": { title: 'AUTHORIZED WITH ERROR', class: 'badge-light-warning' },
               "AUTHORIZED": { title: 'AUTHORIZED', class: 'badge-light-success' },
               "DECLINED": { title: 'DECLINED', class: 'badge-light-danger' },
-              "NOT PAYMENT": { title: 'NOT PAYMENT', class: 'badge-light-info' },
+              "NOT PAYMENT": { title: 'UNPAID', class: 'badge-light-info' },
             };
            let showStatus = `<span class="badge rounded-pill ${statusClass[status].class} " > ${statusClass[status].title}</span>`
             return showStatus
@@ -147,10 +150,13 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
           if (arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'] == data[11]) {
             console.log(arrPayments[i]['tPaymentApplication'][j]['Status'])
 
-            if (arrPayments[i]['tPaymentApplication'][j]['Status'] == "AUTHORIZED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "DECLINED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "NOT PAYMENT") {
+            if (arrPayments[i]['tPaymentApplication'][j]['Status'] == "AUTHORIZED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "DECLINED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "NOT PAYMENT" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "1") {
               
               
             }else{
+              console.log(arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'])
+              dtInvoice.$(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).attr('disabled', true); 
+              dtInvoice.$(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).remove(); 
               $(row).addClass('block'); 
             }
           }
@@ -167,9 +173,11 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             let valoresCheck = [];
             dtInvoice.$('input[type="checkbox"]').each(function(){
                  // If checkbox is checked
+                 console.log(this.disabled)
                  if(this.checked){
-                    // Create a hidden element
+                     // Create a hidden element
                     valoresCheck.push(this.value)
+                    
                  }
            });
                       console.log(valoresCheck)
@@ -182,7 +190,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             }else{
               $('#wait_modal').modal('show')
               $("#ids_invoices").val(valoresCheck);
-              $("#pay_invoices_form").submit();
+            $("#pay_invoices_form").submit();
             }
           }
         }

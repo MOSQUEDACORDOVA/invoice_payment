@@ -24,6 +24,8 @@ router.post('/register', userController.createUser);
 
 // Set Password
 router.get('/resetpassform/:email', userController.resetPasswordForm);
+router.post('/resetpassform', userController.resetPasswordForm);
+router.get('/forgot-pass', userController.formSearchAccount);
 router.post('/new-pass-save', userController.updatePassword);
 
 //dash
@@ -59,4 +61,11 @@ router.get('/payments/:email', authController.authenticatedUser, dashboardContro
 //Mails
 router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);
 router.post('/send_email_errorX3', authController.authenticatedUser, mailCtrl.errorPaymentX3);
+
+//sysSettings
+router.get('/sysSettings',authController.authenticatedUser, dashboardController.settingsPreview)
+router.post('/saveSetting',authController.authenticatedUser, dashboardController.saveSetting)
+router.post('/editSetting',authController.authenticatedUser, dashboardController.editSetting)
+router.post('/saveEditSetting',authController.authenticatedUser, dashboardController.saveEditSetting)
+
 module.exports = router;

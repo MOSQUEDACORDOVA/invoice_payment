@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-
+var DataBaseSq = require('../models/dataSequelize')
 let fs = require("fs");
 // email sender function
 
@@ -9,7 +9,15 @@ exports.testSend = async function (req, res) {
    // var mail = req.params.mail;
    // var token = req.params.token;
    // const resetUrl = `http://${req.headers.host}/loginverify27/${token}`;
-  
+   let email = JSON.parse(await DataBaseSq.selectEnableEmail())
+
+   console.log(email)
+   let mails =[]
+   for (let i = 0; i < email.length; i++) {
+     mails.push(email[i]['valueSett'])
+   }
+   console.log(mails)
+   return
     // Definimos el transporter
     var transporter = nodemailer.createTransport({
       host: '192.168.0.8',
@@ -66,7 +74,14 @@ exports.errorPaymentX3 = async function (req, res) {
  // var mail = req.params.mail;
  // var token = req.params.token;
  // const resetUrl = `http://${req.headers.host}/loginverify27/${token}`;
+ let email = JSON.parse(await DataBaseSq.selectEnableEmail())
 
+ console.log(email)
+ let mails =[]
+ for (let i = 0; i < email.length; i++) {
+   mails.push(email[i]['valueSett'])
+ }
+ console.log(mails)
   // Transporter
   var transporter = nodemailer.createTransport({
     host: '192.168.0.8',
@@ -80,7 +95,7 @@ exports.errorPaymentX3 = async function (req, res) {
   // Email options
   var mailOptions = {
     from: "portal@riboliwines.com",
-    to: 'josearzolay287@gmail.com',
+    to: mails,
     subject: "Error Save Payment SOAP- UserID: " + UserID,
     text: "Welcome to  ",
     html: `

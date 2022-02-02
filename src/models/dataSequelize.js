@@ -2,6 +2,7 @@ const { Op, where, Sequelize } = require("sequelize");
 const db = require("../config/dbSequelize");
 const tPayment = require("../models/tPayment");
 const tPaymentApplication = require("../models/tPaymentApplication");
+const tSettings = require("../models/tSettings");
 var moment = require('moment-timezone');
 
 module.exports = {
@@ -50,6 +51,77 @@ module.exports = {
         .catch((err) => {
           console.log(error)
           reject(err)
+        });
+    });
+  },
+
+  //settings
+  settingsTable(){
+    return new Promise((resolve, reject) => {
+      tSettings.findAll({})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  saveSetting(sValue, sType, sTatus){
+    return new Promise((resolve, reject) => {
+      tSettings.create({valueSett:sValue,
+        typeSett: sType,
+        Status:   sTatus})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  editSetting(sId){
+    return new Promise((resolve, reject) => {
+      tSettings.findOne({where: {id: sId}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  saveEditSetting(sValue, sType, sStatus,sId){
+    return new Promise((resolve, reject) => {
+      tSettings.update({valueSett:sValue,
+        typeSett: sType,
+        Status:   sStatus}, {where:{id:sId}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  selectEnableEmail(){
+    return new Promise((resolve, reject) => {
+      tSettings.findAll({attributes:['valueSett'], where: {typeSett: "email-Support"}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
         });
     });
   },

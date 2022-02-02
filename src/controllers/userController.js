@@ -259,7 +259,8 @@ exports.resetPasswordForm = async (req, res) => {
   //   req.flash("error", "No válido");
   //   res.redirect("/search-account");
   // }
-  let email = req.params.email
+  //let email = req.params.email
+  let email = req.body.email
   // Formulario para generar password
   res.render("reset-password", {
     pageName: "Set Password",
@@ -311,8 +312,9 @@ exports.updatePassword = async (req, res) => {
     return JSON.stringify(saved)
   }))
   console.log(save_pass)
-  req.flash("success", "Your password changed successfully");
-  //res.redirect("/login");
+ // req.flash("success", "Your password changed successfully");
+  req.session.errorLogin = req.flash("success", "Your password changed successfully");
+  res.redirect("/login");
 };
 
 // Cerrar sesión

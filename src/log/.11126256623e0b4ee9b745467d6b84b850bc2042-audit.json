@@ -6,31 +6,6 @@
     "auditLog": "log\\.11126256623e0b4ee9b745467d6b84b850bc2042-audit.json",
     "files": [
         {
-            "date": 1642561304656,
-            "name": "log\\cybs-2022-01-18.log",
-            "hash": "ee495bb04008b85d37d9128356c7bc21"
-        },
-        {
-            "date": 1642633384713,
-            "name": "log\\cybs-2022-01-19.log",
-            "hash": "e22f484d1052b05a87ae24293b7e8d1c"
-        },
-        {
-            "date": 1642705568018,
-            "name": "log\\cybs-2022-01-20.log",
-            "hash": "86c927c484e76b034d0f1ef5c105ccae"
-        },
-        {
-            "date": 1642803430640,
-            "name": "log\\cybs-2022-01-21.log",
-            "hash": "baab83a48f2b0893522a02a17a3c53c7"
-        },
-        {
-            "date": 1642896700335,
-            "name": "log\\cybs-2022-01-22.log",
-            "hash": "0a49834373c576609abefa6f36101419"
-        },
-        {
             "date": 1642978602968,
             "name": "log\\cybs-2022-01-23.log",
             "hash": "24291f958affb853967b9e9ddb6c596e"
@@ -59,6 +34,21 @@
             "date": 1643386413110,
             "name": "log\\cybs-2022-01-28.log",
             "hash": "e3d7c727baa6175d85585b0b542bc48d"
+        },
+        {
+            "date": 1643651026104,
+            "name": "log\\cybs-2022-01-31.log",
+            "hash": "a4c00cd426ed0d1ff2127b4eb2d9e79a"
+        },
+        {
+            "date": 1643756019887,
+            "name": "log\\cybs-2022-02-01.log",
+            "hash": "a88ee2925faa8c243ce4340e89f299cb"
+        },
+        {
+            "date": 1643839889170,
+            "name": "log\\cybs-2022-02-02.log",
+            "hash": "2871f197225294e54b4e0fda6e19de9e"
         }
     ]
 }

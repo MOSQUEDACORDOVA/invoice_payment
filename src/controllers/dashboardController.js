@@ -40,8 +40,9 @@ exports.dashboard = async (req, res) => {
   let where_filter_inv = "", count = 0
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Preparing openInv list", Status = 1, Comment = "Starting- line 20-";
   var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-  if (user['ROLE'] == 4) {
+  if (user['ROLE'] > 1) {
     count = 100
+    where_filter_inv = "&where=EMAIL eq '" + user.EMAIL + "' "
   } else {
     count = 1000
     
@@ -677,19 +678,117 @@ exports.process_payment = async (req, res) => {
           
           console.log('\nData : ' + JSON.stringify(data));
           
-          paymentx3S= await savePaymentX3(inv,appliedAmount,user['EMAIL'])
+          //paymentx3S= await savePaymentX3(inv,appliedAmount,user['EMAIL'])
+//FUNTION TO SAVE IN SOAPx3
+invoices = inv.split(',')
+appliedAmount = appliedAmount.split(',')
 
-          console.log('\ss : ' + JSON.stringify(paymentx3S));
+var i_file="",inv_detail,amountPayment, paymentx3S, errorSOAP
+let today = moment().format('YYYYMMDD')
+var statusSOAP = []
+const parser = new xml2js.Parser({
+ explicitArray: true
+});
+var msgErroSOAP=[]
+for (let i = 0; i < invoices.length; i++) {
+ console.log('--------------------------------------------------------')
+  inv_detail = JSON.parse(await request({
+   uri: URI + `YPORTALINVD('${invoices[i]}')?representation=YPORTALINVD.$details`,
+   method: 'GET',
+   insecure: true,
+   rejectUnauthorized: false,
+   headers: {
+     'Content-Type': 'application/json',
+     'Accept': 'application/json',
+     'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+   },
+   json: true, // Para que lo decodifique automáticamente 
+ }).then(async invD => {// GET INVOICES
+  // Description = "Get PaymentMethods for pay", Status = 1, Comment = "PayMethods, preparing for pay invoices";
+  // SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+   return JSON.stringify(invD)
+ }))
 
-     // console.log('\nResponse : ' + JSON.stringify(response));
-     console.log('\nResponse Code of Process a Payment : ' + JSON.stringify(response['status']));
-if (paymentx3S[0].status == "1") {
+ amountPayment = Number.parseFloat(appliedAmount[i]).toFixed(2);
+
+ i_file = `P;;RECDP;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today}|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;${inv_detail.SIVSIHC_ANA[2].CCE};BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`
+ console.log(i_file);
+ let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
+<soapenv:Header/>
+<soapenv:Body>
+ <wss:run soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+   <callContext xsi:type="wss:CAdxCallContext">
+     <codeLang xsi:type="xsd:string">ENG</codeLang>
+     <poolAlias xsi:type="xsd:string">SAWTEST1</poolAlias>
+     <poolId xsi:type="xsd:string"></poolId>
+     <requestConfig xsi:type="xsd:string">
+       <![CDATA[adxwss.optreturn=JSON&adxwss.beautify=true&adxwss.trace.on=off]]>
+     </requestConfig>
+   </callContext>
+   <publicName xsi:type="xsd:string">AOWSIMPORT</publicName>
+   <inputXml xsi:type="xsd:string">
+     <![CDATA[{
+       "GRP1": {
+         "I_MODIMP": "YPORTALPAY",
+         "I_AOWSTA": "NO",
+         "I_EXEC": "REALTIME",
+         "I_RECORDSEP": "|",
+         "I_FILE":"${i_file}"
+       }
+     }]]>
+   </inputXml>
+ </wss:run>
+</soapenv:Body>
+</soapenv:Envelope>`
+
+var SOAPP = JSON.parse(await request({
+ uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
+ method: 'POST',
+ insecure: true,
+ rejectUnauthorized: false,
+ headers: {
+   'Content-Type': 'application/json',
+   'Accept': '*/*',
+   'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+   'soapaction' : '*'
+ },
+ body:xmlB,
+ //json: true, // Para que lo decodifique automáticamente 
+}).then(async SOAP => {// GET INVOICES
+ //console.log(SOAP)
+// Description = "Get PaymentMethods for pay", Status = 1, Comment = "PayMethods, preparing for pay invoices";
+// SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+ return JSON.stringify(SOAP)
+}))
+parser.parseString(SOAPP,async function(err, result) {
+console.log(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'])
+ 
+
+if (result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'] == "1") {
   Description = "SOAP status 1", Status = 1, Comment = "SOAP SUccess";
-          SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-}else{
-  console.log('\error SOAP : ' + JSON.stringify(paymentx3S[0].error[0].message[0]));
-  Description = "SOAP status 0", Status = 0, Comment = "SOAP Failed: "+ JSON.stringify(paymentx3S[0].error[0].message[0]);
+       SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+       statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP}) 
+  }else{
+    statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP}) 
+    for (let i = 0; i < result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'].length; i++) {
+    
+      msgErroSOAP.push(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'][i]['message'][0])
+       // console.log('\erroMsg : ' + JSON.stringify(paymentx3S[0].error));
+  Description = "SOAP status 0", Status = 0, Comment = "SOAP Failed: "+ JSON.stringify(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'][i]['message'][0]);
   SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+    }
+  
+  }
+
+ // statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP})  
+  return statusSOAP
+ });
+ paymentx3S = statusSOAP
+console.log('\ss : ' + JSON.stringify(paymentx3S));
+
+// console.log('\nResponse : ' + JSON.stringify(response));
+console.log('\nResponse Code of Process a Payment : ' + JSON.stringify(response['status']));
+
 }
   return res.send({ error, data, response, paymentx3S,SystemLogL, paymenKey});
         } else {
@@ -727,8 +826,9 @@ inv = inv.split(',');
 amount = amount.split(',');
 shortDesc =shortDesc. split(',');
 appliedAmount =appliedAmount. split(',');
+status =status. split(',');
 for (let i = 0; i < inv.length; i++) {
-  paymentAplication = JSON.parse(await DataBaseSq.RegtPaymentApplication(inv[i], amount[i], shortDesc[i], appliedAmount[i],pmtKey,status))
+  paymentAplication = JSON.parse(await DataBaseSq.RegtPaymentApplication(inv[i], amount[i], shortDesc[i], appliedAmount[i],pmtKey,status[i]))
 }
 console.log("--here")
 
@@ -759,100 +859,6 @@ exports.save_PicProfile = async (req, res) => {
 
   console.log(SavePic)
   res.send({ data: SavePic, picture: picture })
-};
-
-//OTHERS FUNCTIONS NO EXPORTED
-savePaymentX3 = async (invoices,appliedAmount, userEmail) => {
- // let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Saving pic profile", Status = 1, Comment = "Preparing data";
- // var SystemLogLogin = await  DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment)
-
- invoices = invoices.split(',')
- appliedAmount = appliedAmount.split(',')
-
-var i_file="",inv_detail,amountPayment
-let today = moment().format('YYYYMMDD')
-for (let i = 0; i < invoices.length; i++) {
-  
-   inv_detail = JSON.parse(await request({
-    uri: URI + `YPORTALINVD('${invoices[i]}')?representation=YPORTALINVD.$details`,
-    method: 'GET',
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-    },
-    json: true, // Para que lo decodifique automáticamente 
-  }).then(async invD => {// GET INVOICES
-   // Description = "Get PaymentMethods for pay", Status = 1, Comment = "PayMethods, preparing for pay invoices";
-   // SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-    return JSON.stringify(invD)
-  }))
-
-  amountPayment = Number.parseFloat(appliedAmount[i]).toFixed(2);
-
-  i_file += `P;;RECDP;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today}|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;${inv_detail.SIVSIHC_ANA[2].CCE};BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|`
-}
-i_file = i_file + `END`
-console.log(i_file)
-let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
-<soapenv:Header/>
-<soapenv:Body>
-  <wss:run soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-    <callContext xsi:type="wss:CAdxCallContext">
-      <codeLang xsi:type="xsd:string">ENG</codeLang>
-      <poolAlias xsi:type="xsd:string">SAWTEST1</poolAlias>
-      <poolId xsi:type="xsd:string"></poolId>
-      <requestConfig xsi:type="xsd:string">
-        <![CDATA[adxwss.optreturn=JSON&adxwss.beautify=true&adxwss.trace.on=off]]>
-      </requestConfig>
-    </callContext>
-    <publicName xsi:type="xsd:string">AOWSIMPORT</publicName>
-    <inputXml xsi:type="xsd:string">
-      <![CDATA[{
-        "GRP1": {
-          "I_MODIMP": "YPORTALPAY",
-          "I_AOWSTA": "NO",
-          "I_EXEC": "REALTIME",
-          "I_RECORDSEP": "|",
-          "I_FILE":"${i_file}"
-        }
-      }]]>
-    </inputXml>
-  </wss:run>
-</soapenv:Body>
-</soapenv:Envelope>`
-const parser = new xml2js.Parser({
-  explicitArray: true
-});
-
-let SOAPP = JSON.parse(await request({
-  uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
-  method: 'POST',
-  insecure: true,
-  rejectUnauthorized: false,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': '*/*',
-    'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-    'soapaction' : '*'
-  },
-  body:xmlB,
-  //json: true, // Para que lo decodifique automáticamente 
-}).then(async SOAP => {// GET INVOICES
-  //console.log(SOAP)
- // Description = "Get PaymentMethods for pay", Status = 1, Comment = "PayMethods, preparing for pay invoices";
- // SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-  return JSON.stringify(SOAP)
-}))
-var status = []
-parser.parseString(SOAPP,function(err, result) {
-
-  status.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: result['soapenv:Envelope']['soapenv:Body'][0]['multiRef']})  
-  return status
-});
-return status
 };
 
 exports.printInvoice = async (req, res) => {
@@ -920,6 +926,49 @@ res.render("payments", {
 
 };
 
+//settings
+exports.settingsPreview = async (req, res) => {
+
+  const user = res.locals.user['$resources'][0];
+  const pictureProfile = res.locals.user['$resources'][1]['pic']
+let settings = await DataBaseSq.settingsTable()
+
+  res.render("sysSettings", {
+      pageName: "System Settings",
+      dashboardPage: true,
+      menu: true,
+      sysSettings: true,
+      user,
+      pictureProfile,settings
+    });
+
+};
+exports.saveSetting = async (req, res) => {
+const {sValue, sType, sStatus} = req.body
+let saveSys = await DataBaseSq.saveSetting(sValue, sType, sStatus)
+console.log(saveSys)
+let settings = await DataBaseSq.settingsTable()
+
+ res.send({settings})
+
+};
+exports.saveEditSetting = async (req, res) => {
+  console.log(req.body)
+const {sValue, sType, sStatus,sId} = req.body
+let saveSys = await DataBaseSq.saveEditSetting(sValue, sType, sStatus,sId)
+console.log(saveSys)
+let settings = await DataBaseSq.settingsTable()
+
+ res.send({settings})
+
+};
+exports.editSetting = async (req, res) => {
+const {sId} = req.body
+let saveSys = JSON.parse(await DataBaseSq.editSetting(sId))
+console.log(saveSys)
+
+ res.send({saveSys})
+}
 // exports.pdfInvoice = async (req, res) => {
 //   const user = res.locals.user['$resources'][0];
 //   const pictureProfile = res.locals.user['$resources'][1]['pic']
