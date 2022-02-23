@@ -64,7 +64,7 @@ module.exports = {
 		// Mastercard 
 		// Updated for Mastercard 2017 BINs expansion
 		if (/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/.test(number))
-			return "Mastercard";
+			return "Mastercard";//MAST
 
 		// AMEX
 		re = new RegExp("^3[47]");
@@ -74,7 +74,7 @@ module.exports = {
 		// Discover
 		re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
 		if (number.match(re) != null)
-			return "Discover";
+			return "Discover";//this DISC
 
 		// Diners
 		re = new RegExp("^36");
@@ -94,7 +94,7 @@ module.exports = {
 		// Visa Electron
 		re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
 		if (number.match(re) != null)
-			return "Visa Electron";
+			return "Visa Electron";//VISA
 
 		return "";
 	},
@@ -119,8 +119,37 @@ module.exports = {
 
 		return Number.parseFloat(mount).toFixed(2)
 	},
+	appliedAmt: (AMTATI,OPENLOC) => {
+let result = parseFloat(AMTATI)-parseFloat(OPENLOC)
+		return Number.parseFloat(result).toFixed(2)
+	},
+	
 	JSONparse: (obj) => {
 
 		return JSON.parse(obj)
+	},
+	status_detail_payment: (openAmount, amouintLOC) => {
+		console.log(amouintLOC)
+		let span
+		switch (true) {
+			case openAmount == amouintLOC:
+				span =`<span class="badge rounded-pill badge-light-warning" > AUTHORIZED WITH ERROR</span>`
+				break;
+				case openAmount == 0:
+					span =`<span class="badge rounded-pill badge-light-success" > AUTHORIZED </span>`
+					break;
+					
+			default:
+				span =`<span class="badge rounded-pill badge-light-info" > AUTHORIZED WITH BALANCE</span>`
+				break;
+		}
+		return span
+	},
+	phonenumberFormat: (number)=> {
+		if( number ) {
+			return number.replace( /\D+/g, "" ).replace( /([0-9]{1,3})([0-9]{3})([0-9]{4}$)/gi, "($1) $2-$3" ); //mask numbers (xxx) xxx-xxxx	
+		} else {
+			return "";
+		}
 	}
 }

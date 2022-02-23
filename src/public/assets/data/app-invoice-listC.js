@@ -22,6 +22,13 @@ function table_invoices(a){
      // ajax: array_inv, // JSON file to add data
       columnDefs: [
         {
+          targets:0,
+          render: function(data, type, full, meta){
+       let link =`<a class="me-25" href="/invoiceO_detail/${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Invoice">${data}</a>`
+           return link;
+          }
+        },
+        {
           targets:4,
           render: function(data, type, full, meta){
        
@@ -35,70 +42,15 @@ function table_invoices(a){
     return moment(data).format('MM/DD/YYYY');
    }
  },
- {
-  targets:6,
-  render: function(data, type, full, meta){
-let today = moment()
-let diff_days = today.diff(moment(data), 'days')
-   return diff_days;
-  }
-},
 {
-  targets:8,
+  targets:7,
   render: function(data, type, full, meta){
-let amt_st = full[7].slice(1)
-let amt_wt = full[9].slice(1)
+let amt_st = full[6].slice(1)
+let amt_wt = full[8].slice(1)
 let tax = parseFloat(amt_wt) - parseFloat(amt_st)
    return '$' + tax.toFixed(2);
   }
 },
-        {
-          // Actions
-          targets: -1,
-          title: 'Actions',
-          width: '80px',
-          orderable: false,
-          render: function (data, type, full, meta) {
-            console.log(full)
-            return (
-              '<div id="smart-button-container">'+
-             '<div style="text-align: center;">'+
-                  '<div id="paypal-button-container"></div>'+
-              '</div>'+
-         '</div><div class="d-flex align-items-center col-actions">' +
-              '<a class="me-1 d-none" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Send Mail">' +
-              feather.icons['send'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<a class="me-25" href="/invoiceC_detail/' +
-              full[0] +
-              '" data-bs-toggle="tooltip" data-bs-placement="top" title="Preview Invoice">' +
-              feather.icons['eye'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<div class="dropdown d-none">' +
-              '<a class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">' +
-              feather.icons['more-vertical'].toSvg({ class: 'font-medium-2 text-body' }) +
-              '</a>' +
-              '<div class="dropdown-menu dropdown-menu-end">' +
-              '<a href="#" class="dropdown-item">' +
-              feather.icons['download'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Download</a>' +
-              '<a href="' +
-              invoiceEdit +
-              '" class="dropdown-item">' +
-              feather.icons['edit'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Edit</a>' +
-              '<a href="#" class="dropdown-item">' +
-              feather.icons['trash'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Delete</a>' +
-              '<a href="#" class="dropdown-item d-none">' +
-              feather.icons['copy'].toSvg({ class: 'font-small-4 me-50' }) +
-              'Duplicate</a>' +
-              '</div>' +
-              '</div>' +
-              '</div>'
-            );
-          }
-        }
       ],
       order: [[1, 'desc']],
       dom:

@@ -52,6 +52,9 @@
     {{#if payments}}
         <script src="../../../assets/data/payments.js"></script>
     {{/if}}
+    {{#if payment_detail}}
+        <script src="../../../assets/data/payments_detail.js"></script>
+    {{/if}}
     {{#if print_inv}}<script src="../../../app-assets/js/scripts/pages/app-invoice-print.js"></script>{{/if}}
 
       <!-- BEGIN: Page JS-->
@@ -68,6 +71,12 @@
                 });
             }
         })
+	$(document).ready(function(){
+            if ( $("#msgs").length ) {
+                let msg = $('#msgs').text();
+            Swal.fire(msg)
+            }
+		})
     </script>
 </body>
 <!-- END: Body-->

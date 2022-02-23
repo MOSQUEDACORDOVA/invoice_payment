@@ -5,6 +5,9 @@
     color: #ffcc9a;
     }
 </style>
+{{#if msg}}
+<label id="msgs" hidden>{{msg}}</label>
+{{/if}}
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
@@ -100,4 +103,6 @@
     </div>
 </div>
 <input value="{{paymentsL}}" class="d-none" id="payments">
+<input value="{{links}}" class="d-none" id="links">
+<input value="{{inv_wofilter}}" class="d-none" id="invoices">
 <!-- Modal -->

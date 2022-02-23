@@ -12,14 +12,7 @@ const { encrypt, decrypt } = require('./crypto');
 // Formulario de inicio de sesión
 exports.formLogin = async (req, res) => {
   let error = false
-  const hash = encrypt('1234567891234567891');
-//20C = 64
-//13c=44
-  console.log(hash.length);
-  
-  const text = decrypt(hash);
-  
-  console.log(text); // Hello World!
+
   if (req.session.errorLogin) {
     error = req.session.errorLogin;
     console.log(error)
@@ -34,28 +27,6 @@ exports.formLogin = async (req, res) => {
   });
 };
 
-exports.formLoginBack = (req, res) => {
-  const { error } = res.locals.messages;
-  var product = req.params.product;
-  var monto = req.params.monto;
-  var modo = req.params.modo;
-  console.log(modo);
-  let msg = false;
-  if (req.params.msg) {
-    msg = req.params.msg;
-    ////console.log(msg);
-  }
-
-  res.render("login_back", {
-    pageName: "Login",
-    layout: "page-form",
-    modo,
-    monto,
-    product,
-    error,
-    msg,
-  });
-};
 
 // Iniciar sesión
 exports.loginUser = passport.authenticate("local", {
@@ -204,63 +175,88 @@ exports.formSearchAccountToken = (req, res) => {
 exports.sendToken = async (req, res) => {
   // verificar si el usuario existe
   const { email } = req.body;
-  const usuario = await Usuarios.findOne({ where: { email } });
+  
+  const usuario = JSON.parse(await request({
+    uri: URI + `YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=EMAIL eq '${email}'`,
+    method:'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      },
+    json: true, // Para que lo decodifique automáticamente 
+    }).then((response)=>{
+console.log(response)
+return JSON.stringify(response)
+    })
+    )
+console.log(usuario['$resources'][0])
 
-  if (!usuario) {
-    req.flash("error", "No existe esa cuenta");
-    res.redirect("/search-account");
+  if (!usuario['$resources'][0]) {
+    req.session.errorLogin = req.flash("error", "Account does not exist");
+  return  res.redirect("/forgot-pass");
   }
 
   // Usuario existe
-  usuario.token = crypto.randomBytes(20).toString("hex");
-  usuario.expiration = Date.now() + 3600000;
+  let token = crypto.randomBytes(20).toString("hex");
+  let expiration = Date.now() + 3600000;
 
-  // Guardarlos en la BD
-  await usuario.save();
+  query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
+  // usuario.token = null;
+  // usuario.expiration = null;
 
-  // Url de reset
-  const resetUrl = `https://${req.headers.host}/search-account/${usuario.token}`;
+  
+   let save_pass = JSON.parse(await request({
+     uri: URI + query_consulting,
+     method: 'PUT',
+     insecure: true,
+     rejectUnauthorized: false,
+     headers: {
+       'Content-Type': 'application/json',
+       'Accept': '*/*',
+       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+     },
+     body: {
+       "TOKEN": token,
+     },
+     json: true,  //Para que lo decodifique automáticamente 
+   }).then(saved => {//
+     console.log(saved.body)
+     return JSON.stringify(saved)
+   }))
+  
 
-  res.redirect("/resetpass/" + usuario.token + "/" + email);
+  const resetUrl = `https://${req.headers.host}/set-password/${token}`;
   console.log(resetUrl);
+  //res.redirect("/resetpassform/"+ email);
+  res.redirect(`/send-token/${email}/${token}`);
+  
 };
 
-exports.sendTokenValidate = async (req, res) => {
-  // verificar si el usuario existe
-  const { email } = req.body;
-  const usuario = await Usuarios.findOne({ where: { email } });
 
-  if (!usuario) {
-    req.flash("error", "No existe esa cuenta");
-    res.redirect("/search-account-token");
-  }
-
-  // Usuario existe
-  usuario.token = crypto.randomBytes(20).toString("hex");
-  usuario.expiration = Date.now() + 3600000;
-
-  // Guardarlos en la BD
-  await usuario.save();
-
-  // Url de reset
-  const resetUrl = `https://${req.headers.host}/login/${usuario.token}`;
-  res.redirect("/mailBienvenida/" + email + "/" + usuario.token);
-  console.log(resetUrl);
-};
 exports.resetPasswordForm = async (req, res) => {
-  // const usuario = await Usuarios.findOne({
-  //   where: {
-  //     token: req.params.token,
-  //   },
-  // });
-
-  // // no se encontro el usuario
-  // if (!usuario) {
-  //   req.flash("error", "No válido");
-  //   res.redirect("/search-account");
-  // }
+  let token = req.params.token
+  const usuario = await request({
+    uri: URI + `YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=TOKEN eq '${token}'`,
+    method:'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      },
+    json: true, // Para que lo decodifique automáticamente 
+    })
+console.log(usuario['$resources'][0])
+  if (!usuario['$resources'][0]) {
+    req.session.errorLogin = req.flash("error", "Account not exist or token is not validate");
+   return res.redirect("/forgot-pass");
+  }
   //let email = req.params.email
-  let email = req.body.email
+  let email = usuario['$resources'][0]['EMAIL']
   // Formulario para generar password
   res.render("reset-password", {
     pageName: "Set Password",
@@ -269,7 +265,7 @@ exports.resetPasswordForm = async (req, res) => {
   });
 };
 
-// Cambiar el password
+// change password
 exports.updatePassword = async (req, res) => {
   // Verifica token y fecha de expiracion-
   // const usuario = await Usuarios.findOne({
@@ -312,9 +308,8 @@ exports.updatePassword = async (req, res) => {
     return JSON.stringify(saved)
   }))
   console.log(save_pass)
- // req.flash("success", "Your password changed successfully");
-  req.session.errorLogin = req.flash("success", "Your password changed successfully");
-  res.redirect("/login");
+  req.session.errorLogin = req.flash("error", "Your password changed successfully");
+ return res.redirect("/login");
 };
 
 // Cerrar sesión
@@ -324,81 +319,36 @@ exports.closeSesion = (req, res) => {
   });
 };
 
-// Actualizar usuario en la base de datos
+// Update user profile
 exports.UpdateUser = async (req, res) => {
-  let tipo = req.user.tipo;
-  const {
-    id,
-    name,
-    lastName,
-    userName,
-    email,
-    password,
-    confirmpassword,
-    photo1,
-  } = req.body;
-
-  if (!password && !confirmpassword) {
-    database.actualizarUser(id, name, lastName, userName, email, photo1, tipo)
-      .then((rs) => {
-        console.log(rs);
-        res.locals.user.name = name
-        res.locals.user.lastName = lastName
-        res.locals.user.userName = userName
-        res.locals.user.email = email
-        res.locals.user.photo = photo1
-        res.redirect("/dashboard");
-      })
-      .catch((err) => {
-        console.log(err.errors.map((error) => error.message))
-        if (err.errors) {
-          req.flash(
-            "error",
-            err.errors.map((error) => error.message)
-          );
-        } else {
-          req.flash("error", "Error desconocido");
-        }
-        let msg = (err.errors.map((error) => error.message)).toString();
-        console.log(msg)
-        res.redirect('/update-profile/' + msg)
-      });
-    //redirect('/dashboard');
-    const usuario = await Usuarios.findOne({ where: { email } });
-    // "user" is the user with newly updated info
-    //const user = res.locals.user;
-    console.log(req.user);
-    req.user.name = name;
-    req.user.lastName = lastName;
-    req.user.userName = userName;
-    req.user.email = email;
-    req.user.photo = photo1;
-
-
-
-  } else {
-    if (password !== confirmpassword) {
-      req.flash("error", "Las contraseñas no son iguales");
-
-      return res.render("update-profile", {
-        pageName: "Actualizar Perfil",
-        dashboardPage: true,
-        messages: req.flash(),
-      });
-    } else {
-      database.actualizarpassW(id, password)
-        .then(() => { })
-        .catch((err) => {
-          console.log(err)
-          let msg = "Error en sistema";
-          return res.redirect("/?msg=" + msg);
-        });
-      //redirect('/dashboard');
-      const usuario = await Usuarios.findOne({ where: { email } });
-
-      res.redirect("/dashboard");
-    }
-  }
+  const user = res.locals.user['$resources'][0]
+  email = user.EMAIL
+  query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
+  
+  const {lastName_edit_profile, firstName_edit_profile} = req.body
+  let save_pass = JSON.parse(await request({
+    uri: URI + query_consulting,
+    method: 'PUT',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    body: {
+      "FNAME": firstName_edit_profile,
+      "LNAME": lastName_edit_profile
+    },
+    json: true, // Para que lo decodifique automáticamente 
+  }).then(saved => { //Get the mapping loggin
+    return JSON.stringify(saved)
+  }))
+  console.log(save_pass)
+  console.log(user)
+  res.locals.user['$resources'][0]['FNAME']=firstName_edit_profile
+  res.locals.user['$resources'][0]['LNAME']=lastName_edit_profile
+  res.send({save_pass})
 };
 
 exports.upload = function (req, res) {

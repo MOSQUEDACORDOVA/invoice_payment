@@ -1,13 +1,16 @@
 
 
-var dtPaymentT = $('#paymentsTable'),
+var dtPaymentT = $('#detail_payment'),
     assetPath = 'app-assets/',
     invoicePreview = 'app-invoice-preview.html',
     invoiceAdd = 'invoice.html',
     invoiceEdit = 'app-invoice-edit.html';
-function paymentsTable(a){
-  let array_inv =[]
-  array_inv.push(JSON.parse($('#payments').val()))
+function paymentsTableDetails(a){
+  let array_payments
+  let array_inv
+
+  array_payments=JSON.parse($('#payments').val())
+  array_inv=JSON.parse($('#invoices_details').val())
   // if (a) {
     
   //   array_inv = JSON.parse(value)
@@ -17,46 +20,102 @@ function paymentsTable(a){
   // }
 
   console.log(array_inv)
+  console.log(array_payments)
   if (dtPaymentT.length) {
     var dtInvoice = dtPaymentT.DataTable({
-      data: array_inv[0], // JSON file to add data
+      data: array_payments[0]['tPaymentApplication'], // JSON file to add data
      columns: [
-      { data: 'pmtKey' },
-      { data: 'CustID' },
-      { data: 'TransactionID' },
-      { data: 'TranAmount' },
-      { data: 'ProcessorStatus'}, // used for sorting so will hide this column
-      { data: 'ProcessorStatusDesc' },
-      { data: 'DateProcessesed' },
-      { data: 'pmtKey'},
+      { data: 'INVOICENUM' },
+      { data: 'INVOICENUM' },
+      { data: 'INVOICENUM' },
+      { data: 'OpenAmount' },
+      { data: 'AppliedAmount'}, // used for sorting so will hide this column
+      { data: 'INVOICENUM' },
       
       ], 
       columnDefs: [
         {
+          targets:1,
+          render: function(data, type, full, meta){
+            let value
+            for (let i = 0; i < array_inv.length; i++) {
+              if (data == array_inv[i]['NUM']) {
+                value = array_inv[i]['BPCINV']
+              }
+              
+            }
+            return value;
+          }
+        },
+        {
+          targets:2,
+          render: function(data, type, full, meta){
+            let value
+            for (let i = 0; i < array_inv.length; i++) {
+              if (data == array_inv[i]['NUM']) {
+                value = array_inv[i]['INVDAT']
+              }
+              
+            }
+            if (value == '0000-00-00') {
+              return '';
+            }
+            return moment(value).format('MM/DD/YYYY');
+          }
+        },
+        {
           targets:3,
           render: function(data, type, full, meta){
-       
-           return '$'+Number.parseFloat(data).toFixed(2);
+            let value
+            for (let i = 0; i < array_inv.length; i++) {
+              console.log(array_inv[i]['AMTLOC'])
+              if (data == array_inv[i]['NUM']) {
+                value = array_inv[i]['AMTLOC']
+              }
+              
+            }
+            return '$'+  Number.parseFloat(data).toFixed(2)
           }
         },
         {
-          targets:6,
+          targets:4,
           render: function(data, type, full, meta){
-       
-           return moment(data).format('MM/DD/YYYY');
+            let value
+            for (let i = 0; i < array_inv.length; i++) {
+              if (data == array_inv[i]['NUM']) {
+                value = array_inv[i]['AMTLOC']
+              }
+              
+            }
+            return '$'+ Number.parseFloat(data).toFixed(2)
           }
         },
         {
-          targets:7,
+          targets:5,
           render: function(data, type, full, meta){
-            console.log(full['tPaymentApplication'])
-            var arrayAppPayment = encodeURIComponent(JSON.stringify(full['tPaymentApplication']));
-            // <span class="d-none" style="cursor:pointer;"   data-arrPayments="${arrayAppPayment}" ><button type="button" class="btn btn-outline-primary waves-effect">List</button></span>
-            return (
-             `
-             <span class="" style="cursor:pointer;" ><button type="button" class="btn btn-outline-primary waves-effect btnview" data-id="${full['pmtKey']}">View</button></span>  
-             `
-            );
+            let openAmount,
+            amouintLOC
+            for (let i = 0; i < array_inv.length; i++) {
+              if (data == array_inv[i]['NUM']) {
+                openAmount = array_inv[i]['OPENLOC']
+                amouintLOC = array_inv[i]['AMTLOC']
+              }
+              
+            }
+             let span
+             switch (true) {
+               case openAmount == amouintLOC:
+                 span =`<span class="badge rounded-pill badge-light-warning" > AUTHORIZED WITH ERROR</span>`
+                 break;
+                 case openAmount == 0:
+                   span =`<span class="badge rounded-pill badge-light-success" > AUTHORIZED </span>`
+                   break;
+                  
+               default:
+                 span =`<span class="badge rounded-pill badge-light-info" > AUTHORIZED WITH BALANCE</span>`
+                 break;
+             }
+            return span
           }
         },
       ],
@@ -149,10 +208,6 @@ function paymentsTable(a){
     // $('#invoiceTable_info').addClass('py-2')
     // document.getElementById('invoiceTable_info').parentElement.parentElement.classList.add('align-items-center')
   }
-    dtInvoice.$(`.btnview`).click((e)=>{
-    console.log(e.currentTarget.dataset['id'])
-    location.href = "/payment_view/"+e.currentTarget.dataset['id']
-  })
 }
 
 $(function () {
@@ -160,46 +215,6 @@ $(function () {
   
 
   // datatable
-paymentsTable()
+paymentsTableDetails()
 
-
-  //CONTEXT MENU
-  $.contextMenu({
-    selector: '.hover_inv',
-    trigger: 'hover',
-    autoHide: true,
-    build: function ($trigger, e) {
-      console.log(e)
-      var arrPayments = e.currentTarget['dataset']["arrpayments"];
-      
-      var my_object = JSON.parse(decodeURIComponent(arrPayments));
-      console.log(my_object.length)
-
-       var items1 = {}
-       let status
-      for (let i = 0; i < my_object.length; i++) {
-        if (my_object[i]['Status'] == 1) {
-          status = "Success"
-        }else{
-          status = "Error"
-        }
-        var newUser = `${my_object[i]['INVOICENUM']}`;
-        items1[newUser] = {name: `${my_object[i]['INVOICENUM']} / ${status}`}
-      }
-     if (my_object.length == 0) {
-      items1[0] = {name: `Noexist / Error`}
-     }
-        return {
-            callback: function (key, options) {
-              console.log(options)
-                var m = "clicked: " + options;
-                console.log(m);
-                //location.href="/invoiceO_detail/"+key
-            },
-            items: 
-            items1
-            
-        };
-    }
-  });
 });

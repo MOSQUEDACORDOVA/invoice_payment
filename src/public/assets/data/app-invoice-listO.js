@@ -8,13 +8,6 @@ var dtInvoiceTable = $('#invoiceTable'),
 function table_invoices(a){
   let value = $('#payments').val()
   let arrPayments = ""
-  // if (a) {
-    
-  //   arrPayments = JSON.parse(value)
-
-  // }else{
-  //   arrPayments = JSON.parse(value.replace(/&quot;/g,'"'))
-  // }
   arrPayments = JSON.parse(value)
   console.log(arrPayments)
   if (dtInvoiceTable.length) {
@@ -28,6 +21,7 @@ function table_invoices(a){
           searchable: true,
           responsivePriority: 3,
           render: function (data, type, full, meta) {
+            console.log(full)
             return (
               '<div class="form-check"> <input class="form-check-input dt-checkboxes" name="invoicesCh" type="checkbox" value="'+data+'" id="checkbox' +
               data +
@@ -91,8 +85,9 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             let status ="NOT PAYMENT"
             for (let i = 0; i < arrPayments.length; i++) {
               for (let j = 0; j < arrPayments[i]['tPaymentApplication'].length; j++) {
-                console.log(arrPayments[i]['tPaymentApplication'])
+               
                 if (arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'] == data) {
+                //console.log(arrPayments[i]['tPaymentApplication'][j]['Status'])
                     switch (arrPayments[i]['tPaymentApplication'][j]['Status']) {
                       case 'AUTHORIZED':
                         status ="AUTHORIZED"
@@ -112,7 +107,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             }
             var statusClass = {
               "SOAP ERROR": { title: 'AUTHORIZED WITH ERROR', class: 'badge-light-warning' },
-              "AUTHORIZED": { title: 'AUTHORIZED', class: 'badge-light-success' },
+              "AUTHORIZED": { title: 'PARTIALLY UNPAID', class: 'badge-light-success' },
               "DECLINED": { title: 'DECLINED', class: 'badge-light-danger' },
               "NOT PAYMENT": { title: 'UNPAID', class: 'badge-light-info' },
             };
@@ -142,21 +137,21 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
         }
       }, 
       rowCallback: function (row, data) {
-       console.log(data)
+     //  console.log(data)
        let Soaperr
        for (let i = 0; i < arrPayments.length; i++) {
         for (let j = 0; j < arrPayments[i]['tPaymentApplication'].length; j++) {
          // console.log(arrPayments[i]['tPaymentApplication'])
           if (arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'] == data[11]) {
-            console.log(arrPayments[i]['tPaymentApplication'][j]['Status'])
+           // console.log(arrPayments[i]['tPaymentApplication'][j]['Status'])
 
             if (arrPayments[i]['tPaymentApplication'][j]['Status'] == "AUTHORIZED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "DECLINED" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "NOT PAYMENT" || arrPayments[i]['tPaymentApplication'][j]['Status'] == "1") {
               
               
             }else{
-              console.log(arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'])
-              dtInvoice.$(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).attr('disabled', true); 
-              dtInvoice.$(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).remove(); 
+            //  console.log(arrPayments[i]['tPaymentApplication'][j]['INVOICENUM'])
+            // dtInvoice.$(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).attr('disabled', true); 
+              $(`#checkbox${arrPayments[i]['tPaymentApplication'][j]['INVOICENUM']}`).remove(); 
               $(row).addClass('block'); 
             }
           }
@@ -173,7 +168,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             let valoresCheck = [];
             dtInvoice.$('input[type="checkbox"]').each(function(){
                  // If checkbox is checked
-                 console.log(this.disabled)
+               //  console.log(this.disabled)
                  if(this.checked){
                      // Create a hidden element
                     valoresCheck.push(this.value)
@@ -194,6 +189,7 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
             }
           }
         }
+        
       ],
       // For responsive popup
       /*responsive: {
@@ -251,14 +247,41 @@ let tax = parseFloat(amt_wt) - parseFloat(amt_st)
                 select.append('<option value="' + d + '" class="text-capitalize">' + d + '</option>');
               });
           });
+          
       },
       drawCallback: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
+        
+        let link = $('#links').val()
+        let arrLink = JSON.parse(link)
+      
+        console.log(arrLink)
+      if (arrLink['$next']) {
+        console.log(arrLink['$next'])
+        let data = (arrLink['$next']['$url']).split('&')
+        console.log(data)
+      //window.location.href= "/next-page/"+data[1]
+       // $('<a href="/next-page/${data[1]}"> Next</>').insertBefore(`#invoiceTable_paginate .pagination`)
+       if ($('#invoiceTable_next').hasClass('disabled')) {
+         $('#invoiceTable_paginate .pagination').append(`<li class="paginate_button page-item"><a href="/next-page/${data[1]}" class="page-link" data-bs-toggle="tooltip" data-bs-placement="top" title="View more"> >> </></li>`)
+       }       
+      }
+      if (arrLink['$previous']) {
+        console.log(arrLink['$previous'])
+        let data2 = (arrLink['$previous']['$url']).split('&')
+        console.log(data2)
+      //window.location.href= "/next-page/"+data[1]
+       // $('<a href="/next-page/${data[1]}"> Next</>').insertBefore(`#invoiceTable_paginate .pagination`)
+       if ($('#invoiceTable_previous').hasClass('disabled')) {
+         $('#invoiceTable_paginate .pagination').prepend(`<li class="paginate_button page-item"><a href="/next-page/${data2[1]}" class="page-link" data-bs-toggle="tooltip" data-bs-placement="top" title="View previous"> << </></li>`)
+       }       
+      }
       }
     });
     $('#invoiceTable_info').addClass('py-2')
     document.getElementById('invoiceTable_info').parentElement.parentElement.classList.add('align-items-center')
   }
+
 }
 
 $(function () {

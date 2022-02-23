@@ -31,6 +31,12 @@ exports.contactUs = async (req, res) => {
 };
 
 exports.dashboard = async (req, res) => {
+  let msg =false
+  var admin = false
+  if (req.params.msg) {
+    msg = req.params.msg
+    
+  }
 
   const user = res.locals.user['$resources'][0];
   const pictureProfile = res.locals.user['$resources'][1]['pic']
@@ -38,13 +44,17 @@ exports.dashboard = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let query_consulting = "&where=EMAIL eq '" + req.params.email + "'"
   let where_filter_inv = "", count = 0
+  if (user['ROLE'] == 4) {
+    admin=true
+  }
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Preparing openInv list", Status = 1, Comment = "Starting- line 20-";
   var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
   if (user['ROLE'] > 1) {
     count = 100
     where_filter_inv = "&where=EMAIL eq '" + user.EMAIL + "' "
+
   } else {
-    count = 1000
+    count = 100
     
     const maping_login = JSON.parse(await request({
       uri: URI + 'YPORTALBPS?representation=YPORTALBPS.$query&count=1000' + query_consulting,
@@ -65,12 +75,12 @@ exports.dashboard = async (req, res) => {
 
     }))
 
-    where_filter_inv = "&where=BPCINV eq '" + maping_login['$resources'][0]['BPCNUM'] + "' "
-
-    for (let i = 1; i < maping_login['$resources'].length; i++) {
-      where_filter_inv += "or BPCINV eq '" + maping_login['$resources'][i]['BPCNUM'] + "' "
-    }
-  }
+   // where_filter_inv = "&where=EMAIL eq '" + maping_login['$resources'][0]['BPCNUM'] + "' "
+where_filter_inv = "&where=EMAIL eq '" + user['EMAIL'] + "' "
+  //   for (let i = 1; i < maping_login['$resources'].length; i++) {
+  //     where_filter_inv += "or BPCINV eq '" + maping_login['$resources'][i]['BPCNUM'] + "' "
+  //   }
+ }
   Description = "Request Open invoices list from X3", Status = 1, Comment = "Not comments";
  SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
   request({
@@ -86,20 +96,86 @@ exports.dashboard = async (req, res) => {
     json: true, // Para que lo decodifique automáticamente 
   }).then(async inv_wofilter => {// GET INVOICES
     let inv_filtering = JSON.stringify(inv_wofilter['$resources'])
+    let links = inv_wofilter['$links']
     inv_wofilter = inv_wofilter['$resources']
+    
     Description = "Open Invoices list success to X3", Status = 1, Comment = "Loading Page";
     SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-    var paymentsL = await DataBaseSq.Get_tPayments(UserID)
+
+    console.log(UserID)
+    var paymentsL = await DataBaseSq.Get_tPaymentsByUser(UserID)
     //HERE RENDER PAGE AND INTRO INFO
-  
+ 
+  links = JSON.stringify(links)
     res.render("open_invoices", {
       pageName: "Open Invoices",
       dashboardPage: true,
       menu: true,
       invoiceO: true,
-      user,
+      user,msg,
       inv_wofilter, inv_filtering,
-      pictureProfile,paymentsL
+      pictureProfile,paymentsL,admin,links
+    });
+
+
+  });
+
+};
+exports.next_page = async (req, res) => {
+  let msg =false
+  var admin = false
+  if (req.params.msg) {
+    msg = req.params.msg
+    
+  }
+  const user = res.locals.user['$resources'][0];
+  const pictureProfile = res.locals.user['$resources'][1]['pic']
+  const SessionKeyLog = req.session.SessionLog
+  var ip = req.connection.remoteAddress;
+  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'"
+  let where_filter_inv = "", count = 0
+  if (user['ROLE'] == 4) {
+    admin=true
+  }
+  let UserID = user['EMAIL']
+  const {link} = req.body
+  var data = req.params.data
+  console.log(data)
+  //, IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Preparing openInv list", Status = 1, Comment = "Starting- line 20-";
+  //var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+
+ // Description = "Request Open invoices list from X3", Status = 1, Comment = "Not comments";
+ //SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  request({
+    uri: URI+`YPORTALINV?representation=YPORTALINVO.$query&${data}&orderBy=EMAIL,NUM&where=EMAIL eq '${UserID}'`,
+    method: 'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    json: true, // Para que lo decodifique automáticamente 
+  }).then(async inv_wofilter => {// GET INVOICES
+    let inv_filtering = JSON.stringify(inv_wofilter['$resources'])
+    let links = inv_wofilter['$links']
+    inv_wofilter = inv_wofilter['$resources']
+    
+   // Description = "Open Invoices list success to X3", Status = 1, Comment = "Loading Page";
+   // SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+    var paymentsL = await DataBaseSq.Get_tPaymentsByUser(UserID)
+    //HERE RENDER PAGE AND INTRO INFO
+ 
+  links = JSON.stringify(links)
+    res.render("open_invoices", {
+      pageName: "Open Invoices",
+      dashboardPage: true,
+      menu: true,
+      invoiceO: true,
+      user,msg,
+      inv_wofilter, inv_filtering,
+      pictureProfile,paymentsL,admin,links
     });
 
 
@@ -110,7 +186,10 @@ exports.dashboard = async (req, res) => {
 exports.close_invoices = async (req, res) => {
   const user = res.locals.user['$resources'][0];
   const pictureProfile = res.locals.user['$resources'][1]['pic']
-
+let admin = false
+if (user['ROLE']=== 4) {
+  admin = true
+}
   const SessionKeyLog = req.session.SessionLog
   var ip = req.connection.remoteAddress;
   console.log(user)
@@ -136,10 +215,11 @@ exports.close_invoices = async (req, res) => {
       return JSON.stringify(map_loggin)
     }))
 
-    where_filter_inv = "&where=BPCINV eq '" + maping_login['$resources'][0]['BPCNUM'] + "' "
-    for (let i = 1; i < maping_login['$resources'].length; i++) {
-      where_filter_inv += "or BPCINV eq '" + maping_login['$resources'][i]['BPCNUM'] + "' "
-    }
+     // where_filter_inv = "&where=EMAIL eq '" + maping_login['$resources'][0]['BPCNUM'] + "' "
+where_filter_inv = "&where=EMAIL eq '" + user['EMAIL'] + "' "
+//   for (let i = 1; i < maping_login['$resources'].length; i++) {
+//     where_filter_inv += "or BPCINV eq '" + maping_login['$resources'][i]['BPCNUM'] + "' "
+//   }
   }
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Not comments";
   var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
@@ -166,7 +246,7 @@ exports.close_invoices = async (req, res) => {
       menu: true,
       invoiceC: true,
       user,
-      inv_wofilter, inv_filtering,pictureProfile
+      inv_wofilter, inv_filtering,pictureProfile, admin
     });
 
 
@@ -178,6 +258,10 @@ exports.inoviceO_detail = async (req, res) => {
   const user = res.locals.user['$resources'][0];
   const pictureProfile = res.locals.user['$resources'][1]['pic']
   const SessionKeyLog = req.session.SessionLog
+  let admin = false
+  if (user['ROLE']== 4) {
+    admin= true
+  }
   var ip = req.connection.remoteAddress;
   console.log(user)
   let inv_num = req.params.inv_num
@@ -198,12 +282,17 @@ exports.inoviceO_detail = async (req, res) => {
     Description = "Open Invoice details success from X3", Status = 1, Comment = "Loading Page";
     SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
     //HERE RENDER PAGE AND INTRO INFO
+    let closed_inv = false
+console.log(inv_detail)
+    if (inv_detail.SIVYPORINV[0].OPENLOC == 0 ) {
+      closed_inv = true
+    }
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
       dashboardPage: true,
       menu: true,
       invoiceO: true,
-      user, inv_detail,pictureProfile
+      user, inv_detail,pictureProfile, admin,closed_inv
     });
 
 
@@ -215,6 +304,10 @@ exports.inoviceC_detail = async (req, res) => {
   const pictureProfile = res.locals.user['$resources'][1]['pic']
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
+  var admin = false
+  if (user['ROLE'] == 4) {
+    admin = true
+  }
   console.log(user)
   let inv_num = req.params.inv_num
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request closed invoice details from X3", Status = 1, Comment = "Not comments";
@@ -231,16 +324,21 @@ exports.inoviceC_detail = async (req, res) => {
     },
     json: true, // Para que lo decodifique automáticamente 
   }).then(async inv_detail => {// GET INVOICES
-    console.log(inv_detail)
+    
     Description = "Closed Invoice Details success from X3", Status = 1, Comment = "Loading Page";
     SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
     //HERE RENDER PAGE AND INTRO INFO
+    let closed_inv = false
+console.log(inv_detail)
+    if (inv_detail.SIVYPORINV[0].OPENLOC ) {
+      closed_inv = true
+    }
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
       dashboardPage: true,
       menu: true,
       invoiceC: true,
-      user, inv_detail,pictureProfile
+      user, inv_detail,pictureProfile, admin,closed_inv
     });
 
 
@@ -253,6 +351,10 @@ exports.pay_methods = async (req, res) => {
   const pictureProfile = res.locals.user['$resources'][1]['pic']
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
+  var admin = false
+  if (user['ROLE']== 4) {
+    admin = true
+  }
   console.log(user)
   let query_consulting = "&where=EMAIL eq '" + req.params.email + "'"
   let count = 1000
@@ -282,7 +384,7 @@ exports.pay_methods = async (req, res) => {
       menu: true,
       pay_methods: true,
       user,
-      pay_methods,pictureProfile
+      pay_methods,pictureProfile, admin
     });
 
 
@@ -294,7 +396,7 @@ exports.add_pay_methods = async (req, res) => {
   const pictureProfile = res.locals.user['$resources'][1]['pic']
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  var { cardNumber, cardName, addCardExpiryDate, cvv, addressCard, zipCode, totalAmountcard, state, city } = req.body
+  var { cardNumber, cardName, addCardExpiryDate, cvv, addressCard, zipCode, totalAmountcard, state, city,cardNickName } = req.body
   //console.log(user)
   let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'"
   let count = 1000
@@ -356,6 +458,7 @@ exports.add_pay_methods = async (req, res) => {
     body: {
       "EMAIL": user.EMAIL,
       "PAYID": IDPay,
+      "CARDNAME":cardNickName,
       "BPCNUM": "",
       "CARDNO": cardNumber,
       "CVC": cvv,
@@ -392,7 +495,7 @@ exports.edit_pay_methods = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Edit payments methods module to X3", Status = 1, Comment = "Preparing for edit payments methods";
   var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-  var { cardNumber, cardName, addCardExpiryDate, cvv, payID, addressCard, zipCode, state, city } = req.body
+  var { cardNumber, cardName, addCardExpiryDate, cvv, payID, addressCard, zipCode, state, city,cardNickName } = req.body
   cardNumber = encrypt(cardNumber);
   cvv = encrypt(cvv);
   addCardExpiryDate = encrypt(addCardExpiryDate);
@@ -400,7 +503,7 @@ exports.edit_pay_methods = async (req, res) => {
   cardName = encrypt(cardName);
   let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'"
   let count = 1000
-  console.log(query_consulting)
+  console.log(cardNickName)
 
   request({
     uri: URI + `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
@@ -414,6 +517,7 @@ exports.edit_pay_methods = async (req, res) => {
     },
     body: {
       "BPCNUM": "",
+      "CARDNAME":cardNickName,
       "CARDNO": cardNumber,
       "CVC": cvv,
       "EXPDAT": addCardExpiryDate,
@@ -521,9 +625,12 @@ exports.pay_invoices = async (req, res) => {
     },
     json: true, // Para que lo decodifique automáticamente 
   }).then(async inv_wofilter2 => {// GET INVOICES
-    console.log("ip-->>" + ip)
-  //  Description = "Ready to pay invoices selected", Status = 1, Comment = "Loading page: Pay invoices";
-    //SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+    console.log(inv_wofilter2)
+    if (inv_wofilter2['$resources'].length == 0) {
+      Description = "Error get invoice for pay", Status = 1, Comment = "Invoice query response blank or closed inv trying to pay. - Line 526";
+  SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  return false
+   }
     let inv_filtering = JSON.stringify(inv_wofilter2['$resources'])
     return inv_wofilter2['$resources'][0]  
 
@@ -545,9 +652,13 @@ exports.pay_invoices = async (req, res) => {
       },
       json: true, // Para que lo decodifique automáticamente 
     }).then(async inv_wofilter2 => {// GET INVOICES
-      console.log("ip-->>" + ip)
-    //  Description = "Ready to pay invoices selected", Status = 1, Comment = "Loading page: Pay invoices";
-      //SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+      console.log(inv_wofilter2['$resources'].length)
+      if (inv_wofilter2['$resources'].length == 0) {
+         Description = "Error get invoice for pay", Status = 1, Comment = "Invoice query response blank or closed inv trying to pay. - Line 552";
+     SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+     return false
+      }
+    
       let inv_filtering = JSON.stringify(inv_wofilter2['$resources'])
       return inv_wofilter2['$resources'][0]  
   
@@ -556,13 +667,22 @@ exports.pay_invoices = async (req, res) => {
     )  
   }
 
- // console.log(inv_wofilter)
+console.log(inv_wofilter)
+console.log(inv_wofilter[0])
+if (inv_wofilter[0] == false) {
+ console.log('inv blank') 
+  msg = "One or more invoice don't  exist in query for openInv. chekeout wiht support"
+  return res.redirect(`/dashboard/${user['EMAIL']}/${msg}`)
+}
    let subTotal = 0, taxes = 0, Total = 0;
     for (let i = 0; i < inv_wofilter.length; i++) {
       subTotal += parseFloat(inv_wofilter[i].AMTNOT)
       Total += parseFloat(inv_wofilter[i].OPENLOC)
     }
-
+let admin = false
+if (user['ROLE'] == 4) {
+  admin = true
+}
     taxes = parseFloat(Total) - parseFloat(subTotal)
     let items = inv_wofilter.length;
  //HERE RENDER PAGE AND INTRO INFO
@@ -572,7 +692,7 @@ exports.pay_invoices = async (req, res) => {
       menu: true,
       pay_invoices: true,
       user, inv_wofilter, subTotal, taxes,
-      Total, items, list_methods_par,pictureProfile
+      Total, items, list_methods_par,pictureProfile, admin
     });
 
 };
@@ -582,7 +702,7 @@ exports.process_payment = async (req, res) => {
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
   console.log(req.body)
-  var { paymentID, cardNumber, cardName, expMonth, expYear, cvv, totalAmountcard, emailCard, addressCard, zipCode, state, city,inv, appliedAmount } = req.body
+  var { paymentID, cardNumber, cardName, expMonth, expYear, cvv, totalAmountcard, emailCard, addressCard, zipCode, state, city,inv, appliedAmount,reasonLessAmta,userIDInv,typeCC} = req.body
   var enable_capture = true
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "Preparing process payument";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
@@ -672,24 +792,25 @@ exports.process_payment = async (req, res) => {
           console.log(TranAmount)
           let CCExpDate = expMonth + "/" + expYear
            CCExpDate = encrypt(CCExpDate);
-          tPaymentSave = await DataBaseSq.RegtPayment(1, SessionKey, UserID, data.processorInformation.transactionId, TranAmount, data.processorInformation.approvalCode, data.submitTimeUtc, data.processorInformation.transactionId, data.status, data.status, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode)
+          tPaymentSave = await DataBaseSq.RegtPayment(1, SessionKey, UserID, data.processorInformation.transactionId, TranAmount, data.processorInformation.approvalCode, data.submitTimeUtc, data.processorInformation.transactionId, data.status, data.status, cardNumber, CCExpDate, cvv, cardName, addressCard, zipCode,userIDInv)
           paymenKey =(JSON.parse(tPaymentSave)).pmtKey
           console.log("--Sucess in SQL"+paymenKey)
           
           console.log('\nData : ' + JSON.stringify(data));
+          console.log('\nResponse : ' + JSON.stringify(response));
           
           //paymentx3S= await savePaymentX3(inv,appliedAmount,user['EMAIL'])
 //FUNTION TO SAVE IN SOAPx3
 invoices = inv.split(',')
 appliedAmount = appliedAmount.split(',')
-
+reasonLessAmta = reasonLessAmta.split(',')
 var i_file="",inv_detail,amountPayment, paymentx3S, errorSOAP
 let today = moment().format('YYYYMMDD')
 var statusSOAP = []
 const parser = new xml2js.Parser({
  explicitArray: true
 });
-var msgErroSOAP=[]
+var msgErroSOAP=[], inVError = []
 for (let i = 0; i < invoices.length; i++) {
  console.log('--------------------------------------------------------')
   inv_detail = JSON.parse(await request({
@@ -710,8 +831,24 @@ for (let i = 0; i < invoices.length; i++) {
  }))
 
  amountPayment = Number.parseFloat(appliedAmount[i]).toFixed(2);
-
- i_file = `P;;RECDP;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today}|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;${inv_detail.SIVSIHC_ANA[2].CCE};BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`
+switch (typeCC) {
+  case 'Visa':
+    typeCC = 'VISA'
+    break;
+  case 'Mastercard':
+    typeCC = 'MAST'
+    break;
+case 'Discover':
+    typeCC = 'DISC'
+    break;
+  default:
+    typeCC = typeCC
+    break;
+}
+let cardNumberD = decrypt(cardNumber);
+let Lastfour = cardNumberD.slice(-4)
+console.log('reason:'+reasonLessAmta[i].toUpperCase())
+ i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${data.processorInformation.transactionId};${typeCC}${Lastfour}|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLessAmta[i].toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;${inv_detail.SIVSIHC_ANA[2].CCE};BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`
  console.log(i_file);
  let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
 <soapenv:Header/>
@@ -760,27 +897,30 @@ var SOAPP = JSON.parse(await request({
 // SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
  return JSON.stringify(SOAP)
 }))
-parser.parseString(SOAPP,async function(err, result) {
-console.log(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'])
- 
+parser.parseString(SOAPP,async function(err, result) { 
 
 if (result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'] == "1") {
-  Description = "SOAP status 1", Status = 1, Comment = "SOAP SUccess";
-       SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  console.log(result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'] )
+  //Description = "SOAP status 1", Status = 1, Comment = "SOAP SUccess";
+     //  SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
        statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP}) 
+       return statusSOAP
   }else{
-    statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP}) 
-    for (let i = 0; i < result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'].length; i++) {
     
-      msgErroSOAP.push(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'][i]['message'][0])
-       // console.log('\erroMsg : ' + JSON.stringify(paymentx3S[0].error));
-  Description = "SOAP status 0", Status = 0, Comment = "SOAP Failed: "+ JSON.stringify(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'][i]['message'][0]);
-  SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-    }
+    for (let i = 0; i < result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'].length; i++) {
+      console.log(result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'] )
+      msgErroSOAP.push(result['soapenv:Envelope']['soapenv:Body'][0]['multiRef'][i]['message'][0])     
+       
+      
   
+   }
+   
+   inVError.push(inv_detail.NUM)
+statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP, invError:inVError}) 
+Description = "SOAP status 0", Status = 0, Comment = "SOAP Failed: "+ JSON.stringify(msgErroSOAP)+ "Inv: "+JSON.stringify(inVError);
+  SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
   }
 
- // statusSOAP.push({status: result['soapenv:Envelope']['soapenv:Body'][0]['wss:runResponse'][0]['runReturn'][0]['status'][0]['_'], error: msgErroSOAP})  
   return statusSOAP
  });
  paymentx3S = statusSOAP
@@ -904,25 +1044,81 @@ exports.payments = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   console.log(user)
+  var admin = false
+  if (user['ROLE']== 4) {
+    admin = true
+  }
   let query_consulting = "&where=EMAIL eq '" + req.params.email + "'"
   let count = 1000
   let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from X3", Status = 1, Comment = "Not comments";
   var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-  await DataBaseSq.Get_tPayments(UserID).then((payments)=>{
-res.render("payments", {
+
+    
+  const maping_login = JSON.parse(await request({
+    uri: URI + 'YPORTALBPS?representation=YPORTALBPS.$query&count=1000' + query_consulting,
+    method: 'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    json: true, // Para que lo decodifique automáticamente 
+  }).then(async map_loggin => { //Get the mapping loggin
+
+   Description = "Request map_loggin  from X3 succes", Status = 1, Comment = "Not comments";
+   SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+    return JSON.stringify(map_loggin)
+
+  }))
+let bpcnum = []
+
+  for (let i = 0; i < maping_login['$resources'].length; i++) {
+    bpcnum.push(maping_login['$resources'][i]['BPCNUM'])
+  }
+console.log(bpcnum)
+let payments = [], getPayments
+for (let i = 0; i < bpcnum.length; i++) {
+  await DataBaseSq.Get_tPayments(bpcnum[i]).then((response)=>{
+    response = JSON.parse(response)
+    //console.log(response)
+    for (let j = 0; j < response.length; j++) {
+      console.log(payments.length)
+            payments.push({pmtKey:response[j].pmtKey,
+        CustID:response[j].CustID,
+        TransactionID:response[j].TransactionID,
+        TranAmount:response[j].TranAmount,
+        ProcessorStatus:response[j].ProcessorStatus,
+        ProcessorStatusDesc:response[j].ProcessorStatusDesc,
+        DateProcessesed:response[j].DateProcessesed,
+        tPaymentApplication:response[j].tPaymentApplication,})
+          
+      
+    }
+    
+  })
+  
+}
+let newarr=[]
+
+console.log('----')
+var hash = {};
+payments = payments.filter(function(current) {
+  var exists = !hash[current.pmtKey];
+  hash[current.pmtKey] = true;
+  return exists;
+});
+
+ payments = JSON.stringify(payments.filter(el => el != ''))
+    res.render("payments", {
       pageName: "Payments",
       dashboardPage: true,
       menu: true,
       payments: true,
       user,
-      pictureProfile,payments
+      pictureProfile,payments, admin
     });
-  })
-  // console.log(payments)
-  // console.log(payments[4].tPaymentApplication)
-  // payments = JSON.stringify(payments)
-    //HERE RENDER PAGE AND INTRO INFO
-    
 
 };
 
@@ -932,14 +1128,17 @@ exports.settingsPreview = async (req, res) => {
   const user = res.locals.user['$resources'][0];
   const pictureProfile = res.locals.user['$resources'][1]['pic']
 let settings = await DataBaseSq.settingsTable()
-
+let admin = false
+if (user['ROLE']==4) {
+  admin = true
+}
   res.render("sysSettings", {
       pageName: "System Settings",
       dashboardPage: true,
       menu: true,
       sysSettings: true,
       user,
-      pictureProfile,settings
+      pictureProfile,settings, admin
     });
 
 };
@@ -969,6 +1168,121 @@ console.log(saveSys)
 
  res.send({saveSys})
 }
+
+exports.payments_detail = async (req, res) => {
+  const user = res.locals.user['$resources'][0];
+  const pictureProfile = res.locals.user['$resources'][1]['pic']
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  
+  var admin = false
+  if (user['ROLE']== 4) {
+    admin = true
+  }
+  let query_consulting = "&where=EMAIL eq '" + user['EMAIL'] + "'"
+  let count = 1000
+  let UserID = user['EMAIL'], IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from X3", Status = 1, Comment = "Not comments";
+ // var SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+
+let pmtKey = req.params.id
+let payments_dt = [], getPayments
+console.log(pmtKey)
+  await DataBaseSq.Get_tPaymentsBypmtKey(pmtKey).then((response)=>{
+    response = JSON.parse(response)
+    //
+    console.log(response)
+      console.log(payments_dt.length)
+            payments_dt.push({pmtKey:response.pmtKey,
+        CustID:response.CustID,
+        TransactionID:response.TransactionID,
+        TranAmount:response.TranAmount,
+        ProcessorStatus:response.ProcessorStatus,
+        ProcessorStatusDesc:response.ProcessorStatusDesc,
+        DateProcessesed:response.DateProcessesed,
+        tPaymentApplication:response.tPaymentApplication,})
+    
+  })
+
+console.log('----')
+console.log(payments_dt[0].tPaymentApplication)
+let where_filter_inv
+  var inv_wofilter = []
+for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
+      console.log(payments_dt[0].tPaymentApplication[i]['OpenAmount'])
+      console.log(payments_dt[0].tPaymentApplication[i]['AppliedAmount'])
+      if (payments_dt[0].tPaymentApplication[i]['OpenAmount'] == payments_dt[0].tPaymentApplication[i]['AppliedAmount'] && payments_dt[0].tPaymentApplication[i]['Status']== '1') {
+         where_filter_inv = "&where=NUM eq '" + payments_dt[0].tPaymentApplication[i].INVOICENUM + "' "
+     inv_wofilter.push( await request({
+    uri: URI + 'YPORTALINV?representation=YPORTALINVC.$query&count=' + count + " " + where_filter_inv,
+    method: 'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    json: true, // Para que lo decodifique automáticamente 
+  }).then(async inv_wofilter2 => {// GET INVOICES
+    if (inv_wofilter2['$resources'].length == 0) {
+      Description = "Error get invoice for pay", Status = 1, Comment = "Invoice query response blank or closed inv trying to pay. - Line 526";
+  SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  return false
+   }
+    let inv_filtering = JSON.stringify(inv_wofilter2['$resources'])
+    return inv_wofilter2['$resources'][0]  
+
+   
+  })
+  ) 
+      } else {
+        where_filter_inv = "&where=NUM eq '" + payments_dt[0].tPaymentApplication[i].INVOICENUM + "' "
+     inv_wofilter.push( await request({
+    uri: URI + 'YPORTALINV?representation=YPORTALINVO.$query&count=' + count + " " + where_filter_inv,
+    method: 'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    json: true, // Para que lo decodifique automáticamente 
+  }).then(async inv_wofilter2 => {// GET INVOICES
+    if (inv_wofilter2['$resources'].length == 0) {
+      Description = "Error get invoice for pay", Status = 1, Comment = "Invoice query response blank or closed inv trying to pay. - Line 526";
+  SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+  return false
+   }
+    let inv_filtering = JSON.stringify(inv_wofilter2['$resources'])
+    return inv_wofilter2['$resources'][0]  
+
+   
+  })
+  ) 
+      }
+      
+  
+}
+let payments_st= JSON.stringify(payments_dt),
+inv_wofilter_st= JSON.stringify(inv_wofilter)
+ console.log(payments_dt)
+ console.log(inv_wofilter)
+    res.render("detail_payments", {
+      pageName: "Payments Details",
+      dashboardPage: true,
+      menu: true,
+      payment_detail:true,
+      user,
+      pictureProfile,
+      payments_dt, 
+      admin,
+      inv_wofilter, payments_st,
+      inv_wofilter_st
+      
+    });
+
+};
 // exports.pdfInvoice = async (req, res) => {
 //   const user = res.locals.user['$resources'][0];
 //   const pictureProfile = res.locals.user['$resources'][1]['pic']

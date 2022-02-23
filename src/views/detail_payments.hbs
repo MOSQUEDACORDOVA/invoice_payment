@@ -1,0 +1,161 @@
+<style>
+    .invoices-details-colums {
+        display: grid;
+        grid-template-columns: 2fr 2fr 2fr;
+    }
+</style>
+
+
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper container-xxl p-0">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <section class="invoice-preview-wrapper">
+                <div class="row invoice-preview">
+                    <!-- Invoice Actions -->
+
+
+                    <div class="col-12"></div>
+                    <!-- /Invoice Actions -->
+                    <!-- Invoice -->
+                    <div class="col-12">
+                        <div class="card invoice-preview-card">
+                            <div class="card-body invoice-padding pb-0">
+                                <!-- Header starts -->
+                                <div
+                                    class="d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
+                                    <div>
+                                        <div class="logo-wrapper">
+                                            <img src="../../app-assets/images/logo/saw_logo.jpg" class="round" alt=""
+                                                width="345" height="auto">
+                                        </div>
+                                        <p class="card-text mb-25">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
+                                        <p class="card-text mb-0">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
+                                    </div>
+                                    <div class="mt-md-0 mt-2">
+                                        <h4 class="invoice-title">
+                                            Payment Confirmation:
+                                            <span class="invoice-number">{{payments_dt.0.pmtKey}}</span>
+                                        </h4>
+                                        <div class="invoice-date-wrapper">
+                                            <p class="invoice-date-title">Date processesed: {{#format_date
+                                                payments_dt.0.DateProcessesed}} {{/format_date}}</p>
+                                        </div>
+                                        <div class="invoice-date-wrapper">
+                                            <p class="invoice-date-title">Transaction ID: <span style="font-weight: bold;"> {{payments_dt.0.TransactionID}}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Header ends -->
+                            </div>
+                            <hr class="invoice-spacing" />
+
+                            <!-- Address and Contact ends -->
+
+                            <!-- Invoice Description starts -->
+                            <div class="table-responsive">
+                                <table class="table" id="detail_payment">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-1">Invoice</th>
+                                            <th class="py-1">To</th>
+
+
+                                            <th class="py-1">Date</th>
+                                            <th class="py-1">Amount</th>
+                                            <th class="py-1">Applied Amount</th>
+                                            <th class="py-1">Status</th>
+                                        </tr>
+                                    </thead>
+                                    {{!-- <tbody>
+                                        {{#each inv_wofilter as |details i|}}
+                                        <tr>
+                                            <td class="py-1 border-bottom">
+                                                <p class="card-text fw-bold mb-25">{{NUM}}</p>
+                                            </td>
+                                            <td class="py-1 border-bottom">
+                                                <span class="fw-bold">{{BPCINV}}</span>
+                                            </td>
+                                            <td class="py-1 border-bottom">
+                                                <span class="fw-bold">{{#format_date
+                                                INVDAT}} {{/format_date}}</span>
+                                            </td>
+                                            <td class="py-1 border-bottom">
+                                                <span class="fw-bold">${{#decimals AMTLOC}}{{/decimals}}</span>
+                                            </td>
+                                             <td class="py-1 border-bottom">
+                                                <span class="fw-bold">${{#decimals OPENLOC}}{{/decimals}}</span>
+                                            </td>
+                                            <td class="py-1 border-bottom">
+                                            {{#status_detail_payment OPENLOC AMTLOC}}{{/status_detail_payment}}
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                    </tbody> --}}
+                                </table>
+                            </div>
+
+                            <div class="card-body invoice-padding pb-0">
+                                <div class="row invoice-sales-total-wrapper">
+                                    <div class="col-md-6 order-md-1 order-2 mt-md-0 mt-3 d-none">
+                                        <p class="card-text mb-0">
+                                            <span class="fw-bold">Salesperson:</span> <span class="ms-75">Alfie
+                                                Solomons</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <div class="invoice-total-wrapper me-md-3 me-lg-5">
+                                            {{!-- <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Subtotal:
+                                                    <span>${{#decimals inv_detail.AMTNOT}}{{/decimals}}</span>
+                                                </p>
+                                            </div>
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Discount: <span>$0</span></p>
+                                            </div>
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Tax: ${{#tax_calculate inv_detail.AMTNOT
+                                                    inv_detail.AMTATI}} {{/tax_calculate}}<span></span></p>
+                                            </div> --}}
+                                            <hr class="my-50" />
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title" style="font-weight: bold;">Total:
+                                                    <span>${{#decimals payments_dt.0.TranAmount}}{{/decimals}}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Invoice Description ends -->
+
+                            <hr class="invoice-spacing" />
+
+                            <!-- Invoice Note starts -->
+                            <div class="card-body invoice-padding pt-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="fw-bold">Note:</span>
+                                        <span>Thank You!</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Invoice Note ends -->
+                        </div>
+                    </div>
+                    <!-- /Invoice -->
+
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+<input value="{{payments_st}}" class="d-none" id="payments">
+<input value="{{inv_wofilter_st}}" class="d-none" id="invoices_details">
+<!-- END: Content-->

@@ -15,13 +15,12 @@
                                         <th>Ref</th>
                                         <th>Sold to</th>
                                         <th>Company Name</th>
-                                        <th>Due</th>
-                                        <th>Date</th>
-                                        <th>Age day</th>
+                                        <th>Invoice Date</th>
+                                    <th>Due Date</th>
                                         <th>Amt</th>
                                         <th>Tax</th>
                                         <th>Total</th>
-                                        <th>Actions</th>
+                                        {{!-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody class="table-white-space">
@@ -31,13 +30,12 @@
                                         <td>{{INVREF}}</td>
                                         <td>{{BPCORD}}</td>
                                         <td>{{BPCORD_REF.$description}}</td>
+                                        <td>{{INVDAT}}</td>
                                         <td>{{DUDDAT}}</td>
-                                        <td>{{INVDAT}}</td>
-                                        <td>{{INVDAT}}</td>
-                                        <td>{{CUR_REF.$symbol}}{{AMTNOT}}</td>
-                                        <td></td>
-                                        <td>{{CUR_REF.$symbol}}{{AMTATI}}</td>
-                                        <td></td>
+                                        <td>{{CUR_REF.$symbol}}{{#decimals AMTNOT}}{{/decimals}}</td>
+                                        <td>{{AMTNOT}}</td>
+                                        <td>{{CUR_REF.$symbol}}{{#decimals AMTATI}}{{/decimals}}</td>
+                                        {{!-- <td></td> --}}
                                     </tr>
                                     {{/each}}
                                 </tbody>

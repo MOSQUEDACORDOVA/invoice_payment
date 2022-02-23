@@ -33,13 +33,26 @@
                                                     account</label>
                                             </div>
                                         </div>
-                                        <div class="col-12 mt-0">
+                                        <div class="col-8 mt-0">
                                             <label class="form-label" for="addCardNumber">Card Number</label>
                                             <div class="input-group input-group-merge">
                                                 <input id="addCardNumber" name="cardNumber"
                                                     class="form-control add-credit-card-mask" type="number"
                                                     placeholder="5637 8172 1290 7898" aria-describedby="addCard2"
                                                     data-msg="Please enter your credit card number" required
+                                                    maxlength="16" />
+                                                <span class="input-group-text cursor-pointer p-25" id="addCard2">
+                                                    <span class="add-card-type"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 mt-0">
+                                            <label class="form-label" for="addCardNumber">Card Nick Name</label>
+                                            <div class="input-group input-group-merge">
+                                                <input id="addcardNickName" name="cardNickName"
+                                                    class="form-control add-credit-card-mask" type="text"
+                                                    placeholder="Please enter your credit card nickname" aria-describedby="addCard2"
+                                                    data-msg="Please enter your credit card nickname" required
                                                     maxlength="16" />
                                                 <span class="input-group-text cursor-pointer p-25" id="addCard2">
                                                     <span class="add-card-type"></span>
@@ -182,7 +195,7 @@
                                                 <div class="card-information">
                                                     <img class="mb-1 img-fluid"
                                                         src="../../app-assets/images/icons/payments/{{#GetCardType CARDNO}}{{/GetCardType}}.png"
-                                                        alt="Master Card" />
+                                                        alt="Mastercard" />
                                                     <div class="d-flex align-items-center mb-50">
                                                         <h6 class="mb-0">{{#decryptData NAME}}{{/decryptData}}</h6>
                                                         {{#primary_payment PAYID}}{{/primary_payment}}

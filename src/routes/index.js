@@ -24,16 +24,21 @@ router.post('/register', userController.createUser);
 
 // Set Password
 router.get('/resetpassform/:email', userController.resetPasswordForm);
-router.post('/resetpassform', userController.resetPasswordForm);
+router.post('/resetpassform', userController.sendToken);
 router.get('/forgot-pass', userController.formSearchAccount);
 router.post('/new-pass-save', userController.updatePassword);
+router.get('/send-token/:email/:token', mailCtrl.sendtokenResetPass)
+router.get('/set-password/:token', userController.resetPasswordForm)
 
 //dash
 router.get('/dashboard', dashboardController.dashboard);
 router.get('/dashboard/:email', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/dashboard/:email/:msg', authController.authenticatedUser, dashboardController.dashboard);
 router.get('/close_invoices/:email', authController.authenticatedUser, dashboardController.close_invoices);
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
+
+router.get('/next-page/:data', authController.authenticatedUser, dashboardController.next_page)
 
 router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
 
@@ -48,15 +53,18 @@ router.post('/pay_invoices', authController.authenticatedUser, dashboardControll
 router.post('/process_payment', authController.authenticatedUser, dashboardController.process_payment);
 router.post('/applied_amount', authController.authenticatedUser, dashboardController.applied_amount);
 
-//upload-file
+//upload-file and edit profile
 router.post('/upload-file', fileController.uploadFile);
 router.post('/save-pic-profile', authController.authenticatedUser, dashboardController.save_PicProfile);
+router.post('/update-profile', authController.authenticatedUser, userController.UpdateUser);
+
 
 //PRINTS
 router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardController.printInvoice);
 
 //payments
 router.get('/payments/:email', authController.authenticatedUser, dashboardController.payments);
+router.get('/payment_view/:id', authController.authenticatedUser, dashboardController.payments_detail);
 
 //Mails
 router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);

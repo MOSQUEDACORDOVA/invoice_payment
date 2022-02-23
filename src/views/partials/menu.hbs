@@ -145,8 +145,8 @@
                 </li>
                 <li class="{{#if contactUs}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/contactUs"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
                 </li>
-                 <li class="{{#if sysSettings}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/sysSettings"><i data-feather="settings"></i><span class="menu-title text-truncate" data-i18n="Email">System Settings</span></a>
-                </li>
+                {{#if admin}} <li class="{{#if sysSettings}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/sysSettings"><i data-feather="settings"></i><span class="menu-title text-truncate" data-i18n="Email">System Settings</span></a>
+                </li>{{/if}}
             </ul>
         </div>
     </div>
@@ -200,7 +200,11 @@
      $('#account-upload').on('change', (event)=>{
       uploadPic(event)
     })
-    
+     $('#btn_edit_profile').on('click', ()=>{
+
+      updateProfile()
+    })
+
 const uploadPic = (event) => {
   console.log('here')
     const files = event.target.files;
@@ -250,7 +254,7 @@ const uploadPic = (event) => {
   });
   };
 
-  const savePic = (picture) => {
+const savePic = (picture) => {
       let email = '{{user.EMAIL}}'
   console.log(email)
     const data = new FormData();
@@ -258,6 +262,35 @@ const uploadPic = (event) => {
     data.append("picture", picture);
     $.ajax({
       url: '/save-pic-profile',
+      type: 'POST',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data, textStatus, jqXHR)
+      {       
+        console.log(data)
+
+        location.reload()  
+        // $(`#subtext-progress`).text('Image uploaded successfully - 100%');
+
+         
+      },
+      error: function (jqXHR, textStatus) { 
+          $("#subtext-progress").text('100% - Error');
+      }
+  });
+  };
+
+const updateProfile = (picture) => {
+      let email = '{{user.EMAIL}}', firstName_edit_profile = $(`#firstName_edit_profile`).val(),lastName_edit_profile= $(`#lastName_edit_profile`).val()
+  console.log(email)
+    const data = new FormData();
+    data.append("email", email);
+    data.append("lastName_edit_profile", lastName_edit_profile);
+    data.append("firstName_edit_profile", firstName_edit_profile);
+    $.ajax({
+      url: '/update-profile',
       type: 'POST',
       data: data,
       cache: false,

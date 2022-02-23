@@ -69,7 +69,7 @@ console.log(info);
 
 exports.errorPaymentX3 = async function (req, res) {
   console.log(req.body)
-  const {SystemLogNum, paymenKey, UserID,paymentx3SMessage} = req.body;
+  const {SystemLogNum, paymenKey, UserID,paymentx3SMessage,invError} = req.body;
   //var token = req.params.mail;
  // var mail = req.params.mail;
  // var token = req.params.token;
@@ -108,6 +108,7 @@ exports.errorPaymentX3 = async function (req, res) {
       
       <p>The user: ${UserID} made a successful payment, but the SOAP returned the following error:</p>
       <p>Error msg: ${paymentx3SMessage},</p>
+      <p>Invoice Error: ${invError},</p>
      <p> tSystemLog Num: ${SystemLogNum},</p>
       <p>paymenKey: ${paymenKey}</p>
         
@@ -123,6 +124,69 @@ exports.errorPaymentX3 = async function (req, res) {
       console.log(msg)
       //res.redirect("/error404/PYT-27");
       res.send(500, err.message);
+    } else {
+console.log(info);
+      console.log("Email sent fine");
+      let msg =
+        "Se envio un email, para validar y confirmar su cuenta";
+      //res.redirect("/emailregsend/PYT-27/"+emailUser);
+
+      res.status(200).jsonp(info);
+    }
+  });
+};
+
+exports.sendtokenResetPass = async function (req, res) {
+
+ var mail = req.params.email;
+  var token = req.params.token;
+ const resetUrl = `http://${req.headers.host}/set-password/${token}`;
+
+ 
+  // Transporter
+  var transporter = nodemailer.createTransport({
+    host: '192.168.0.8',
+    port: 25,
+    secure: false,
+    auth: {
+        user: '',
+        pass: '',
+    }
+  });
+  // Email options
+  var mailOptions = {
+    from: "portal@riboliwines.com",
+    to: mail,
+    subject: "Reset Password",
+    text: "Welcome to  ",
+    html: `
+    <html>
+      <head>	
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"  /> 
+      </head>
+      <body style="font-family: 'Poppins', sans-serif; font-size: 1.4em;">
+      
+      <p>Hi,
+
+      There was a request to change your password!
+      
+      If you did not make this request then please ignore this email.
+      
+      Otherwise, please click this link to change your password: <a href="${resetUrl}">Click Here!</a></p>
+        
+      </body>
+  
+    </html>`
+  };
+  // Enviamos el email
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      let msg = "Error al enviar Mensaje";
+      console.log(msg)
+      //res.redirect("/error404/PYT-27");
+      res.send(500, error.message);
     } else {
 console.log(info);
       console.log("Email sent fine");

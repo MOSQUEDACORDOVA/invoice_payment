@@ -56,26 +56,25 @@
                     <div class="row pb-2" style="margin-left: 2rem;">
                         <div class="row invoice-spacing invoices-details-colums">
                                     <div class="col-xl-8 p-0">
-                                        <h6 class="mb-25">Invoice Address:</h6>
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Address:</h6>
+                                        <h6 class="mb-25">{{inv_detail.SIVYPORINV.0.BPINAM}}</h6>
                                         <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}} {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}</h6>
                                         <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}}, {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
                                         <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
                                     </div>
-                                     <div class="col-xl-6 p-0">
-                                        <h6 class="mb-25">Ship to:</h6>
-                                        <h6 class="card-text mb-25">{{inv_detail.BPCORD}}</h6>
+                                     <div class="col-xl-8 p-0 mt-xl-0 mt-2">
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Ship to:</h6>
+                                        <h6 class="card-text mb-25">{{inv_detail.SIVYPORINV.0.BPDNAM}}</h6>
                                         <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}} {{inv_detail.BPDADDLIG3}}</p>
                                         <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}} {{inv_detail.BPDPOSCOD}}</p>
                                         <p class="card-text mb-25">{{inv_detail.BPDCRYNAM}}</p>
 
                                     </div>
-                                    <div class="col-xl-4 p-0">
-                                        <h6 class="mb-2">Invoice Details:</h6>
-                                        <p class="card-text mb-25">Unpaid Amount: ${{inv_detail.SIVYPORINV.0.OPENLOC}}
-                                        </p>
-                                        <p class="card-text mb-25">Last Payment Date: {{#format_date
-                                            inv_detail.SIVYPORINV.0.LASTPAYDAT}}{{/format_date}} </p>
-                                        <p class="card-text mb-25"> </p>
+                                    <div class="col-xl-8 p-0 mt-xl-0 mt-2">
+                                        {{!-- <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Details:</h6> --}}
+                                        <p class="card-text mb-25">Rep: {{inv_detail.SIVYPORINV.0.SOLDREP_REF.$description}}</p>
+                                        <p class="card-text mb-25">Phone: {{#phonenumberFormat inv_detail.SIVYPORINV.0.SOLDREPTEL}}{{/phonenumberFormat}}</p>
+                                        <p class="card-text mb-25">Email: {{inv_detail.SIVYPORINV.0.SOLDREPWEB}}</p>
                                         <p class="card-text mb-0"> </p>
 
                                     </div>
@@ -127,31 +126,47 @@
                     </div>
 
                     <div class="row invoice-sales-total-wrapper mt-1">
-                        <div class="col-md-4 order-md-1 order-2 mt-md-0 mt-3">
-                            <p class="card-text mb-0 d-none"><span class="fw-bold">Salesperson:</span> <span class="ms-75">Alfie Solomons</span></p>
-                        </div>
-                        <div class="col-md-3 d-flex order-md-2">
-                            <div class="invoice-total-wrapper">
-                                <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Subtotal:</p>
-                                    <p class="invoice-total-amount">${{#decimals inv_detail.AMTNOT}}{{/decimals}}</p>
+                        <div class="row invoice-sales-total-wrapper">
+                                    <div class="col-8">
+                                        <p class="card-text mb-0">
+                                            <span class="fw-bold">Last payment date:</span> <span class="ms-75">{{#format_date
+                                                inv_detail.SIVYPORINV.0.LASTPAYDAT}} {{/format_date}}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="invoice-total-wrapper me-md-3 me-lg-5 d-flex flex-column">
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Subtotal:
+                                                    <span>${{#decimals inv_detail.AMTNOT}}{{/decimals}}</span>
+                                                </p>
+                                            </div>
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Discount: <span>$0</span></p>
+                                            </div>
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title">Tax: ${{#tax_calculate inv_detail.AMTNOT
+                                                    inv_detail.AMTATI}} {{/tax_calculate}}<span></span></p>
+                                            </div>
+                                            <hr class="my-50" />
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title" style="font-weight: bold;">Total:
+                                                    <span >${{#decimals inv_detail.AMTATI}}{{/decimals}}</span>
+                                                </p>
+                                            </div>
+                                             <hr class="my-50" />
+                                            <div class="invoice-total-item">
+                                                <p class="invoice-total-title" >Payment applied:
+                                                    <span >${{#appliedAmt inv_detail.SIVYPORINV.0.AMTLOC inv_detail.SIVYPORINV.0.OPENLOC}}{{/appliedAmt}}</span>
+                                                </p>
+                                            </div>
+                                            <div class="invoice-total-item" style="font-weight: bold;">
+                                                <p class="invoice-total-title" >Balance:
+                                                    <span >${{#decimals inv_detail.SIVYPORINV.0.OPENLOC}}{{/decimals}}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Discount:</p>
-                                    <p class="invoice-total-amount">$0</p>
-                                </div>
-                                <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Tax:</p>
-                                    <p class="invoice-total-amount">${{#tax_calculate inv_detail.AMTNOT
-                                                    inv_detail.AMTATI}} {{/tax_calculate}}</p>
-                                </div>
-                                <hr class="my-50" />
-                                <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Total:</p>
-                                    <p class="invoice-total-amount">${{#decimals inv_detail.AMTATI}}{{/decimals}}</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <hr class="my-2" />

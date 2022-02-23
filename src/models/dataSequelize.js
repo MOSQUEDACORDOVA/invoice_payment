@@ -7,11 +7,11 @@ var moment = require('moment-timezone');
 
 module.exports = {
   //USUARIO
-  RegtPayment(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc, CCNo, CCExpDate, CCCV2, BilltoName, BillAddressLine1, BillPostalCode) {
+  RegtPayment(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc, CCNo, CCExpDate, CCCV2, BilltoName, BillAddressLine1, BillPostalCode,userIDInv) {
     return new Promise((resolve, reject) => {
       tPayment.create(
         {
-          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID, TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, CCNo: CCNo, CCExpDate: CCExpDate, CCCV2: CCCV2, BilltoName: BilltoName, BillAddressLine1: BillAddressLine1, BillPostalCode: BillPostalCode})
+          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID, CustID: userIDInv,TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, CCNo: CCNo, CCExpDate: CCExpDate, CCCV2: CCCV2, BilltoName: BilltoName, BillAddressLine1: BillAddressLine1, BillPostalCode: BillPostalCode})
         .then((data) => {
           let data_set = JSON.stringify(data);
           resolve(data_set);
@@ -22,9 +22,10 @@ module.exports = {
         });
     });
   },
-  Get_tPayments(email){
+  Get_tPayments(CustID){
     return new Promise((resolve, reject) => {
-      tPayment.findAll({where:{UserID:email}, include:[
+      tPayment.findAll({where:{CustID: {
+        [Op.like]: `%${CustID}%`}}, include:[
         {model: tPaymentApplication , as:'tPaymentApplication'},
       ],
       })
@@ -38,7 +39,39 @@ module.exports = {
         });
     });
   },  
-
+  Get_tPaymentsByUser(UserID){
+    return new Promise((resolve, reject) => {
+      tPayment.findAll({where:{UserID: {
+        [Op.like]: `%${UserID}%`}}, include:[
+        {model: tPaymentApplication , as:'tPaymentApplication'},
+      ],
+      })
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },  
+  Get_tPaymentsBypmtKey(pmtKey){
+    return new Promise((resolve, reject) => {
+      tPayment.findOne({where:{pmtKey:pmtKey}, include:[
+        {model: tPaymentApplication , as:'tPaymentApplication'},
+      ],
+      })
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+          ////console.log(id_usuario);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }, 
   RegtPaymentApplication(inv, amount, shortDesc, appliedAmount,pmtKey,status) {
     return new Promise((resolve, reject) => {
       tPaymentApplication.create(
