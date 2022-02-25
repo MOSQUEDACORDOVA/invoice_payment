@@ -1,81 +1,12 @@
-<style>
-    .ecommerce-application .list-view .ecommerce-card {
-        grid-template-columns: 2fr 2fr;
-    }
-
-    .ecommerce-application .checkout-items .ecommerce-card .delivery-date {
-        margin-top: 0.5rem;
-    }
-
-    .ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
-        display: grid;
-        grid-template-columns: 0.5fr 0.8fr;
-        padding: 0.5rem;
-        justify-items: center;
-        align-items: center;
-    }
-
-    .ecommerce-application .list-view .ecommerce-card .item-options {
-        padding: 0;
-    }
-
-    @media (max-width: 767.98px) {
-        .ecommerce-application .list-view .ecommerce-card {
-            grid-template-columns: 1fr;
-            display: flex;
-            flex-direction: row;
-        }
-
-        .ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
-            display: flex;
-            flex-direction: column;
-            padding: 0.5rem;
-        }
-
-        .ecommerce-application .checkout-items .ecommerce-card .item-options .btn {
-            margin-bottom: 0.5rem;
-        }
-    }
-      .ecommerce-application .checkout-items .ecommerce-card .item-company, .ecommerce-application .checkout-items .ecommerce-card .item-rating {
-    margin-bottom: 0 !important;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="../../../assets/css/pay_invoices_page.css">
 <!-- BEGIN: Content-->
 <div class="app-content content ecommerce-application">
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
     <div class="content-wrapper container-xxl p-0">
         <div class="content-header row">
-           {{!----<div class="content-header-left col-md-9 col-12 mb-2">
-                <div class="row breadcrumbs-top">
-                    <div class="col-12">
-                        <h2 class="content-header-title float-start mb-0">Checkout</h2>
-                        <div class="breadcrumb-wrapper">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/dashboard/{{user.EMAIL}}">Home</a>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>---}}
             <div class="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
-                {{!-- <div class="mb-1 breadcrumb-right">
-                    <div class="dropdown">
-                        <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                data-feather="grid"></i></button>
-                        <div class="dropdown-menu dropdown-menu-end"><a class="dropdown-item" href="app-todo.html"><i
-                                    class="me-1" data-feather="check-square"></i><span
-                                    class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i
-                                    class="me-1" data-feather="message-square"></i><span
-                                    class="align-middle">Chat</span></a><a class="dropdown-item"
-                                href="app-email.html"><i class="me-1" data-feather="mail"></i><span
-                                    class="align-middle">Email</span></a><a class="dropdown-item"
-                                href="app-calendar.html"><i class="me-1" data-feather="calendar"></i><span
-                                    class="align-middle">Calendar</span></a></div>
-                    </div>
-                </div> --}}
+
             </div>
         </div>
         <div class="content-body">
@@ -93,22 +24,6 @@
                             </span>
                         </button>
                     </div>
-
-                    {{!--
-                    <div class="line">
-                        <i data-feather="chevron-right" class="font-medium-2"></i>
-                    </div>
-                    <div class="step" data-target="#step-address" role="tab" id="step-address-trigger">
-                        <button type="button" class="step-trigger">
-                            <span class="bs-stepper-box">
-                                <i data-feather="home" class="font-medium-3"></i>
-                            </span>
-                            <span class="bs-stepper-label">
-                                <span class="bs-stepper-title">Address</span>
-                                <span class="bs-stepper-subtitle">Enter Your Address</span>
-                            </span>
-                        </button>
-                    </div> --}}
                     <div class="line">
                         <i data-feather="chevron-right" class="font-medium-2"></i>
                     </div>
@@ -134,11 +49,6 @@
                             <div class="checkout-items">
                                 {{#each inv_wofilter as |invoice i|}}
                                 <div class="card ecommerce-card mb-1">
-                                    {{!-- <div class="item-img">
-                                        <a href="/invoiceO_detail/{{NUM}}" target="_blank">
-                                            <img src="../../../app-assets/images/logo/logo.png" alt="img-placeholder" />
-                                        </a>
-                                    </div> --}}
                                     <div class="card-body p-1">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="item-name d-flex align-items-center">
@@ -148,10 +58,7 @@
                                                         class="company-name bpcinv">{{BPCINV}}</span></span>
 
                                             </div>
-                                            {{!-- <a class="text-success mb-1" href="/invoiceO_detail/{{NUM}}"
-                                                target="_blank">Details</a> --}}
                                             <span class="delivery-date text-muted m-0">Date: {{INVDAT}}</span>
-                                            {{!-- <span class="text-success">17% off 4 offers Available</span> --}}
                                         </div>
                                     </div>
                                     <div class="item-options text-center">
@@ -167,28 +74,24 @@
                                                 <input type="text" id="previousAmt{{i}}" value="{{OPENLOC}}" hidden />
                                                 <input type="text" name="applied_amount"
                                                     class="form-control applied_amountINV" value="{{NUM}}" hidden />
-                                                <input type="text" name="reasons" class="form-control reasons"
-                                                    id="reasons{{i}}" value="-" hidden />
-
-
-                                                <p class="card-text shipping">
-                                                    {{!-- <span class="badge rounded-pill badge-light-success">Free
-                                                        Shipping</span> --}}
-                                                </p>
                                             </div>
+
                                             <button type="button" class="btn btn-sm btn-light remove-wishlist"
                                                 data-amount="{{AMTNOT}}" data-amwt="{{OPENLOC}}">
                                                 <i data-feather="x" class="align-middle me-25"></i>
                                                 <span>Remove</span>
                                             </button>
-                                            {{!-- <button type="button" class="btn btn-primary btn-cart applied-amount"
-                                                data-inv="{{NUM}}" data-amount="{{AMTNOT}}" data-id="{{i}}"
-                                                data-amwt="{{OPENLOC}}" style="margin-top: 0;">
-                                                <i data-feather="minus-circle" class="align-middle me-25"></i>
-                                                <span class="text-truncate">Applied amount</span>
-                                            </button> --}}
+                                            <div id="shortReasonLabel{{i}}" class="d-none">
+                                                <label for="reasons{{i}}">Short Description</label>
+                                            </div>
                                         </div>
 
+                                        <div id="shortReasonIn{{i}}"
+                                            class="d-none d-flex align-items-center justify-content-center mb-1">
+                                            <input type="text" name="reasons" class="form-control reasons"
+                                                id="reasons{{i}}" value="" maxlength="30"
+                                                placeholder="Please enter a reason for short pay" style="width: 90%;" />
+                                        </div>
                                     </div>
                                 </div>
                                 {{/each}}
@@ -199,16 +102,8 @@
                             <div class="checkout-options">
                                 <div class="card">
                                     <div class="card-body">
-
-                                        {{!-- <div class="coupons input-group input-group-merge">
-                                            <input type="text" class="form-control" placeholder="Coupons"
-                                                aria-label="Coupons" aria-describedby="input-coupons" />
-                                            <span class="input-group-text text-primary ps-1"
-                                                id="input-coupons">Apply</span>
-                                        </div> --}}
                                         <hr />
                                         <div class="price-details">
-                                            {{!-- <h6 class="price-title">Price Details</h6> --}}
                                             <ul class="list-unstyled d-none">
                                                 <li class="price-detail">
                                                     <div class="detail-title">Sub-Total</div>
@@ -225,13 +120,12 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                            {{!--
-                                            <hr /> --}}
                                             <ul class="list-unstyled">
                                                 <li class="price-detail">
                                                     <div class="detail-title detail-total">Total payment</div>
                                                     <div class="detail-amt fw-bolder">$<span class="total_preview"
-                                                            id="total_preview">{{#decimals Total}}{{/decimals}}</span></div>
+                                                            id="total_preview">{{#decimals Total}}{{/decimals}}</span>
+                                                    </div>
                                                 </li>
                                             </ul>
                                             <button type="button" class="btn btn-primary w-100 btn-next place-order"
@@ -255,7 +149,6 @@
                                         </p>
                                     </div>
                                     <div class="card-body">
-
                                         {{#each list_methods_par as |pay_met i|}}
                                         <h6 class="card-holder-name my-75">{{#decryptData NAME}}{{/decryptData}}</h6>
                                         <div class="form-check">
@@ -266,7 +159,8 @@
                                                 data-exp="{{#decryptData EXPDAT}}{{/decryptData}}" data-id="{{PAYID}}"
                                                 data-zip="{{#decryptData ZIP}}{{/decryptData}}"
                                                 data-cvv="{{#decryptData CVC}}{{/decryptData}}"
-                                                data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}" data-typecc="{{#GetCardType CARDNO}}{{/GetCardType}}"/>
+                                                data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}"
+                                                data-typecc="{{#GetCardType CARDNO}}{{/GetCardType}}" />
                                             <label class="form-check-label" for="{{PAYID}}">
                                                 {{#GetCardType CARDNO}}{{/GetCardType}} {{#cardHide
                                                 CARDNO}}{{/cardHide}}
@@ -318,21 +212,21 @@
 
                                                 <div class="col-8 mt-0">
                                                     <label class="form-label" for="addCardNumber">Card Number</label>
-                                                        <input id="addCardNumber" name="cardNumber"
-                                                            class="form-control add-credit-card-mask" type="number"
-                                                            placeholder="5637 8172 1290 7898"
-                                                            aria-describedby="addCard2"
-                                                            data-msg="Please enter your credit card number" required
-                                                            maxlength="16" />
+                                                    <input id="addCardNumber" name="cardNumber"
+                                                        class="form-control add-credit-card-mask" type="number"
+                                                        placeholder="5637 8172 1290 7898" aria-describedby="addCard2"
+                                                        data-msg="Please enter your credit card number" required
+                                                        maxlength="16" />
                                                 </div>
                                                 <div class="col-4 mt-0">
-                                            <label class="form-label" for="addCardNumber">Card Nick Name</label>
-                                                <input id="addcardNickName" name="cardNickName"
-                                                    class="form-control add-credit-card-mask" type="text"
-                                                    placeholder="Please enter your credit card nickname" aria-describedby="addCard2"
-                                                    data-msg="Please enter your credit card nickname" required
-                                                    maxlength="16" />
-                                        </div>
+                                                    <label class="form-label" for="addCardNumber">Card Nick Name</label>
+                                                    <input id="addcardNickName" name="cardNickName"
+                                                        class="form-control add-credit-card-mask" type="text"
+                                                        placeholder="Please enter your credit card nickname"
+                                                        aria-describedby="addCard2"
+                                                        data-msg="Please enter your credit card nickname" required
+                                                        maxlength="16" />
+                                                </div>
 
                                                 <div class="col-md-6">
                                                     <label class="form-label" for="addCardName">Name On Card</label>
@@ -466,8 +360,6 @@
                                             </form>
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
 
@@ -482,23 +374,11 @@
                                                 <div class="details-title">Paying amount for <span
                                                         id="item_preview">{{items}}</span> Invoices </div>
                                                 <div class="detail-amt">
-                                                    <strong>$<span class="total_preview">{{#decimals Total}}{{/decimals}}</span></strong>
+                                                    <strong>$<span class="total_preview">{{#decimals
+                                                            Total}}{{/decimals}}</span></strong>
                                                 </div>
                                             </li>
-                                            {{!-- <li class="price-detail">
-                                                <div class="details-title">Delivery Charges</div>
-                                                <div class="detail-amt discount-amt text-success">Free</div>
-                                            </li> --}}
                                         </ul>
-                                        {{!--
-                                        <hr />
-                                        <ul class="list-unstyled price-details">
-                                            <li class="price-detail">
-                                                <div class="details-title">Amount Payable</div>
-                                                <div class="detail-amt fw-bolder">$<span
-                                                        class="total_preview">{{Total}}</span></div>
-                                            </li>
-                                        </ul> --}}
                                     </div>
                                 </div>
                             </div>
@@ -520,22 +400,16 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            {{!-- <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel160">Primary Modal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div> --}}
             <div class="modal-body text-center">
                 <div class="spinner-border text-center" role="status" style="width: 10rem;height: 10rem;">
 
                 </div>
                 <span class="visually-">Processing payment, please wait..</span>
             </div>
-            {{!-- <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
-            </div> --}}
         </div>
     </div>
 </div>
+<!-- Form hidden to creddit card info and applied amounts -->
 <div class="d-none">
     <form id="form_processPay">
         <input id="paymentID" name="paymentID">
@@ -561,377 +435,11 @@
         <input class="invoicesToPay" name="inv">
         <input class="amountsbyInv" name="appliedAmount">
         <input class="reasonLessAmta" name="shortDesc">
-        <input id="pmtKey" name="pmtKey"/>
-        <input id="status" name="status"/>
+        <input id="pmtKey" name="pmtKey" />
+        <input id="status" name="status" />
     </form>
 
 </div>
 
 <!-- END: Content-->
-<script>
-    $('.paymentOptions').on('click', (e) => {
-        let cardNumber = e.currentTarget.dataset['card'],
-            carName = e.currentTarget.dataset['name'],
-            cardExp = e.currentTarget.dataset['exp'],
-            paymentID = e.currentTarget.dataset['id'],
-            zip = e.currentTarget.dataset['zip'],
-            address = e.currentTarget.dataset['address'],
-            city = e.currentTarget.dataset['city'],
-            state = e.currentTarget.dataset['state'],
-            cvv = e.currentTarget.dataset['cvv'],
-            typeCC = e.currentTarget.dataset['typecc']
-            console.log(typeCC)
-$('#card-holder-cvv').val(cvv)
-        let split_exp = cardExp.split('/')
-        $('#paymentID').val(paymentID)
-        $('#cardNumber').val(cardNumber)
-        $('#cardName').val(carName)
-        $('#cityP').val(city)
-        $('#stateP').val(state)
-        $('#expMonth').val(split_exp[0])
-        $('#expYear').val(split_exp[1])
-        $('#addressCardP').val(address)
-        $('#zipCodeP').val(zip)
-        $('#cvv').val(cvv)
-        $('#typeCC').val(typeCC)
-    })
-
-   /* $('#card-holder-cvv').on('keyup', (e) => {
-        $('#cvv').val(e.target.value)
-    })*/
-
-    $('#btn_continue').on('click', (e) => {
-
-        if ($('#totalAmountcard').val() == 0) {
-            Swal.fire("The amount to pay must be greater than zero.!!")
-            return
-        }
-        if ($('#cardNumber').val() == "") {
-            Swal.fire("You must select a payment method")
-            $('.paymentOptions').focus()
-            return
-        }
-        if ($('#card-holder-cvv').val() == "") {
-            Swal.fire("You must enter the cvv of your credit card..!!")
-            $('#card-holder-cvv').focus()
-            return
-        }
-
-        sendformO('form_processPay')
-    })
-
-
-    $('#diferentCardcheck').on('change', (e) => {
-        if ($('#diferentCardcheck').is(':checked')) {
-            $('#otherCard').removeClass('collapse')
-            return
-        }
-        $('#otherCard').addClass('collapse')
-
-    })
-    $('#payotherCard').on('click', (e) => {
-
-        if ($('#totalAmountcard').val() == 0) {
-            Swal.fire("The amount to pay must be greater than zero.!!")
-            return
-        }
-
-        if ($('#addCardNumber').val() == "") {
-            Swal.fire("You must card Number")
-            $('#addCardNumber').focus()
-            return
-        }
-        if ($('#addCardName').val() == "") {
-            Swal.fire("You must a card name")
-            $('#addCardName').focus()
-            return
-        }
-        if ($('#addCardExpiryDate').val() == "") {
-            Swal.fire("You must enter the Exp of your credit card..!!")
-            $('#addCardExpiryDate').focus()
-            return
-        }
-        if ($('#addCardCvv').val() == "") {
-            Swal.fire("You must enter the cvv of your credit card..!!")
-            $('#addCardCvv').focus()
-            return
-        }
-
-        if ($('#addSaveCard').is(':checked')) {
-            $.ajax({
-                url: `/add_method_pay`,
-                type: 'POST',
-                data: $('#creditCardFormOther').serialize(),
-                beforeSend: function () {
-                    // setting a timeout
-                    $('#bn_loading').removeClass('d-none')
-                    $('#primary').modal('show')
-                },
-                success: function (data, textStatus, jqXHR) {
-
-                    if (data.msg) {
-                        Swal.fire(data.msg)
-                        return
-                    }
-                    $('#bn_loading').removeClass('d-none')
-                    $('#primary').modal('show')
-                    sendformO('creditCardFormOther')
-                    return
-                },
-                error: function (jqXHR, textStatus) {
-                    console.log('error:' + jqXHR)
-                }
-            })
-        } else {
-            sendformO('creditCardFormOther')
-        }
-
-    })
-    $('#addCardExpiryDate').on('keyup', (e) => {
-        let valor = e.target.value
-        if (valor.length == 2) {
-            if (valor > 12) {
-                $('#addCardExpiryDate').val('')
-                $('#expMonthO').val('')
-                return false
-            }
-            $('#expMonthO').val(valor)
-            valor += '/'
-        }
-        if (valor.length > 3) {
-            $('#expYearO').val(valor[3] + valor[4])
-        }
-        $('#addCardExpiryDate').val(valor)
-    })
-
-    $(`#btnplaceOrder`).click(() => {
-        var applied_amountPlus = [], applied_amountINV = [], reasons = [], amountInvs = [],bpcinv=[]
-        $('.applied_amount').each(function () {
-            amountInvs.push($(this).data('amount'))
-            applied_amountPlus.push($(this).val())
-        })
-        $('#amtInvs').val(amountInvs.toString())
-        $('.amountsbyInv').val(applied_amountPlus.toString())
-
-        $('.applied_amountINV').each(function () {
-            applied_amountINV.push($(this).val())
-        })
-        $('.invoicesToPay').val(applied_amountINV.toString())
-        $('.reasons').each(function () {
-            reasons.push($(this).val())
-        })
-        $('.reasonLessAmta').val(reasons.toString())
-         $('.bpcinv').each(function () {
-            bpcinv.push($(this).text())
-        })
-        
-    let bpcinv_result = bpcinv.filter((item,index)=>{
-      return bpcinv.indexOf(item) === index;
-    })
-    console.log(bpcinv_result);
-    $(`.userIDInv`).val(bpcinv_result)
-
-    })
-    const sendformO = (form) => {
-
-        $.ajax({
-            url: `/process_payment`,
-            type: 'POST',
-            data: $(`#${form}`).serialize(),
-            beforeSend: function () {
-                // setting a timeout
-                $('#bn_loading').removeClass('d-none')
-                $('#primary').modal('show')
-            },
-            success: function (data, textStatus, jqXHR) {
-                console.log(data)
-                let process_payment_success
-                if (data.response['status'] == 201) {
-                    if (data.data['status'] == 'AUTHORIZED') {
-                        $('#pmtKey').val(data.paymenKey.toString())
-                        $('#status').val(data.data['status'])
-                        process_payment_success = data.data['processorInformation']
-                        $('#bn_loading').addClass('d-none')
-                        $('#primary').modal('hide')
-                        //console.log(data.paymentx3S[0]['status'])
-                        let statusX3=[], errormsg = [], invError=[]
-                        for (let i=0; i< data.paymentx3S.length ; i++){
-                            statusX3.push(data.paymentx3S[i]['status'])
-
-                            errormsg.push(data.paymentx3S[i]['error'])
-                            invError.push(data.paymentx3S[i]['invError'])
-                        }
-                        $('#status').val(statusX3)
-                        console.log(JSON.stringify(statusX3))
-                        const found = statusX3.includes('0');
-                        console.log(JSON.stringify(found))
-                        if (found !=true) {
-                            appliedAmountForm()
-                            Swal.fire('Process payment success!').then((response)=>{
-                                console.log(response)
-                                if(response.isConfirmed){
-                                   window.location.href = "/payment_view/"+data.paymenKey
-                                }
-                            })
-
-                          
-                                  
-                        } else {
-                        $('#pmtKey').val(data.paymenKey.toString())
-                        //$('#status').val('AUTHORIZED-ERROR('+ data.SystemLogL+')')
-                        let paymenKey =data.paymenKey.toString()
-                            appliedAmountForm()
-                            console.log(found)
-                           sendEmailError(data.SystemLogL,paymenKey, '{{user.EMAIL}}',JSON.stringify(errormsg),JSON.stringify(invError))
-                            Swal.fire('Payment AUTHORIZED, but something is wrong whit SOAP, please contact support- LOGNUM: ' + data.SystemLogL).then((response)=>{
-                                console.log(response)
-                                if(response.isConfirmed){
-                                   window.location.href = "/payment_view/"+data.paymenKey
-                                }
-                            })
-                            $('#btn_continue').attr('disabled', true)
-                            console.log(data.paymentx3S)
-                        }
-
-                    } else {
-                        $('#bn_loading').addClass('d-none')
-                        $('#primary').modal('hide')
-                         $('#pmtKey').val(data.paymenKey.toString())
-                        $('#status').val(data.data['status'])
-                            appliedAmountForm()
-                        Swal.fire({
-                            icon: 'error',
-                            title: data.data['status'],
-                            text: data.data['errorInformation']['message'],
-                        })
-                    }
-                }
-                if (data.response['status'] == 400) {
-
-                    let res_parse = JSON.parse(data.response['text'])
-                    console.log(res_parse)
-                    $('#bn_loading').addClass('d-none')
-                    $('#primary').modal('hide')
-                    if (res_parse['reason'] == "MISSING_FIELD") {
-                        Swal.fire({
-                            icon: 'error',
-                            title: res_parse['status'],
-                            text: `${res_parse['message']} (${res_parse['details'][0]['field']})`,
-                        })
-                        return
-                    }
-                    Swal.fire({
-                        icon: 'error',
-                        title: res_parse['status'],
-                        text: `${res_parse['message']}`,
-                    })
-                }
-            },
-            error: function (jqXHR, textStatus) {
-                console.log('error:' + jqXHR)
-            }
-        });
-    }
-const sendEmailError = async (SystemLogNum,paymenKey, UserID,paymentx3SMessage, invError)  =>{
-console.log(SystemLogNum)
-console.log(paymenKey)
-console.log(UserID)
-console.log(paymentx3SMessage)
-
-let data = new FormData()
-
-data.append('SystemLogNum',SystemLogNum)
-data.append('paymenKey',paymenKey)
-data.append('UserID',UserID)
-data.append('paymentx3SMessage',paymentx3SMessage)
-data.append('invError',invError)
-$.ajax({
-    url: `/send_email_errorX3`,
-    type: 'POST',
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function (data, textStatus, jqXHR) {
-console.log(data)
-    },
-    error: function (jqXHR, textStatus) {
-      console.log('error:' + jqXHR)
-    }
-  });
-}
-    var appliedAmount = async (amount, id, inv, amwt) => {
-        
-        let previousAmt = $(`#previousAmt${id}`).val();
-        let newAmount = $(`#appliedAmount${id}`).val();
-        let currentSub = $('#Stotal_preview').text()
-        let currentTotal = $('#total_preview').text()
-        let currentTax = $('#tax_preview').text()
-        let newSub = 0, newTotal = 0, newTax = 0
-        console.log(amount)
-        console.log(newAmount)
-        if (newAmount == "") {
-            Swal.fire(`Please enter a new applied amount`)
-            return
-        }
-        if (parseFloat(newAmount) < parseFloat(amount)) {
-            const { value: reason } = await Swal.fire({
-                title: 'Please enter a reason for short pay.',
-                input: 'text',
-                inputLabel: 'Reason',
-                inputAttributes: {
-    maxlength: 30,
-    autocapitalize: 'on',
-    autocorrect: 'off'
-  },
-                showCancelButton: true,
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'You need to write something!'
-                    }
-                }
-            })
-
-            if (!reason) {
-                $(`#appliedAmount${id}`).val(amount)
-                return
-            }
-            if (reason) {
-                console.log(reason)
-                newSub = parseFloat(previousAmt) - parseFloat(newAmount)
-                newTotal = parseFloat(currentTotal) - parseFloat(newSub)
-                newTax = parseFloat(newTotal) - parseFloat(newSub)
-                $(`#previousAmt${id}`).val(newAmount)
-                $('.totalAmountcard').val((newTotal).toFixed(2))
-                $('.total_preview').text((newTotal).toFixed(2))
-                $(`#reasons${id}`).val(reason)
-                return
-            }
-        } 
-         if (parseFloat(newAmount) > parseFloat(amount)) {
-             Swal.fire('The amount must not be greater than the current')
-                $(`#appliedAmount${id}`).val(amount)
-                return
-        } 
-
-            newSub = parseFloat(previousAmt) - parseFloat(newAmount)
-            newTotal = parseFloat(currentTotal) - parseFloat(newSub)
-            $(`#previousAmt${id}`).val(newAmount)
-            $('.total_preview').text((newTotal).toFixed(2))
-            $('.totalAmountcard').val((newTotal).toFixed(2))
-            $(`#reasons${id}`).val('-')
-    }
-const appliedAmountForm = async ()=>{
-                                 $.ajax({
-            url: `/applied_amount`,
-            type: 'POST',
-            data: $('#applied_amtform').serialize(),
-            success: function (data, textStatus, jqXHR) {
-                console.log(data)
-            },
-            error: function (jqXHR, textStatus) {
-                console.log('error:' + jqXHR)
-            }
-        });
-}
-</script>
+<script src="../../../assets/data/pay_inv_functions.js">  </script>

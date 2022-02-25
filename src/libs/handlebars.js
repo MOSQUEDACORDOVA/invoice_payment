@@ -1,12 +1,10 @@
 var moment = require('moment-timezone');
-const { encrypt, decrypt } = require('../controllers/crypto');
+const { encrypt, decrypt } = require('../controllers/crypto'); // ENCRYPT - DECRYPT MODULE
 
 module.exports = {
-	showAlerts: (message = {}, alerts) => {
+	showAlerts: (message = {}, alerts) => { //Alerts message
 		const categoria = Object.keys(message);
-
 		let html = '';
-
 		if (categoria.length) {
 			html += '<div class="form-message-container">';
 			message[categoria].forEach(error => {
@@ -14,10 +12,9 @@ module.exports = {
 			});
 			html += '</div>';
 		}
-
 		return alerts.fn().html = html;
 	},
-	getRoles: (Rol) => {
+	getRoles: (Rol) => {//Show Rol description
 		console.log(Rol)
 		switch (Rol) {
 			case 1:
@@ -37,7 +34,7 @@ module.exports = {
 				break;
 		}
 	},
-	cardHide: (card) => {
+	cardHide: (card) => { // Hide card number, only show last 4 numbers
 		card = decrypt(card);
 		let hideNum = [];
 		for (let i = 0; i < card.length; i++) {
@@ -49,12 +46,11 @@ module.exports = {
 		}
 		return hideNum.join("");
 	},
-	decryptData: (value1) => {
+	decryptData: (value1) => {//Decrypt Data
 		let encrypted = decrypt(value1);
 		return encrypted;
 	},
-
-	GetCardType: (number) => {
+	GetCardType: (number) => {//Get Card Type and show
 		 number = decrypt(number);
 		// visa
 		var re = new RegExp("^4");
@@ -98,7 +94,6 @@ module.exports = {
 
 		return "";
 	},
-
 	format_date: (date) => {
 		if (date == '0000-00-00') {
 			return '';
@@ -115,12 +110,11 @@ module.exports = {
 			return `<span class="badge badge-light-primary ms-50">Primary</span>`
 		}
 	},
-	decimals: (mount) => {
-
+	decimals: (mount) => {	
 		return Number.parseFloat(mount).toFixed(2)
 	},
-	appliedAmt: (AMTATI,OPENLOC) => {
-let result = parseFloat(AMTATI)-parseFloat(OPENLOC)
+	appliedAmt: (AMTATI,OPENLOC) => {	
+		let result = parseFloat(AMTATI)-parseFloat(OPENLOC)
 		return Number.parseFloat(result).toFixed(2)
 	},
 	

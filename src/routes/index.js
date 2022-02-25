@@ -38,7 +38,8 @@ router.get('/close_invoices/:email', authController.authenticatedUser, dashboard
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
-router.get('/next-page/:data', authController.authenticatedUser, dashboardController.next_page)
+router.get('/open_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIO)
+router.get('/closed_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIC)
 
 router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
 

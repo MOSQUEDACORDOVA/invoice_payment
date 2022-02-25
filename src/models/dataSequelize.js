@@ -1,13 +1,14 @@
+/**---------- */
+/** IN THIS MODULE CREATED THE FUNCTIONS FOR MANIPULATE THE SQL TABLES WITH SEQUELIZE (CREATE, UPDATE, CONSULT OR DELETE) REGISTERS*/
+/**--------- */
 const { Op, where, Sequelize } = require("sequelize");
-const db = require("../config/dbSequelize");
-const tPayment = require("../models/tPayment");
-const tPaymentApplication = require("../models/tPaymentApplication");
-const tSettings = require("../models/tSettings");
-var moment = require('moment-timezone');
+const tPayment = require("../models/tPayment");//tPayment Model, represent the Table tPayment in SQL
+const tPaymentApplication = require("../models/tPaymentApplication");//tPaymentApplication Model, represent the Table tPaymentApplication in SQL
+const tSettings = require("../models/tSettings");//tSettings Model, represent the Table tSettings in SQL
 
 module.exports = {
-  //USUARIO
-  RegtPayment(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc, CCNo, CCExpDate, CCCV2, BilltoName, BillAddressLine1, BillPostalCode,userIDInv) {
+  /**FUNCTIONS FOR PAYMENTS TABLE*/
+  RegtPayment(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc, CCNo, CCExpDate, CCCV2, BilltoName, BillAddressLine1, BillPostalCode,userIDInv) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE
     return new Promise((resolve, reject) => {
       tPayment.create(
         {
@@ -15,14 +16,13 @@ module.exports = {
         .then((data) => {
           let data_set = JSON.stringify(data);
           resolve(data_set);
-          //console.log(planes);
         })
         .catch((err) => {
           reject(err)
         });
     });
   },
-  Get_tPayments(CustID){
+  Get_tPayments(CustID){ // SELECT ALL PAYMENTS BY CUSTID AND GET HER ASSOCIATION WITH PAYMENTAPLICATION
     return new Promise((resolve, reject) => {
       tPayment.findAll({where:{CustID: {
         [Op.like]: `%${CustID}%`}}, include:[
@@ -32,14 +32,13 @@ module.exports = {
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },  
-  Get_tPaymentsByUser(UserID){
+  Get_tPaymentsByUser(UserID){// SELECT ALL PAYMENTS BY USERID AND GET HER ASSOCIATION WITH PAYMENTAPLICATION
     return new Promise((resolve, reject) => {
       tPayment.findAll({where:{UserID: {
         [Op.like]: `%${UserID}%`}}, include:[
@@ -49,14 +48,13 @@ module.exports = {
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },  
-  Get_tPaymentsBypmtKey(pmtKey){
+  Get_tPaymentsBypmtKey(pmtKey){// SELECT ONE PAYMENT BY PMTKEY AND GET HER ASSOCIATION WITH PAYMENTAPLICATION
     return new Promise((resolve, reject) => {
       tPayment.findOne({where:{pmtKey:pmtKey}, include:[
         {model: tPaymentApplication , as:'tPaymentApplication'},
@@ -65,14 +63,15 @@ module.exports = {
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   }, 
-  RegtPaymentApplication(inv, amount, shortDesc, appliedAmount,pmtKey,status) {
+
+  /**FUNCTIONS FOR PAYMENTSAPPLICATION TABLE*/
+  RegtPaymentApplication(inv, amount, shortDesc, appliedAmount,pmtKey,status) {// THIS FUNCTION INSERT THE NEW PAYMENT IN tPaymentApplication TABLE
     return new Promise((resolve, reject) => {
       tPaymentApplication.create(
         {
@@ -88,21 +87,20 @@ module.exports = {
     });
   },
 
-  //settings
+  /**FUNCTIONS FOR SETTINGS TABLE */
   settingsTable(){
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findAll({})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },
-  saveSetting(sValue, sType, sTatus){
+  saveSetting(sValue, sType, sTatus){//INSERT SETTING IN THE SETTING TABLE
     return new Promise((resolve, reject) => {
       tSettings.create({valueSett:sValue,
         typeSett: sType,
@@ -110,27 +108,25 @@ module.exports = {
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },
-  editSetting(sId){
+  editSetting(sId){//GET SETTING BY ID TO EDIT
     return new Promise((resolve, reject) => {
       tSettings.findOne({where: {id: sId}})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },
-  saveEditSetting(sValue, sType, sStatus,sId){
+  saveEditSetting(sValue, sType, sStatus,sId){// SAVE SETTING EDITED
     return new Promise((resolve, reject) => {
       tSettings.update({valueSett:sValue,
         typeSett: sType,
@@ -138,20 +134,18 @@ module.exports = {
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);
         });
     });
   },
-  selectEnableEmail(){
+  selectEnableEmail(){// SELECT ENABLED SETTING EMAIL, FOR EMAIL CONTROLLER
     return new Promise((resolve, reject) => {
       tSettings.findAll({attributes:['valueSett'], where: {typeSett: "email-Support"}})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
-          ////console.log(id_usuario);
         })
         .catch((err) => {
           console.log(err);

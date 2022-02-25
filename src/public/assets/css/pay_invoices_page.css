@@ -1,0 +1,42 @@
+.ecommerce-application .list-view .ecommerce-card {
+  grid-template-columns: 2fr 2fr;
+}
+
+.ecommerce-application .checkout-items .ecommerce-card .delivery-date {
+  margin-top: 0.5rem;
+}
+
+.ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
+  display: grid;
+  grid-template-columns: 0.5fr 0.8fr;
+  padding: 0.5rem;
+  justify-items: center;
+  align-items: center;
+}
+
+.ecommerce-application .list-view .ecommerce-card .item-options {
+  padding: 0;
+}
+
+@media (max-width: 767.98px) {
+  .ecommerce-application .list-view .ecommerce-card {
+      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: row;
+  }
+
+  .ecommerce-application .list-view .ecommerce-card .item-options .item-wrapper {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+  }
+
+  .ecommerce-application .checkout-items .ecommerce-card .item-options .btn {
+      margin-bottom: 0.5rem;
+  }
+}
+
+.ecommerce-application .checkout-items .ecommerce-card .item-company,
+.ecommerce-application .checkout-items .ecommerce-card .item-rating {
+  margin-bottom: 0 !important;
+}

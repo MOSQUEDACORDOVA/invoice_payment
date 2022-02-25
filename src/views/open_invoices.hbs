@@ -1,7 +1,7 @@
 <!-- BEGIN: Content-->
 <style>
     .block{
-        pointer-events: none;
+    pointer-events: none;
     color: #ffcc9a;
     }
 </style>
@@ -19,7 +19,7 @@
                                 <tr>
                                     <th></th>
                                     <th>Invoice number</th>
-                                    <th>Ref</th>
+                                    <th>Ref</thF>
                                     <th>Sold to</th>
                                     <th>Company Name</th>
                                     <th>Invoice Date</th>
@@ -86,22 +86,16 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            {{!-- <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel160">Primary Modal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div> --}}
             <div class="modal-body text-center">
                 <div class="spinner-border text-center" role="status" style="width: 10rem;height: 10rem;">
 
                 </div>
                 <span class="visually-">Processing, please wait..</span>
             </div>
-            {{!-- <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
-            </div> --}}
         </div>
     </div>
 </div>
+{{!-- JSON Strings info: Payments, links and Open Invoices --}}
 <input value="{{paymentsL}}" class="d-none" id="payments">
 <input value="{{links}}" class="d-none" id="links">
 <input value="{{inv_wofilter}}" class="d-none" id="invoices">
