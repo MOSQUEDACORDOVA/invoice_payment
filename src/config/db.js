@@ -12,7 +12,7 @@ var db = {
 	options: {
 		//Encrypt and get the database
 		encrypt: true,
-		database: 'X3Connect'  //Databse Name
+		database: 'X3Connect'  //Database Name
 	}
 }; 
 module.exports = db;
