@@ -1,5 +1,4 @@
 <!-- BEGIN: Content-->
-<input id="payments" value="{{payments}}" hidden>
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
@@ -16,22 +15,9 @@
                                     <th>Processor Status</th>
                                     <th>Status Desc</th>
                                     <th>Date Processed</th>
-                                    <th>Invoices</th>                               
+                                    <th>Invoices</th>
                                 </tr>
                             </thead>
-                            {{!-- <tbody class="table-white-space">
-                                {{#each payments as |pays i|}}
-                                <tr>
-                                    <td>{{pmtKey}}</td>
-                                    <td>{{TransactionID}}</td>
-                                    <td>${{#decimals TranAmount}}{{/decimals}}</td>
-                                    <td>{{ProcessorStatus}}</td>
-                                    <td>{{ProcessorStatusDesc}}</td>
-                                    <td>{{#format_date DateProcessesed}} {{/format_date}}</td>
-                                    <td>{{#each tPaymentApplication as |invs i|}}<span id="{{INVOICENUM}}" class="invocesS" data-status="{{Status}}">{{INVOICENUM}}</span>{{/each}}</td>
-                                </tr>
-                                {{/each}}
-                            </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -40,50 +26,6 @@
         </div>
     </div>
 </div>
-<!-- END: Content-->
-<form action="/pay_invoices" method="post" id="pay_invoices_form">
-    <input id="ids_invoices" name="ids_invoices" hidden>
-</form>
-<!-- Modal -->
-<div class="modal fade text-start" id="default" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel1">Method Pay</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="smart-button-container">
-                    <div style="text-align: center;">
-                        <div id="paypal-button-container"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade text-start modal-primary" id="wait_modal" tabindex="-1" aria-labelledby="myModalLabel160"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            {{!-- <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel160">Primary Modal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div> --}}
-            <div class="modal-body text-center">
-                <div class="spinner-border text-center" role="status" style="width: 10rem;height: 10rem;">
-
-                </div>
-                <span class="visually-">Processing, please wait..</span>
-            </div>
-            {{!-- <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
-            </div> --}}
-        </div>
-    </div>
-</div>
 <input value="{{inv_filtering}}" class="d-none" id="invoices_list">
+<input id="payments" value="{{payments}}" hidden>
 <!-- Modal -->

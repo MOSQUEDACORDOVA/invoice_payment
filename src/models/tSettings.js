@@ -1,3 +1,4 @@
+/**MODEL FOR CREATE AND MANIPULATE tSettings TABLE OF SQL */
 const { DataTypes } = require('sequelize');
 const db = require('../config/dbSequelize');
 const tSettings = db.define('tSettings', {

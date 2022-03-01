@@ -1,3 +1,4 @@
+/**MODEL FOR CREATE AND MANIPULATE tPaymentApplication TABLE OF SQL */
 const { DataTypes } = require('sequelize');
 const db = require('../config/dbSequelize');
 const tPaymentApplication = db.define('tPaymentApplication', {

@@ -1,59 +1,41 @@
+/** On this JS render and use the functions for Settings System dataTable */
 
-
-var dtsettingsTable = $('#settingsTable'),
-    assetPath = 'app-assets/',
-    invoicePreview = 'app-invoice-preview.html',
-    invoiceAdd = 'invoice.html',
-    invoiceEdit = 'app-invoice-edit.html';
-function tableSettings(a){
+var dtsettingsTable = $('#settingsTable');
+function tableSettings(a) {
   let value = $('#jsonSettings').val()
   let arrSettings = ""
-  // if (a) {
-    
-  //   arrSettings = JSON.parse(value)
-
-  // }else{
-  //   arrSettings = JSON.parse(value.replace(/&quot;/g,'"'))
-  // }
-  arrSettings = JSON.parse(value)
-  console.log(arrSettings)
+  arrSettings = JSON.parse(value)//Parser to array settings list
   if (dtsettingsTable.length) {
     var settingsT = dtsettingsTable.DataTable({
-     data: arrSettings, // JSON file to add data
-     columns: [
-      { data: 'id' },
-      { data: 'typeSett' },
-      { data: 'valueSett' },
-      { data: 'Status' },
-      
-      ], 
+      data: arrSettings, // Enter data in array
+      columns: [//Put the data infor by column
+        { data: 'id' },
+        { data: 'typeSett' },
+        { data: 'valueSett' },
+        { data: 'Status' },
+      ],
       columnDefs: [
-        {
-          targets:1,
-          render: function(data, type, full, meta){
-       let link =`<span class="me-25 settingType" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit this setting" data-sid="${full['id']}" style="cursor:pointer">${data}</span>`
-           return link;
+        {//Render Type setting column, and create link to edit setting info with Jquery
+          targets: 1,
+          render: function (data, type, full, meta) {
+            let link = `<span class="me-25 settingType" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit this setting" data-sid="${full['id']}" style="cursor:pointer">${data}</span>`
+            return link;
           }
         },
-        {
-          // Actions
+        {//Render Status of Settings, Enable (color green), Disabled (color Red)
           targets: -1,
-         // visible:false,
-         // title: 'Actions',
-         // width: '80px',
-         // orderable: false,
           render: function (data, type, full, meta) {
-            
+
             var statusClass = {
               "0": { title: 'Disabled', class: 'badge-light-danger' },
               "1": { title: 'Enabled', class: 'badge-light-success' },
             };
-           let showStatus = `<span class="badge rounded-pill ${statusClass[data].class} " > ${statusClass[data].title}</span>`
+            let showStatus = `<span class="badge rounded-pill ${statusClass[data].class} " > ${statusClass[data].title}</span>`
             return showStatus
           }
         }
       ],
-      order: [[2, 'desc']],
+      order: [[2, 'desc']],//Order by Value setting DEsc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +
@@ -72,8 +54,8 @@ function tableSettings(a){
           previous: '&nbsp;',
           next: '&nbsp;'
         }
-      }, 
-      // Buttons with Dropdown
+      },
+      // Buttons
       buttons: [
         {
           text: 'Add setting',
@@ -83,11 +65,11 @@ function tableSettings(a){
             $('.acceptSetting').attr('id', 'acceptSetting')
             $('#idEdit').empty()
             $('#formSettings')[0].reset()
-           $('#setSetting').modal('show')
+            $('#setSetting').modal('show')
           }
         }
       ],
-    
+
       initComplete: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
         // Adding role filter once table initialized
@@ -124,25 +106,23 @@ function tableSettings(a){
 
 $(function () {
   'use strict';
-  
+  // When Document Ready render dataTable
+  tableSettings()
 
-  // datatable
-tableSettings()
-
-$('#acceptSetting').on('click',()=>{
-console.log('here')
-  $.ajax({
-    url: `/saveSetting`,
-    type: 'POST',
-    data: $('#formSettings').serialize(),
-    // cache: false,
-    // contentType: false,
-    // processData: false,
-    success: function (data, textStatus, jqXHR) {
-console.log(data)
-$('#jsonSettings').val(data.settings)
-$('#settingsTable').dataTable().fnDestroy();
+  /**THIS JQUERY FUNCTION IS FOR SAVE SETTING */
+  $('#acceptSetting').on('click', () => {
+    $.ajax({
+      url: `/saveSetting`,
+      type: 'POST',
+      data: $('#formSettings').serialize(),
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        //After save, recharge the settings on input "jsonStting"
+        $('#jsonSettings').val(data.settings)
+        //Destroy and empty Table
+        $('#settingsTable').dataTable().fnDestroy();
         $('#settingsTable').empty();
+        //Create Element to render Datable
         $('#settingsTable').html(`<thead>
         <tr>
         <th>Id</th>
@@ -151,69 +131,77 @@ $('#settingsTable').dataTable().fnDestroy();
             <th>Status</th>
         </tr>
     </thead>`);
-    $('#formSettings').empty()
+        //Empty form
+        $('#formSettings').empty()
+        //Render datable with new data
+        tableSettings()
+        //Hide modal
+        $('#setSetting').modal('hide')
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  })
 
-    tableSettings()
-    $('#setSetting').modal('hide')
-    },
-    error: function (jqXHR, textStatus) {
-      console.log('error:' + jqXHR)
-    }
-  });
-})
+  //FUNCTION JQUERY FOR GET WITH AJAX THE SETTING BY ID
+  $('.settingType').on('click', (e) => {
+    //Create elememt FormData, append ID and send ajax
+    let data = new FormData()
+    data.append('sId', e.currentTarget['dataset']["sid"])
+    $.ajax({
+      url: `/editSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        //If form have previous info, blank
+        $('#idEdit').empty()
+        //Append input with id for save by ID
+        $('#idEdit').append(`<input type="text" value="${data.saveSys['id']}" name="sId"/>`)
+        //Put the info in the inputs
+        $('#editsValue').val(data.saveSys['valueSett'])
+        $(`#editsType option[value='${data.saveSys['typeSett']}']`).attr("selected", true);
+        $(`#editsStatus option[value='${data.saveSys['Status']}']`).attr("selected", true);
+        //Show modal
+        $('#setEditSetting').modal('show')
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  })
 
-$('.settingType').on('click',(e)=>{
-  console.log(e.currentTarget['dataset'])
-  console.log(e.currentTarget['dataset']["sid"])
-  let data = new FormData()
-  data.append('sId',e.currentTarget['dataset']["sid"])
-  $.ajax({
-    url: `/editSetting`,
-    type: 'POST',
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function (data, textStatus, jqXHR) {
-console.log(data)
-
-    $('#idEdit').empty()
-    $('#idEdit').append(`<input type="text" value="${data.saveSys['id']}" name="sId"/>`)
-    $('#editsValue').val(data.saveSys['valueSett'])
-    $(`#editsType option[value='${data.saveSys['typeSett']}']`).attr("selected", true);
-    $(`#editsStatus option[value='${data.saveSys['Status']}']`).attr("selected", true);
-    $('#setEditSetting').modal('show')
-    },
-    error: function (jqXHR, textStatus) {
-      console.log('error:' + jqXHR)
-    }
-  });
-})
-
-$('#editSetting').on('click',()=>{
-  console.log('hereEdit')
+  /**JQUERY FUNCTION TO SAVE SETTING EDITED */
+  $('#editSetting').on('click', () => {
+    console.log('hereEdit')
     $.ajax({
       url: `/saveEditSetting`,
       type: 'POST',
       data: $('#editformSettings').serialize(),
-      // cache: false,
-      // contentType: false,
-      // processData: false,
       success: function (data, textStatus, jqXHR) {
-  console.log(data)
-  $('#jsonSettings').val(data.settings)
-  $('#settingsTable').dataTable().fnDestroy();
-          $('#settingsTable').empty();
-          $('#settingsTable').html(`<thead>
+        console.log(data)
+        //After save, recharge the settings on input "jsonStting"
+        $('#jsonSettings').val(data.settings)
+        //Destroy and empty Table
+        $('#settingsTable').dataTable().fnDestroy();
+        $('#settingsTable').empty();
+        //Create Element to render Datable
+        $('#settingsTable').html(`<thead>
           <tr>
           <th>Id</th>
               <th>Type settings</th>
               <th>Value</th>
               <th>Status</th>
           </tr>
-      </thead>`);  
-      tableSettings()
-      $('#setEditSetting').modal('hide')
+      </thead>`);
+        //Render datable with new data
+        tableSettings()
+        //Hide modal
+        $('#setEditSetting').modal('hide')
       },
       error: function (jqXHR, textStatus) {
         console.log('error:' + jqXHR)

@@ -1,26 +1,22 @@
-const router = require('express').Router();
-const userController = require('../controllers/userController');
-const landingController = require('../controllers/landingController');
-const authController = require('../controllers/authController');
-const dashboardController = require('../controllers/dashboardController');
-const mailCtrl = require('../controllers/mailCtrl');
-const FileController = require('../models/upload');
+                                                /**HERE ARE ALL ROUTES */                                                
+const router = require('express').Router();//USE EXPRESS ROUTER
+const userController = require('../controllers/userController');//LOGGIN AND REGISTER USER FUNCTIONS
+const authController = require('../controllers/authController');//AUTH FUNCTIONS
+const dashboardController = require('../controllers/dashboardController');//PRINCIPALS FUNCTIONS
+const mailCtrl = require('../controllers/mailCtrl');//EMAIL FUNCTIONS (SEND EMAIL)
+const FileController = require('../models/upload');//FUNCTION TO UPLOAD FILES
 const fileController = new FileController();
 
-// Landing Page
-router.get('/', landingController.showLandingPage);
-router.get('/testR', userController.pruebaR);
-// Iniciar sesión
+// Landing Page LOGGIN
+router.get('/', userController.formLogin);
+
+// LOGGIN
 router.get('/login', userController.formLogin);
 router.get('/login/:token', userController.formLogin);
 router.post('/login', userController.loginUser2);
 
-// Cerrar Sesión
+// CLOSE SESSION
 router.get('/close-session', userController.closeSesion);
-
-// Crear cuenta
-router.get('/register', userController.formCreateUser);
-router.post('/register', userController.createUser);
 
 // Set Password
 router.get('/resetpassform/:email', userController.resetPasswordForm);
@@ -30,17 +26,21 @@ router.post('/new-pass-save', userController.updatePassword);
 router.get('/send-token/:email/:token', mailCtrl.sendtokenResetPass)
 router.get('/set-password/:token', userController.resetPasswordForm)
 
-//dash
+//OPEN INVOICES FUNCTIONS
 router.get('/dashboard', dashboardController.dashboard);
 router.get('/dashboard/:email', authController.authenticatedUser, dashboardController.dashboard);
 router.get('/dashboard/:email/:msg', authController.authenticatedUser, dashboardController.dashboard);
-router.get('/close_invoices/:email', authController.authenticatedUser, dashboardController.close_invoices);
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
+
+//CLOSED INVOICES FUNCTIONS
+router.get('/close_invoices/:email', authController.authenticatedUser, dashboardController.close_invoices);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
+//NEXT OR PREVIOUS FUNCTIONS
 router.get('/open_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIO)
 router.get('/closed_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIC)
 
+//CONTACT US PAGE
 router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
 
 //PAYMENTS METHODS
@@ -54,7 +54,7 @@ router.post('/pay_invoices', authController.authenticatedUser, dashboardControll
 router.post('/process_payment', authController.authenticatedUser, dashboardController.process_payment);
 router.post('/applied_amount', authController.authenticatedUser, dashboardController.applied_amount);
 
-//upload-file and edit profile
+//EDIT PROFILE -UPLOAD PIC PROFILE
 router.post('/upload-file', fileController.uploadFile);
 router.post('/save-pic-profile', authController.authenticatedUser, dashboardController.save_PicProfile);
 router.post('/update-profile', authController.authenticatedUser, userController.UpdateUser);

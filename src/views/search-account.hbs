@@ -1,42 +1,40 @@
 <!-- BEGIN: Content-->
-    <div class="app-content content ">
-        <div class="content-overlay"></div>
-        <div class="header-navbar-shadow"></div>
-        <div class="content-wrapper">
-            <div class="content-header row">
-            </div>
-            <div class="content-body">
-                <div class="auth-wrapper auth-basic px-2">
-                    <div class="auth-inner my-2">
-                        <!-- Login basic -->
-                        <div class="card mb-0">
-                            <div class="card-body">
-                              
-                                <a href="./" class="brand-logo">
-                                    <img src="../../../app-assets/images/logo/logo.png" class="round" alt="" width="100" height ="auto">
-                                   
-                                </a>
+<div class="app-content content ">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+        </div>
+        <div class="content-body">
+            <div class="auth-wrapper auth-basic px-2">
+                <div class="auth-inner my-2">
+                    <!-- Login basic -->
+                    <div class="card mb-0">
+                        <div class="card-body">
 
-                                <h4 class="card-title mb-1">Welcome! 👋</h4>
-                                <p class="card-text mb-2">Please enter your email</p>
-{{#if messages}}
-	{{#showAlerts messages}}
-	{{/showAlerts}}
-{{/if}}
-                                <form class="auth-login-form mt-2" action="/resetpassform" method="post">
-									<input type="text" class="form-control" id="email" name="email"  aria-describedby="login-email" tabindex="1" />
-                                   
-                                    <button class="btn btn-primary w-100 mt-1" tabindex="4">Send</button>
-                                </form>                     
-                               
+                            <a href="./" class="brand-logo">
+                                <img src="../../../app-assets/images/logo/logo.png" class="round" alt="" width="100"
+                                    height="auto">
+                            </a>
 
-                              
-                            </div>
+                            <h4 class="card-title mb-1">Welcome! 👋</h4>
+                            <p class="card-text mb-2">Please enter your email</p>
+                            {{#if messages}}
+                            {{#showAlerts messages}}
+                            {{/showAlerts}}
+                            {{/if}}
+                            <form class="auth-login-form mt-2" action="/resetpassform" method="post">
+                                <input type="text" class="form-control" id="email" name="email"
+                                    aria-describedby="login-email" tabindex="1" />
+
+                                <button class="btn btn-primary w-100 mt-1" tabindex="4">Send</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-    <!-- END: Content-->
+</div>
+<!-- END: Content-->

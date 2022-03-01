@@ -11,9 +11,9 @@ const fileupload = require('express-fileupload');
 var Connection = require('tedious').Connection;  
 const db = require('./config/db')
 const dbSequelize = require('./config/dbSequelize')
-// Conect with sequelize
-dbSequelize.sync()
- 	.then(() => {
+
+// Conect and sync with sequelize database SQL
+dbSequelize.sync().then(() => {
  		console.log('Data Base SQL connected');
  	})
  	.catch(err => {
@@ -21,22 +21,21 @@ dbSequelize.sync()
  	});
   
 
-
-// Crear el servidor de express
+// Create the server express
 const app = express();
 
-// Habilitar body parser
+// Body parser and file upload controller
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileupload());
 
 app.use('/api', router);
-// Configuraciones de expressnp
+// Settigns of expressnp: PORT
 app.set('port', process.env.PORT || 80);
 
-// Directiorio de las vistas
+// Views directory
 app.set('views', path.resolve(__dirname, './views'));
 
-// Configurar template engine
+// Setting template engine
 app.engine('.hbs', exphbs({
 	layoutsDir: path.resolve(app.get('views'), 'layouts'),
 	partialsDir: path.resolve(app.get('views'), 'partials'),
@@ -47,12 +46,13 @@ app.engine('.hbs', exphbs({
 
 app.set('view engine', '.hbs');
 
-// Habilitar directiorio publico
+// Public directory
 app.use(express.static(path.resolve(__dirname, './public')));
 
-// Agregar Flash Messages
+// Flash Messages
 app.use(flash());
 
+//Cookies parser
 app.use(cookieParser());
 
 // Sesiones
@@ -62,21 +62,21 @@ app.use(session({
 	saveUninitialized: false
 }));
 
+//Passport module
 app.use(passport.initialize());
 app.use(passport.session());
 
+//User session
 app.use((req, res, next) => {
 	res.locals.messages = req.flash();
-
-	res.locals.user = {...req.user} || null;
-	
+	res.locals.user = {...req.user} || null;	
 	next();
 });
 
-// Habilitar las rutas
+// Routes
 app.use('/', require('./routes'));
 
-// Iniciar el servidor
+// Start server
 app.listen(app.get('port'), () => {
-	console.log(`Servidor en el puerto ${app.get('port')}`);
+	console.log(`Server in port ${app.get('port')}`);
 });

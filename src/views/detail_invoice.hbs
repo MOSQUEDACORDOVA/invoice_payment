@@ -1,7 +1,7 @@
 <style>
-    .invoices-details-colums{
+    .invoices-details-colums {
         display: grid;
-    grid-template-columns: 2fr 2fr 2fr;
+        grid-template-columns: 2fr 2fr 2fr;
     }
 </style>
 
@@ -20,25 +20,18 @@
                     <div class="col-xl-5 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
                         <div class="card">
                             <div class="card-body invoices-details-colums">
-                                {{!-- <button class="btn btn-primary w-100 mb-75" data-bs-toggle="modal"
-                                    data-bs-target="#send-invoice-sidebar">
-                                    Send Invoice
-                                </button> --}}
                                 <a class="btn btn-outline-secondary" href="/print-invoice/{{inv_detail.NUM}}"
                                     target="_blank" style="margin-right: 1rem"> Print </a>
-                                    {{!-- <a class="btn btn-outline-secondary" href="./app-invoice-print.html"
-                                    target="_blank" style="margin-right: 1rem"> Download PDF </a> --}}
-                               {{#if closed_inv}}{{else}} <form action="/pay_invoices" method="post" id="pay_invoices_form">
-    <input id="ids_invoices" name="ids_invoices" value="{{inv_detail.NUM}}" hidden>
-     <button class="btn btn-success w-100" >{{!--href="/payments_methods/{{user.EMAIL}}" --}}
-                                    Pay
-                                </button>
-</form>{{/if}}
-                                
+                                    {{!-- ONLY SHOW THIS BUTTON IF OPEN INVOICE DETAIL --}}
+                                {{#if closed_inv}}{{else}} <form action="/pay_invoices" method="post"
+                                    id="pay_invoices_form">
+                                    <input id="ids_invoices" name="ids_invoices" value="{{inv_detail.NUM}}" hidden>
+                                    <button class="btn btn-success w-100"> Pay</button>
+                                </form>{{/if}}
+
                             </div>
                         </div>
                     </div>
-
                     <div class="col-12"></div>
                     <!-- /Invoice Actions -->
                     <!-- Invoice -->
@@ -50,8 +43,8 @@
                                     class="d-flex justify-content-between flex-md-row flex-column invoice-spacing mt-0">
                                     <div>
                                         <div class="logo-wrapper">
-                                            <img src="../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="345"
-                                                height="auto">
+                                            <img src="../../app-assets/images/logo/saw_logo.jpg" class="round" alt=""
+                                                width="345" height="auto">
                                         </div>
                                         <p class="card-text mb-25">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
                                         <p class="card-text mb-0">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
@@ -74,28 +67,35 @@
                                 <!-- Header ends -->
                             </div>
                             <hr class="invoice-spacing" />
-                             <!-- Address and Contact starts -->
+                            <!-- Address and Contact starts -->
                             <div class="card-body invoice-padding pt-0">
                                 <div class="row invoice-spacing invoices-details-colums">
                                     <div class="col-xl-8 p-0">
-                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Address:</h6>
+                                        <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Address:
+                                        </h6>
                                         <h6 class="mb-25">{{inv_detail.SIVYPORINV.0.BPINAM}}</h6>
-                                        <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}} {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}</h6>
-                                        <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}}, {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
+                                        <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}}
+                                            {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}
+                                        </h6>
+                                        <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}},
+                                            {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
                                         <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
                                     </div>
-                                     <div class="col-xl-8 p-0 mt-xl-0 mt-2">
+                                    <div class="col-xl-8 p-0 mt-xl-0 mt-2">
                                         <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Ship to:</h6>
                                         <h6 class="card-text mb-25">{{inv_detail.SIVYPORINV.0.BPDNAM}}</h6>
-                                        <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}} {{inv_detail.BPDADDLIG3}}</p>
-                                        <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}} {{inv_detail.BPDPOSCOD}}</p>
+                                        <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}}
+                                            {{inv_detail.BPDADDLIG3}}</p>
+                                        <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}}
+                                            {{inv_detail.BPDPOSCOD}}</p>
                                         <p class="card-text mb-25">{{inv_detail.BPDCRYNAM}}</p>
 
                                     </div>
                                     <div class="col-xl-8 p-0 mt-xl-0 mt-2">
-                                        {{!-- <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Details:</h6> --}}
-                                        <p class="card-text mb-25">Rep: {{inv_detail.SIVYPORINV.0.SOLDREP_REF.$description}}</p>
-                                        <p class="card-text mb-25">Phone: {{#phonenumberFormat inv_detail.SIVYPORINV.0.SOLDREPTEL}}{{/phonenumberFormat}}</p>
+                                        <p class="card-text mb-25">Rep:
+                                            {{inv_detail.SIVYPORINV.0.SOLDREP_REF.$description}}</p>
+                                        <p class="card-text mb-25">Phone: {{#phonenumberFormat
+                                            inv_detail.SIVYPORINV.0.SOLDREPTEL}}{{/phonenumberFormat}}</p>
                                         <p class="card-text mb-25">Email: {{inv_detail.SIVYPORINV.0.SOLDREPWEB}}</p>
                                         <p class="card-text mb-0"> </p>
 
@@ -111,8 +111,6 @@
                                         <tr>
                                             <th class="py-1">Products</th>
                                             <th class="py-1">Sales Order #</th>
-
-
                                             <th class="py-1">QTY</th>
                                             <th class="py-1">PRICE</th>
                                             <th class="py-1">CRV/Unit</th>
@@ -131,8 +129,6 @@
                                             <td class="py-1 border-bottom">
                                                 <span class="fw-bold">{{SOHNUM}}</span>
                                             </td>
-
-
                                             <td class="py-1 border-bottom">
                                                 <span class="fw-bold">{{QTY}}</span>
                                             </td>
@@ -155,7 +151,8 @@
                                 <div class="row invoice-sales-total-wrapper">
                                     <div class="col-8">
                                         <p class="card-text mb-0">
-                                            <span class="fw-bold">Last payment date:</span> <span class="ms-75">{{#format_date
+                                            <span class="fw-bold">Last payment date:</span> <span
+                                                class="ms-75">{{#format_date
                                                 inv_detail.SIVYPORINV.0.LASTPAYDAT}} {{/format_date}}</span>
                                         </p>
                                     </div>
@@ -176,18 +173,20 @@
                                             <hr class="my-50" />
                                             <div class="invoice-total-item">
                                                 <p class="invoice-total-title" style="font-weight: bold;">Total:
-                                                    <span >${{#decimals inv_detail.AMTATI}}{{/decimals}}</span>
+                                                    <span>${{#decimals inv_detail.AMTATI}}{{/decimals}}</span>
                                                 </p>
                                             </div>
-                                             <hr class="my-50" />
+                                            <hr class="my-50" />
                                             <div class="invoice-total-item">
-                                                <p class="invoice-total-title" >Payment applied:
-                                                    <span >${{#appliedAmt inv_detail.SIVYPORINV.0.AMTLOC inv_detail.SIVYPORINV.0.OPENLOC}}{{/appliedAmt}}</span>
+                                                <p class="invoice-total-title">Payment applied:
+                                                    <span>${{#appliedAmt inv_detail.SIVYPORINV.0.AMTLOC
+                                                        inv_detail.SIVYPORINV.0.OPENLOC}}{{/appliedAmt}}</span>
                                                 </p>
                                             </div>
                                             <div class="invoice-total-item" style="font-weight: bold;">
-                                                <p class="invoice-total-title" >Balance:
-                                                    <span >${{#decimals inv_detail.SIVYPORINV.0.OPENLOC}}{{/decimals}}</span>
+                                                <p class="invoice-total-title">Balance:
+                                                    <span>${{#decimals
+                                                        inv_detail.SIVYPORINV.0.OPENLOC}}{{/decimals}}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -197,7 +196,6 @@
                             <!-- Invoice Description ends -->
 
                             <hr class="invoice-spacing" />
-
                             <!-- Invoice Note starts -->
                             <div class="card-body invoice-padding pt-0">
                                 <div class="row">
@@ -212,122 +210,8 @@
                     </div>
                     <!-- /Invoice -->
 
-
                 </div>
             </section>
-
-            <!-- Send Invoice Sidebar -->
-            <div class="modal modal-slide-in fade" id="send-invoice-sidebar" aria-hidden="true">
-                <div class="modal-dialog sidebar-lg">
-                    <div class="modal-content p-0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
-                        <div class="modal-header mb-1">
-                            <h5 class="modal-title">
-                                <span class="align-middle">Send Invoice</span>
-                            </h5>
-                        </div>
-                        <div class="modal-body flex-grow-1">
-                            <form>
-                                <div class="mb-1">
-                                    <label for="invoice-from" class="form-label">From</label>
-                                    <input type="text" class="form-control" id="invoice-from"
-                                        value="shelbyComapny@email.com" placeholder="company@email.com" />
-                                </div>
-                                <div class="mb-1">
-                                    <label for="invoice-to" class="form-label">To</label>
-                                    <input type="text" class="form-control" id="invoice-to"
-                                        value="qConsolidated@email.com" placeholder="company@email.com" />
-                                </div>
-                                <div class="mb-1">
-                                    <label for="invoice-subject" class="form-label">Subject</label>
-                                    <input type="text" class="form-control" id="invoice-subject"
-                                        value="Invoice of purchased Admin Templates"
-                                        placeholder="Invoice regarding goods" />
-                                </div>
-                                <div class="mb-1">
-                                    <label for="invoice-message" class="form-label">Message</label>
-                                    <textarea class="form-control" name="invoice-message" id="invoice-message" cols="3"
-                                        rows="11" placeholder="Message...">
-Dear Queen Consolidated,
-
-Thank you for your business, always a pleasure to work with you!
-
-We have generated a new invoice in the amount of $95.59
-
-We would appreciate payment of this invoice by 05/11/2019</textarea>
-                                </div>
-                                <div class="mb-1">
-                                    <span class="badge badge-light-primary">
-                                        <i data-feather="link" class="me-25"></i>
-                                        <span class="align-middle">Invoice Attached</span>
-                                    </span>
-                                </div>
-                                <div class="mb-1 d-flex flex-wrap mt-2">
-                                    <button type="button" class="btn btn-primary me-1"
-                                        data-bs-dismiss="modal">Send</button>
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /Send Invoice Sidebar -->
-
-            <!-- Add Payment Sidebar -->
-            <div class="modal modal-slide-in fade" id="add-payment-sidebar" aria-hidden="true">
-                <div class="modal-dialog sidebar-lg">
-                    <div class="modal-content p-0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
-                        <div class="modal-header mb-1">
-                            <h5 class="modal-title">
-                                <span class="align-middle">Add Payment</span>
-                            </h5>
-                        </div>
-                        <div class="modal-body flex-grow-1">
-                            <form>
-                                <div class="mb-1">
-                                    <input id="balance" class="form-control" type="text"
-                                        value="Invoice Balance: 5000.00" disabled />
-                                </div>
-                                <div class="mb-1">
-                                    <label class="form-label" for="amount">Payment Amount</label>
-                                    <input id="amount" class="form-control" type="number" placeholder="$1000" />
-                                </div>
-                                <div class="mb-1">
-                                    <label class="form-label" for="payment-date">Payment Date</label>
-                                    <input id="payment-date" class="form-control date-picker" type="text" />
-                                </div>
-                                <div class="mb-1">
-                                    <label class="form-label" for="payment-method">Payment Method</label>
-                                    <select class="form-select" id="payment-method">
-                                        <option value="" selected disabled>Select payment method</option>
-                                        <option value="Cash">Cash</option>
-                                        <option value="Bank Transfer">Bank Transfer</option>
-                                        <option value="Debit">Debit</option>
-                                        <option value="Credit">Credit</option>
-                                        <option value="Paypal">Paypal</option>
-                                    </select>
-                                </div>
-                                <div class="mb-1">
-                                    <label class="form-label" for="payment-note">Internal Payment Note</label>
-                                    <textarea class="form-control" id="payment-note" rows="5"
-                                        placeholder="Internal Payment Note"></textarea>
-                                </div>
-                                <div class="d-flex flex-wrap mb-0">
-                                    <button type="button" class="btn btn-primary me-1"
-                                        data-bs-dismiss="modal">Send</button>
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /Add Payment Sidebar -->
-
         </div>
     </div>
 </div>

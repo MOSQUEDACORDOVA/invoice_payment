@@ -1,85 +1,104 @@
- <!-- Modal -->
-    <div class="sidenav-overlay"></div>
-    <div class="drag-target"></div>
+<!-- Modal -->
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
 
-    <!-- BEGIN: Footer-->
-    <footer class="footer footer-static footer-light">
-        <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="#">SAN ANTONIO WINERY</a><span class="d-none d-sm-inline-block">, All rights Reserved</span></span></p>
-    </footer>
-    <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
-    <!-- END: Footer-->
- <!-- BEGIN: Vendor JS-->
-    <script src="../../../app-assets/vendors/js/vendors.min.js"></script>
-    <!-- BEGIN Vendor JS-->
+<!-- BEGIN: Footer-->
+<footer class="footer footer-static footer-light">
+    <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="#">SAN ANTONIO WINERY</a><span class="d-none d-sm-inline-block">, All rights
+                Reserved</span></span></p>
+</footer>
+<button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
+<!-- END: Footer-->
+<!-- BEGIN: Vendor JS-->
+<script src="../../../app-assets/vendors/js/vendors.min.js"></script>
+<!-- BEGIN: Page Vendor JS-->
+<script src="../../../app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+<script src="../../../app-assets/vendors/js/extensions/moment.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+<script src="../../../app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone.min.js"></script>
+<script src="../../../app-assets/vendors/js/extensions/jquery.contextMenu.min.js"></script>
+<script src="../../../app-assets/vendors/js/extensions/jquery.ui.position.min.js"></script>
+<script src="../../../app-assets/vendors/js/forms/wizard/bs-stepper.min.js"></script>
+<script src="../../../app-assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
+<script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
+<script src="../../../app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+<!-- END: Page Vendor JS-->
 
-    <!-- BEGIN: Page Vendor JS-->
-    <script src="../../../app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
-    <script src="../../../app-assets/vendors/js/extensions/moment.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
-    <script src="../../../app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone.min.js"></script>
-    <!-- END: Page Vendor JS-->
-    <script src="../../../app-assets/vendors/js/extensions/jquery.contextMenu.min.js"></script>
-    <script src="../../../app-assets/vendors/js/extensions/jquery.ui.position.min.js"></script>
-    <script src="../../../app-assets/vendors/js/forms/wizard/bs-stepper.min.js"></script>
-    <script src="../../../app-assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
-    <script src="../../../app-assets/vendors/js/extensions/toastr.min.js"></script>
-    <script src="../../../app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
-   
+<!-- BEGIN: Theme JS-->
+<script src="../../../app-assets/js/core/app-menu.js"></script>
+<script src="../../../app-assets/js/core/app.js"></script>
+<!-- END: Theme JS-->
+<!-- BEGIN: Page JS-->
 
-    <!-- BEGIN: Theme JS-->
-    <script src="../../../app-assets/js/core/app-menu.js"></script>
-    <script src="../../../app-assets/js/core/app.js"></script>
-    <!-- END: Theme JS-->
+{{#if login}}
+{{!-- This this script is loaded only on the login page --}}
+<script src="../../../app-assets/js/scripts/pages/auth-login.js"></script>
+{{/if}}
 
-    <!-- BEGIN: Page JS-->
+{{#if invoiceC}}
+{{!-- This this script is loaded only on the closed invoices page --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/app-invoice-listC.js"></script>
+{{/if}}
 
-    {{#if login}}
-    <script src="../../../app-assets/js/scripts/pages/auth-login.js"></script>
-    {{/if}}
-    {{#if invoiceC}}
-        <script src="../../../assets/data/app-invoice-listC.js"></script>
-    {{/if}}
-    {{#if invoiceO}}
-        <script src="../../../assets/data/app-invoice-listO.js"></script>
-    {{/if}}
-      {{#if sysSettings}}
-        <script src="../../../assets/data/app-SysSettings.js"></script>
-    {{/if}}
-    {{#if payments}}
-        <script src="../../../assets/data/payments.js"></script>
-    {{/if}}
-    {{#if payment_detail}}
-        <script src="../../../assets/data/payments_detail.js"></script>
-    {{/if}}
-    {{#if print_inv}}<script src="../../../app-assets/js/scripts/pages/app-invoice-print.js"></script>{{/if}}
+{{#if invoiceO}}
+{{!-- This this script is loaded only on the open invoices page --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/app-invoice-listO.js"></script>
+{{/if}}
 
-      <!-- BEGIN: Page JS-->
-    <script src="../../../assets/data/app-ecommerce-checkout.js"></script>
-    <!-- END: Page JS-->
-    <!-- END: Page JS-->
+{{#if sysSettings}}
+{{!-- This this script is loaded only when user role is 4 --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/app-SysSettings.js"></script>
+{{/if}}
 
-    <script>
-        $(window).on('load', function() {
-            if (feather) {
-                feather.replace({
-                    width: 14,
-                    height: 14
-                });
-            }
-        })
-	$(document).ready(function(){
-            if ( $("#msgs").length ) {
-                let msg = $('#msgs').text();
+{{#if payments}}
+{{!-- This this script is loaded only on the payments page --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/payments.js"></script>
+{{/if}}
+
+{{#if payment_detail}}
+{{!-- This this script is loaded only on the payment detail page --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/payments_detail.js"></script>
+{{/if}}
+
+{{#if print_inv}}
+{{!-- This this script is loaded only on the print inv page --}}
+
+<script src="../../../app-assets/js/scripts/pages/app-invoice-print.js"></script>
+{{/if}}
+
+{{#if pay_invoices}}
+{{!-- This this script is loaded only on the payment invoices page --}}
+<script src="../../../assets/data/checkout-payment-invoices.js"></script>
+{{/if}}
+
+<!-- END: Page JS-->
+
+<script>
+    $(window).on('load', function () {
+        if (feather) {
+            feather.replace({
+                width: 14,
+                height: 14
+            });
+        }
+    })
+    $(document).ready(function () {
+        if ($("#msgs").length) {
+            let msg = $('#msgs').text();
             Swal.fire(msg)
-            }
-		})
-    </script>
+        }
+    })
+</script>
 </body>
 <!-- END: Body-->
-
 </html>

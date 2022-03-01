@@ -1,23 +1,17 @@
-const passport = require("passport");
-const router = require("express").Router();
-const Sequelize = require("sequelize");
-const bcrypt = require("bcrypt-nodejs");
-const Op = Sequelize.Op;
-const crypto = require("crypto");
-const moment = require('moment-timezone');
+const passport = require("passport");//THIS MODULE USE FOR AUTHENTICATE SESSION
+const crypto = require("crypto");//THIS MODULE USE TO ENCRYPT OR DECRYPT
 const request = require("request-promise");
-const URI = 'https://sawoffice.technolify.com:8443/api1/x3/erp/SAWTEST1/'
-var DataBasequerys = require('../models/data');
+var queryFolder = 'SAWTEST1' //Name the query folder X3
+var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
+var DataBasequerys = require('../models/data');// Functions for X3 querys
 const { encrypt, decrypt } = require('./crypto');
-// Formulario de inicio de sesión
+
+/** FUNCTION TO RENDER LOGGIN PAGE */
 exports.formLogin = async (req, res) => {
   let error = false
-
   if (req.session.errorLogin) {
     error = req.session.errorLogin;
-    console.log(error)
   }
-  console.log(error)
   res.render("login", {
     pageName: "Login",
     layout: "page-form",
@@ -27,24 +21,15 @@ exports.formLogin = async (req, res) => {
   });
 };
 
-
-// Iniciar sesión
-exports.loginUser = passport.authenticate("local", {
-  successRedirect: "/home",
-  // successRedirect: "/dashboard",
-  failureRedirect: "/login",
-  failureFlash: true,
-  badRequestMessage: "Testing",
-});
-
+/**FUNCTION TO LOGGIN USER */
 exports.loginUser2 = async (req, res) => {
-  console.log(req.body);
+  //USE PASSPORT TO AUTHENTICATE
   passport.authenticate("local", function (err, user, info) {
     if (err) {
       return next(err);
     }
     if (!user) {
-      console.log(info.message)
+      
       req.flash("error", info.message)
       req.session.errorLogin = req.flash()
       return res.redirect("/login");
@@ -53,211 +38,127 @@ exports.loginUser2 = async (req, res) => {
       if (err) {
         return next(err);
       }
-     // user['$resources'] = [{ EMAIL: 'cescarsega1@gmail.com', ROLE: 1 }] //ONLY FOR TEST, ERASER LATER
-     var consultingPic = await  DataBasequerys.consultingPicProfile(user['$resources'][0]['EMAIL'])
-     if (consultingPic) {
-      user['$resources'].push({pic: consultingPic})
-    }else{
-      user['$resources'].push({pic: 'pic_pr.png'})
-    }
-     
+      // user['$resources'] = [{ EMAIL: 'cescarsega1@gmail.com', ROLE: 1 }] //ONLY FOR TEST, ERASER LATER
+      //CONSULTING PIC PROFILE FROM SQL TABLE
+      var consultingPic = await DataBasequerys.consultingPicProfile(user['$resources'][0]['EMAIL'])
+      if (consultingPic) {
+        user['$resources'].push({ pic: consultingPic })
+      } else {
+        user['$resources'].push({ pic: 'pic_pr.png' })//THIS IS GENERIC PICTURE
+      }
+
       var ip = req.connection.remoteAddress;
       if (user['$resources'] == "") {
+        //IF USER DON'T EXIST RETURN TO LOGGIN AND SHOW MSG
         req.flash("error", `User don't exist`)
         req.session.errorLogin = req.flash()
         return res.redirect('/login')
       }
 
+      //SAVE SQL TABLE SESSIONLOG
       const SessionLog = await DataBasequerys.tSessionLog(user['$resources'][0]['EMAIL'], user['$resources'][0]['ROLE'])
 
-      req.session.SessionLog = SessionLog
-      let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "Hello World", Status = 1, Comment = "test comment";
-      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
-      //console.log(SystemLogLogin)      
+      req.session.SessionLog = SessionLog //STORE IN SESSION THE SESSION LOG ID TO USE IN SYSTEMLOG SQL
 
-      res.redirect('/dashboard/' + req.body.email)
+      //SAVE SQL LOGSYSTEM
+      let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
+      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)   
+
+      res.redirect('/dashboard/' + req.body.email)//REDIRECT TO OPEN INVOICES PAGE
     });
   })(req, res);
 };
 
-// Formulario de registro
-exports.formCreateUser = (req, res) => {
-  res.render("register", {
-    pageName: "Registrate",
-    layout: "page-form",
-  });
-};
 
-// Crear usuario en la base de datos
-exports.createUser = async (req, res) => {
-  const { name, lastName, email, password, confirmPassword } = req.body;
-  var hoy = moment()
-  // La contraseña y cofirmar contraseña no son iguales
-  if (password !== confirmPassword) {
-    req.flash("error", "Las contraseñas no son iguales");
-
-    return res.render("register", {
-      pageName: "Registrate",
-      layout: "page-form",
-      messages: req.flash(),
-    });
-  }
-  try {
-    await Usuarios.create({
-      name,
-      lastName,
-      email,
-      password,
-      desde: hoy,
-      hasta: hoy
-    });
-
-    // res.redirect("/mailBienvenida/"+email);
-  } catch (err) {
-    console.log(err);
-    if (err.errors) {
-      req.flash(
-        "error",
-        err.errors.map((error) => error.message)
-      );
-    } else {
-      req.flash("error", "Error desconocido");
-    }
-    res.render("register", {
-      pageName: "Registrate",
-      layout: "page-form",
-      messages: req.flash(),
-    });
-  }
-
-  const usuario = await Usuarios.findOne({ where: { email } });
-
-  if (!usuario) {
-
-    req.flash("error", "No existe esa cuenta");
-    console.log("error")
-    //res.redirect("/search-account");
-  }
-
-  // Usuario existe
-  usuario.token = crypto.randomBytes(20).toString("hex");
-  usuario.expiration = Date.now() + 3600000;
-
-  // Guardarlos en la BD
-  await usuario.save();
-  const resetUrl = `https://${req.headers.host}/login/${usuario.token}`;
-  res.redirect("/mailBienvenida/" + email + "/" + usuario.token);
-  console.log(resetUrl);
-  //res.redirect("/resetpass/" + usuario.token + "/" + email);
-};
-
-// Formulario de buscar cuenta
+/**FUNCTION TO RENDER SEARCH ACCOUNT PAGE */
 exports.formSearchAccount = (req, res) => {
-
   res.render("search-account", {
     pageName: "Buscar Cuenta",
     layout: "page-form",
   });
 
 };
-exports.formSearchAccountToken = (req, res) => {
 
-  res.render("search-account", {
-    pageName: "Buscar Cuenta",
-    layout: "page-form",
-    token: true
-  });
-
-};
-
-
-// Enviar token si el usuario es valido
+/**FUNCTION SEND TOKEN BY EMAIL IF USER INFOR IS OK */
 exports.sendToken = async (req, res) => {
-  // verificar si el usuario existe
+  // CHECK OUT IF USER EXIST
   const { email } = req.body;
-  
-  const usuario = JSON.parse(await request({
+
+  const User = JSON.parse(await request({
     uri: URI + `YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=EMAIL eq '${email}'`,
-    method:'GET',
+    method: 'GET',
     insecure: true,
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-      },
-    json: true, // Para que lo decodifique automáticamente 
-    }).then((response)=>{
-console.log(response)
-return JSON.stringify(response)
-    })
-    )
-console.log(usuario['$resources'][0])
+    },
+    json: true,
+  }).then((response) => {
+    return JSON.stringify(response)
+  }))
 
-  if (!usuario['$resources'][0]) {
+  //IF USER DON'T EXIST, RETURN AND SHOW MSG
+  if (!User['$resources'][0]) {
     req.session.errorLogin = req.flash("error", "Account does not exist");
-  return  res.redirect("/forgot-pass");
+    return res.redirect("/forgot-pass");
   }
 
-  // Usuario existe
+  // IF USER EXIST , CREATE TOKEN AND SAVE IN X3
   let token = crypto.randomBytes(20).toString("hex");
   let expiration = Date.now() + 3600000;
 
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
-  // usuario.token = null;
-  // usuario.expiration = null;
 
-  
-   let save_pass = JSON.parse(await request({
-     uri: URI + query_consulting,
-     method: 'PUT',
-     insecure: true,
-     rejectUnauthorized: false,
-     headers: {
-       'Content-Type': 'application/json',
-       'Accept': '*/*',
-       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-     },
-     body: {
-       "TOKEN": token,
-     },
-     json: true,  //Para que lo decodifique automáticamente 
-   }).then(saved => {//
-     console.log(saved.body)
-     return JSON.stringify(saved)
-   }))
-  
+  let save_token = JSON.parse(await request({
+    uri: URI + query_consulting,
+    method: 'PUT',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+    },
+    body: {
+      "TOKEN": token,
+    },
+    json: true,
+  }).then(saved => {
+    return JSON.stringify(saved)
+  }))
 
+  //CREATE THE URL WITH TOKEN AND SEND BY EMAIL
   const resetUrl = `https://${req.headers.host}/set-password/${token}`;
-  console.log(resetUrl);
-  //res.redirect("/resetpassform/"+ email);
   res.redirect(`/send-token/${email}/${token}`);
-  
+
 };
 
-
+/**FUNCTION TO RENDER RESET PASS PAGE- CHECK OUT TOKEN */
 exports.resetPasswordForm = async (req, res) => {
   let token = req.params.token
+  //Check out if token is validate in X3 Loggin query
   const usuario = await request({
     uri: URI + `YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=TOKEN eq '${token}'`,
-    method:'GET',
+    method: 'GET',
     insecure: true,
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-      },
-    json: true, // Para que lo decodifique automáticamente 
-    })
-console.log(usuario['$resources'][0])
+    },
+    json: true,
+  })
+
   if (!usuario['$resources'][0]) {
+    //if token not exist
     req.session.errorLogin = req.flash("error", "Account not exist or token is not validate");
-   return res.redirect("/forgot-pass");
+    return res.redirect("/forgot-pass");
   }
-  //let email = req.params.email
   let email = usuario['$resources'][0]['EMAIL']
-  // Formulario para generar password
+  // Render reset password page
   res.render("reset-password", {
     pageName: "Set Password",
     layout: "page-form",
@@ -265,31 +166,15 @@ console.log(usuario['$resources'][0])
   });
 };
 
-// change password
+/**FUNCTION TO SAVE NEW PASSWORD */
 exports.updatePassword = async (req, res) => {
-  // Verifica token y fecha de expiracion-
-  // const usuario = await Usuarios.findOne({
-  //   where: {
-  //     token: req.params.token,
-  //     expiration: {
-  //       [Op.gte]: Date.now(),
-  //     },
-  //   },
-  // });
 
-  // if (!usuario) {
-  //   req.flash("error", "No valido");
-  //   res.redirect("search-account");
-  // }
   let password_new, email, token, query_consulting
-  // Hashear el password
-  password_new =encrypt(req.body.password);
+
+  password_new = encrypt(req.body.password);// Encrypt password
   email = req.body.email
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
-  // usuario.token = null;
-  // usuario.expiration = null;
-
-  // Guardamos el nuevo password
+  // Save new password
   let save_pass = JSON.parse(await request({
     uri: URI + query_consulting,
     method: 'PUT',
@@ -303,30 +188,31 @@ exports.updatePassword = async (req, res) => {
     body: {
       "PASS": password_new,
     },
-    json: true, // Para que lo decodifique automáticamente 
-  }).then(saved => { //Get the mapping loggin
+    json: true,
+  }).then(saved => {
     return JSON.stringify(saved)
   }))
   console.log(save_pass)
   req.session.errorLogin = req.flash("error", "Your password changed successfully");
- return res.redirect("/login");
+  return res.redirect("/login");
 };
 
-// Cerrar sesión
+/**FUNCTION TO CLOSE SESSION */
 exports.closeSesion = (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 };
 
-// Update user profile
+/** FUNCTION TO UPDATER USER INFO */
 exports.UpdateUser = async (req, res) => {
   const user = res.locals.user['$resources'][0]
   email = user.EMAIL
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
-  
-  const {lastName_edit_profile, firstName_edit_profile} = req.body
-  let save_pass = JSON.parse(await request({
+
+  const { lastName_edit_profile, firstName_edit_profile } = req.body
+  //SAVE FNAME AND LNAME IN X3
+  let user_info = JSON.parse(await request({
     uri: URI + query_consulting,
     method: 'PUT',
     insecure: true,
@@ -340,45 +226,14 @@ exports.UpdateUser = async (req, res) => {
       "FNAME": firstName_edit_profile,
       "LNAME": lastName_edit_profile
     },
-    json: true, // Para que lo decodifique automáticamente 
-  }).then(saved => { //Get the mapping loggin
+    json: true,
+  }).then(saved => {
     return JSON.stringify(saved)
   }))
-  console.log(save_pass)
-  console.log(user)
-  res.locals.user['$resources'][0]['FNAME']=firstName_edit_profile
-  res.locals.user['$resources'][0]['LNAME']=lastName_edit_profile
-  res.send({save_pass})
+  //UPDATE CURRENT SESSION INFO
+  res.locals.user['$resources'][0]['FNAME'] = firstName_edit_profile
+  res.locals.user['$resources'][0]['LNAME'] = lastName_edit_profile
+
+  res.send({ user_info })
 };
 
-exports.upload = function (req, res) {
-  res.render("upload", {
-    title: "ejemplo de subida de imagen por HispaBigData",
-  });
-};
-
-exports.pruebaR = (req, res) => {
-
-  //const {nombre,  telefono, email, descripcion} = req.body
-  const options = {
-    hostname: 'https://sawoffice.technolify.com:8443/api1/x3/erp/{{FOLDER}}/YPORTALUSR?representation=YPORTALUSR.$query&count=10000',
-    method: 'GET'
-  }
-  let query_consulting = "&where=EMAIL eq 'cescarsega1@gmail.com'"
-  request({
-    uri: URI + 'YPORTALUSR?representation=YPORTALUSR.$query&count=10000' + query_consulting,
-    method: 'GET',
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-    },
-    json: true, // Para que lo decodifique automáticamente 
-  }).then(usuarios => {
-    console.log(usuarios)
-    res.send(usuarios)
-  });
-
-};

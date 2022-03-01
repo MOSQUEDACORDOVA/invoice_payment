@@ -24,7 +24,6 @@ const LogDirectory = '../log';
 const LogfileMaxSize = '5242880'; //10 MB In Bytes
 
 // Constructor for Configuration
-// Constructor for Configuration
 function Configuration() {
 
 	var configObj = {

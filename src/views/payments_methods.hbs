@@ -51,7 +51,8 @@
                                             <div class="input-group input-group-merge">
                                                 <input id="addcardNickName" name="cardNickName"
                                                     class="form-control add-credit-card-mask" type="text"
-                                                    placeholder="Please enter your credit card nickname" aria-describedby="addCard2"
+                                                    placeholder="Please enter your credit card nickname"
+                                                    aria-describedby="addCard2"
                                                     data-msg="Please enter your credit card nickname" required
                                                     maxlength="16" />
                                                 <span class="input-group-text cursor-pointer p-25" id="addCard2">
@@ -88,7 +89,7 @@
                                         <div class="col-6 col-md-3">
                                             <label class="form-label" for="addCardExpiryDate">ZIP</label>
                                             <input type="text" id="zipCode" name="zipCode" class="form-control"
-                                                placeholder="ZIP Code" minlength="5"/>
+                                                placeholder="ZIP Code" minlength="5" />
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="stateO">State</label>
@@ -163,21 +164,6 @@
                                             <input type="text" id="cityO" name="city" class="form-control"
                                                 placeholder="City" />
                                         </div>
-                                        <div class="col-12 d-none">
-                                            <div class="d-flex align-items-center">
-                                                <div class="form-check form-switch form-check-primary me-25">
-                                                    <input type="checkbox" class="form-check-input" id="addSaveCard"
-                                                        checked />
-                                                    <label class="form-check-label" for="addSaveCard">
-                                                        <span class="switch-icon-left"><i
-                                                                data-feather="check"></i></span>
-                                                        <span class="switch-icon-right"><i data-feather="x"></i></span>
-                                                    </label>
-                                                </div>
-                                                <label class="form-check-label fw-bolder" for="addSaveCard"> Save Card
-                                                    for future billing? </label>
-                                            </div>
-                                        </div>
                                         <div class="col-12 mt-2 pt-1">
                                             <button type="submit" class="btn btn-primary me-1">Save Changes</button>
                                             <button type="reset" class="btn btn-outline-secondary">Discard</button>
@@ -205,16 +191,21 @@
                                                 <div class="d-flex flex-column text-start text-lg-end">
                                                     <div class="d-flex order-sm-0 order-1 mt-1 mt-sm-0">
                                                         <button class="btn btn-outline-primary me-75 edit_credit_card"
-                                                            data-name="{{#decryptData NAME}}{{/decryptData}}" data-number="{{#decryptData CARDNO}}{{/decryptData}}"
-                                                            data-exp="{{#decryptData EXPDAT}}{{/decryptData}}" data-id="{{PAYID}}" data-zip="{{#decryptData ZIP}}{{/decryptData}}"
-                                                            data-address="{{ADDLIG1}}" data-cvv="{{#decryptData CVC}}{{/decryptData}}"
+                                                            data-name="{{#decryptData NAME}}{{/decryptData}}"
+                                                            data-number="{{#decryptData CARDNO}}{{/decryptData}}"
+                                                            data-exp="{{#decryptData EXPDAT}}{{/decryptData}}"
+                                                            data-id="{{PAYID}}"
+                                                            data-zip="{{#decryptData ZIP}}{{/decryptData}}"
+                                                            data-address="{{ADDLIG1}}"
+                                                            data-cvv="{{#decryptData CVC}}{{/decryptData}}"
                                                             data-state="{{SAT}}" data-city="{{CTY}}">
                                                             Edit
                                                         </button>
                                                         <a class="btn btn-outline-secondary"
                                                             href="/delete_payM/{{PAYID}}">Delete</a>
                                                     </div>
-                                                    <span class="mt-2">Card expires at {{#decryptData EXPDAT}}{{/decryptData}}</span>
+                                                    <span class="mt-2">Card expires at {{#decryptData
+                                                        EXPDAT}}{{/decryptData}}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -235,7 +226,9 @@
 </div>
 <!-- END: Content-->
 <script>
+    /** JQUERY TO PUT EDIT CARD INFO */
     $('.edit_credit_card').on('click', (e) => {
+        //GETT VALUES FROM DATASET
         let card_number = e.currentTarget.dataset['number'];
         let exp = e.currentTarget.dataset['exp']
         let name = e.currentTarget.dataset['name']
@@ -260,24 +253,24 @@
             $("#stateO option[value='" + state + "']").attr("selected", true);
         }
 
+        //GHANGE THE FORM ACTION TO EDIT METHOD
         $('#creditCardForm').removeAttr('action')
         $('#creditCardForm').attr('action', '/edit_apy_method')
-        console.log($('#pay_id'))
+        //IF EXIST PREVIOUS PAYS ID INFO TO EDIT, REMOVE
         if ($('#pay_id')) {
             $('#pay_id').remove()
         }
+        // CREATE THE INPUT WHIT ID TO EDIT
         var IDPay = $(`<input type=\"text\" value="${id}" id="pay_id" name="payID" class="d-none"/>`);
-
         $('#creditCardForm').append(IDPay)
     })
 
+    //JQUERY TO MASK EXP DATE
     $('#addCardExpiryDate').on('keyup', (e) => {
-        let valor = e.target.value
-        console.log(valor.length)
-        if (valor.length == 2) {
-            valor += '/'
+        let value = e.target.value
+        if (value.length == 2) {
+            value += '/'
         }
-        console.log(valor)
-        $('#addCardExpiryDate').val(valor)
+        $('#addCardExpiryDate').val(value)
     })
 </script>

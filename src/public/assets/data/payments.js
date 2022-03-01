@@ -1,66 +1,51 @@
-
-
-var dtPaymentT = $('#paymentsTable'),
-    assetPath = 'app-assets/',
-    invoicePreview = 'app-invoice-preview.html',
-    invoiceAdd = 'invoice.html',
-    invoiceEdit = 'app-invoice-edit.html';
+/** On this JS render and use the functions for Open Invoices Table */
+var dtPaymentT = $('#paymentsTable');
 function paymentsTable(a){
   let array_inv =[]
-  array_inv.push(JSON.parse($('#payments').val()))
-  // if (a) {
-    
-  //   array_inv = JSON.parse(value)
-
-  // }else{
-  //   array_inv = JSON.parse(value.replace(/&quot;/g,'"'))
-  // }
-
-  console.log(array_inv)
+  array_inv.push(JSON.parse($('#payments').val()))//Parsed to array payments JSON STring
+  
   if (dtPaymentT.length) {
     var dtInvoice = dtPaymentT.DataTable({
-      data: array_inv[0], // JSON file to add data
+      data: array_inv[0], // add data to dataTable
      columns: [
       { data: 'pmtKey' },
       { data: 'CustID' },
       { data: 'TransactionID' },
       { data: 'TranAmount' },
-      { data: 'ProcessorStatus'}, // used for sorting so will hide this column
+      { data: 'ProcessorStatus'},
       { data: 'ProcessorStatusDesc' },
       { data: 'DateProcessesed' },
       { data: 'pmtKey'},
       
       ], 
       columnDefs: [
-        {
+        {//TranAmount render whit two decimals
           targets:3,
           render: function(data, type, full, meta){
        
            return '$'+Number.parseFloat(data).toFixed(2);
           }
         },
-        {
+        {// Format date MM/DD/YYYY
           targets:6,
           render: function(data, type, full, meta){
        
            return moment(data).format('MM/DD/YYYY');
           }
         },
-        {
+        {//Render button with pmtKey to view payments details
           targets:7,
           render: function(data, type, full, meta){
-            console.log(full['tPaymentApplication'])
-            var arrayAppPayment = encodeURIComponent(JSON.stringify(full['tPaymentApplication']));
-            // <span class="d-none" style="cursor:pointer;"   data-arrPayments="${arrayAppPayment}" ><button type="button" class="btn btn-outline-primary waves-effect">List</button></span>
+            
             return (
-             `
-             <span class="" style="cursor:pointer;" ><button type="button" class="btn btn-outline-primary waves-effect btnview" data-id="${full['pmtKey']}">View</button></span>  
-             `
+             `<span class="" style="cursor:pointer;" >
+             <button type="button" class="btn btn-outline-primary waves-effect btnview" data-id="${full['pmtKey']}">View</button>
+             </span>`
             );
           }
         },
       ],
-      order: [[0, 'desc']],
+      order: [[0, 'desc']],//Order by pmtKey desc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +
@@ -80,48 +65,15 @@ function paymentsTable(a){
           next: '&nbsp;'
         }
       },
-      // Buttons with Dropdown
-      buttons: [
-        
+      // Buttons blank
+      buttons: [        
           
       ],
-      // For responsive popup
-      /*responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details of ' + data['client_name'];
-            }
-          }),
-          type: 'column',
-          renderer: function (api, rowIdx, columns) {
-            var data = $.map(columns, function (col, i) {
-              return col.columnIndex !== 2 // ? Do not show row in modal popup if title is blank (for check box)
-                ? '<tr data-dt-row="' +
-                    col.rowIdx +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
-                : '';
-            }).join('');
-            return data ? $('<table class="table"/>').append('<tbody>' + data + '</tbody>') : false;
-          }
-        }
-      },*/
       initComplete: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
-        // Adding role filter once table initialized
+        // Adding procesor status filter once table initialized
         this.api()
-          .columns(3)
+          .columns(4)
           .every(function () {
             var column = this;
             var select = $(
@@ -146,60 +98,18 @@ function paymentsTable(a){
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
       }
     });
-    // $('#invoiceTable_info').addClass('py-2')
-    // document.getElementById('invoiceTable_info').parentElement.parentElement.classList.add('align-items-center')
   }
+    //Button to view paymente details
     dtInvoice.$(`.btnview`).click((e)=>{
-    console.log(e.currentTarget.dataset['id'])
+    //console.log(e.currentTarget.dataset['id'])
     location.href = "/payment_view/"+e.currentTarget.dataset['id']
   })
 }
 
 $(function () {
   'use strict';
-  
 
-  // datatable
+  // Whit document ready render dataTable
 paymentsTable()
 
-
-  //CONTEXT MENU
-  $.contextMenu({
-    selector: '.hover_inv',
-    trigger: 'hover',
-    autoHide: true,
-    build: function ($trigger, e) {
-      console.log(e)
-      var arrPayments = e.currentTarget['dataset']["arrpayments"];
-      
-      var my_object = JSON.parse(decodeURIComponent(arrPayments));
-      console.log(my_object.length)
-
-       var items1 = {}
-       let status
-      for (let i = 0; i < my_object.length; i++) {
-        if (my_object[i]['Status'] == 1) {
-          status = "Success"
-        }else{
-          status = "Error"
-        }
-        var newUser = `${my_object[i]['INVOICENUM']}`;
-        items1[newUser] = {name: `${my_object[i]['INVOICENUM']} / ${status}`}
-      }
-     if (my_object.length == 0) {
-      items1[0] = {name: `Noexist / Error`}
-     }
-        return {
-            callback: function (key, options) {
-              console.log(options)
-                var m = "clicked: " + options;
-                console.log(m);
-                //location.href="/invoiceO_detail/"+key
-            },
-            items: 
-            items1
-            
-        };
-    }
-  });
 });

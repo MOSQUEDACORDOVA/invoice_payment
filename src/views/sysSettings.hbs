@@ -1,11 +1,12 @@
 <!-- BEGIN: Content-->
 <style>
-    .block{
+    .block {
         pointer-events: none;
-    color: #ffcc9a;
+        color: #ffcc9a;
     }
 </style>
-<input type="text" value="{{settings}}" id="jsonSettings"  hidden>
+
+<input type="text" value="{{settings}}" id="jsonSettings" hidden>{{!-- This hidden input contain the json string for dataTable --}}
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
@@ -40,29 +41,27 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modalbodySet">
-               <form id="formSettings">
-                   
+                <form id="formSettings">
+                    <div class="col-12">
+                        <label class="form-label" for="sValue">Value</label>
+                        <input type="text" id="sValue" name="sValue" class="form-control"
+                            placeholder="Value for setting" />
+                    </div>
+                    <div class="col-12 mt-1">
+                        <label class="form-label" for="sType">Setting Type</label>
+                        <select class="form-control" id="sType" name="sType">
+                            <option value="email-Support">Email-Support</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-1">
+                        <label class="form-label" for="sStatus">Status</label>
+                        <select class="form-control" id="sStatus" name="sStatus">
+                            <option value="0">Disabled</option>
+                            <option value="1" selected> Enabled</option>
+                        </select>
+                    </div>
 
-                                        <div class="col-12">
-                                            <label class="form-label" for="sValue">Value</label>
-                                            <input type="text" id="sValue" name="sValue" class="form-control"
-                                                placeholder="Value for setting" />
-                                        </div>
-                                        <div class="col-12 mt-1">
-                                            <label class="form-label" for="sType">Setting Type</label>
-                                            <select class="form-control" id="sType" name="sType">
-                                                    <option value="email-Support">Email-Support</option>
-                                            </select>
-                                        </div>
-                                         <div class="col-12 mt-1">
-                                            <label class="form-label" for="sStatus">Status</label>
-                                            <select class="form-control" id="sStatus" name="sStatus">
-                                                    <option value="0">Disabled</option>
-                                                    <option value="1" selected> Enabled</option>
-                                            </select>
-                                        </div>
-
-               </form>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary acceptSetting" id="acceptSetting">Accept</button>
@@ -78,29 +77,28 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modalbodySet">
-               <form id="editformSettings">
-                   <div id="idEdit" class="d-none">  </div>
+                <form id="editformSettings">
+                    <div id="idEdit" class="d-none"> </div>
+                    <div class="col-12">
+                        <label class="form-label" for="sValue">Value</label>
+                        <input type="text" id="editsValue" name="sValue" class="form-control"
+                            placeholder="Value for setting" />
+                    </div>
+                    <div class="col-12 mt-1">
+                        <label class="form-label" for="sType">Setting Type</label>
+                        <select class="form-control" id="editsType" name="sType">
+                            <option value="email-Support">Email-Support</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mt-1">
+                        <label class="form-label" for="sStatus">Status</label>
+                        <select class="form-control" id="editsStatus" name="sStatus">
+                            <option value="0">Disabled</option>
+                            <option value="1" selected> Enabled</option>
+                        </select>
+                    </div>
 
-                                        <div class="col-12">
-                                            <label class="form-label" for="sValue">Value</label>
-                                            <input type="text" id="editsValue" name="sValue" class="form-control"
-                                                placeholder="Value for setting" />
-                                        </div>
-                                        <div class="col-12 mt-1">
-                                            <label class="form-label" for="sType">Setting Type</label>
-                                            <select class="form-control" id="editsType" name="sType">
-                                                    <option value="email-Support">Email-Support</option>
-                                            </select>
-                                        </div>
-                                         <div class="col-12 mt-1">
-                                            <label class="form-label" for="sStatus">Status</label>
-                                            <select class="form-control" id="editsStatus" name="sStatus">
-                                                    <option value="0">Disabled</option>
-                                                    <option value="1" selected> Enabled</option>
-                                            </select>
-                                        </div>
-
-               </form>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary acceptSetting" id="editSetting">Accept</button>

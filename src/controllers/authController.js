@@ -1,23 +1,11 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
-// Comprobar si el usuario esta logueado
+// Check out if user is logged
 exports.authenticatedUser = async (req, res, next) => {
-
-	// Autenticado
-	if(req.isAuthenticated()) {
-		
-		// usuario = await Usuarios.findOne({where: {email: req.user.email}});
-		// console.log(req.user)
-		// usuario.save(function(err) {
-		// 	if (err) console.log(err);
-		// 	return done(null, usuario);
-		// });
-		// res.locals.user = req.user;
+	// It's authenticated, continue to next function
+	if(req.isAuthenticated()) {		
 		return next();
 	}
-
-	// Si no esta autenticado
+	// If not authenticated return to loggin page
 	return res.redirect('/login');
-
 }

@@ -1,157 +1,102 @@
 <!-- BEGIN: Header-->
 <style>
     .main-menu .navbar-header {
-    padding: 0rem 1rem 0.3rem 0.64rem;
-}
-.main-menu .navbar-header .navbar-brand .brand-logo img {
-    max-width: 133px;
-}
-.main-menu .navbar-header .navbar-brand {
-    margin-top: 1rem;
-}
+        padding: 0rem 1rem 0.3rem 0.64rem;
+    }
+
+    .main-menu .navbar-header .navbar-brand .brand-logo img {
+        max-width: 133px;
+    }
+
+    .main-menu .navbar-header .navbar-brand {
+        margin-top: 1rem;
+    }
 </style>
-    <nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
-        <div class="navbar-container d-flex content">
-            <div class="bookmark-wrapper d-flex align-items-center">
-                <ul class="nav navbar-nav d-xl-none">
-                    <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon" data-feather="menu"></i></a></li>
-                </ul>
-                Payment Portal
-                
-            </div>
-            <ul class="nav navbar-nav align-items-center ms-auto">
-               
-             
-               
-              
-                <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">{{user.FNAME}} {{user.LNAME}}</span><span class="user-status">{{#getRoles user.ROLE}}{{/getRoles}}</span></div><span class="avatar"><img class="round" src="../../../assets/uploads/{{pictureProfile}}" alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                    data-bs-target="#edit_profile"><i class="me-50" data-feather="user"></i> Profile</a>
-                        <div class="dropdown-divider"></div>
-                        {{!-- <a class="dropdown-item" href="page-account-settings-account.html"><i class="me-50" data-feather="settings"></i> Settings</a> --}}
-                        <a class="dropdown-item" href="/close-session"><i class="me-50" data-feather="power"></i> Logout</a>
-                    </div>
-                </li>
+<nav
+    class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
+    <div class="navbar-container d-flex content">
+        <div class="bookmark-wrapper d-flex align-items-center">
+            <ul class="nav navbar-nav d-xl-none">
+                <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon"
+                            data-feather="menu"></i></a></li>
             </ul>
-        </div>
-    </nav>
-    <ul class="main-search-list-defaultlist d-none">
-        <li class="d-flex align-items-center"><a href="#">
-                <h6 class="section-label mt-75 mb-0">Files</h6>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
-                <div class="d-flex">
-                    <div class="me-75"><img src="../../../app-assets/images/icons/xls.png" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Two new item submitted</p><small class="text-muted">Marketing Manager</small>
-                    </div>
-                </div><small class="search-data-size me-50 text-muted">&apos;17kb</small>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
-                <div class="d-flex">
-                    <div class="me-75"><img src="../../../app-assets/images/icons/jpg.png" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">52 JPG file Generated</p><small class="text-muted">FontEnd Developer</small>
-                    </div>
-                </div><small class="search-data-size me-50 text-muted">&apos;11kb</small>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
-                <div class="d-flex">
-                    <div class="me-75"><img src="../../../app-assets/images/icons/pdf.png" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">25 PDF File Uploaded</p><small class="text-muted">Digital Marketing Manager</small>
-                    </div>
-                </div><small class="search-data-size me-50 text-muted">&apos;150kb</small>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between w-100" href="app-file-manager.html">
-                <div class="d-flex">
-                    <div class="me-75"><img src="../../../app-assets/images/icons/doc.png" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Anna_Strong.doc</p><small class="text-muted">Web Designer</small>
-                    </div>
-                </div><small class="search-data-size me-50 text-muted">&apos;256kb</small>
-            </a></li>
-        <li class="d-flex align-items-center"><a href="#">
-                <h6 class="section-label mt-75 mb-0">Members</h6>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
-                <div class="d-flex align-items-center">
-                    <div class="avatar me-75"><img src="../../../app-assets/images/portrait/small/avatar-s-8.jpg" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Santo Riboli</p><small class="text-muted">UI designer</small>
-                    </div>
-                </div>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
-                <div class="d-flex align-items-center">
-                    <div class="avatar me-75"><img src="../../../app-assets/images/portrait/small/avatar-s-1.jpg" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Michal Clark</p><small class="text-muted">FontEnd Developer</small>
-                    </div>
-                </div>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
-                <div class="d-flex align-items-center">
-                    <div class="avatar me-75"><img src="../../../app-assets/images/portrait/small/avatar-s-14.jpg" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Milena Gibson</p><small class="text-muted">Digital Marketing Manager</small>
-                    </div>
-                </div>
-            </a></li>
-        <li class="auto-suggestion"><a class="d-flex align-items-center justify-content-between py-50 w-100" href="app-user-view-account.html">
-                <div class="d-flex align-items-center">
-                    <div class="avatar me-75"><img src="../../../app-assets/images/portrait/small/avatar-s-6.jpg" alt="png" height="32"></div>
-                    <div class="search-data">
-                        <p class="search-data-title mb-0">Anna Strong</p><small class="text-muted">Web Designer</small>
-                    </div>
-                </div>
-            </a></li>
-    </ul>
-    <ul class="main-search-list-defaultlist-other-list d-none">
-        <li class="auto-suggestion justify-content-between"><a class="d-flex align-items-center justify-content-between w-100 py-50">
-                <div class="d-flex justify-content-start"><span class="me-75" data-feather="alert-circle"></span><span>No results found.</span></div>
-            </a></li>
-    </ul>
-    <!-- END: Header-->
+            Payment Portal
 
-
-    <!-- BEGIN: Main Menu-->
-    <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-collapsed" data-scroll-to-active="true">
-        <div class="navbar-header">
-            <ul class="nav navbar-nav flex-row box-logo">
-                <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard/{{user.EMAIL}}"><span class="brand-logo">
-                    <img src="../../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="150" height ="auto"></span>
-                        {{!--  --}}
-                    </a></li>
-                <li class="nav-item nav-toggle d-none"><a class="nav-link modern-nav-toggle pe-0" data-bs-toggle="collapse"><i class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i><i class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary" data-feather="disc" data-ticon="disc"></i></a></li>
-            </ul>
         </div>
-        <div class="shadow-bottom"></div>
-        <div class="main-menu-content">
-            <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                
-                <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Menu</span><i data-feather="more-horizontal"></i>
-                </li>
-                <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/dashboard/{{user.EMAIL}}" ><i data-feather='bar-chart-2'></i><span class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
-                </li>
-                <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/close_invoices/{{user.EMAIL}}"><i data-feather='archive'></i><span class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
-                </li>
-                 <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/payments/{{user.EMAIL}}"><i data-feather='layers'></i><span class="menu-title text-truncate" data-i18n="Email">Payments</span></a>
-                </li>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.EMAIL}}"><i data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment Methods</span></a>
-                </li>
-                <li class="{{#if contactUs}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/contactUs"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Contact Us</span></a>
-                </li>
-                {{#if admin}} <li class="{{#if sysSettings}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/sysSettings"><i data-feather="settings"></i><span class="menu-title text-truncate" data-i18n="Email">System Settings</span></a>
-                </li>{{/if}}
-            </ul>
-        </div>
+        <ul class="nav navbar-nav align-items-center ms-auto">
+            <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link"
+                    id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">{{user.FNAME}}
+                            {{user.LNAME}}</span><span class="user-status">{{#getRoles user.ROLE}}{{/getRoles}}</span>
+                    </div><span class="avatar"><img class="round" src="../../../assets/uploads/{{pictureProfile}}"
+                            alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
+                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#edit_profile"><i
+                            class="me-50" data-feather="user"></i> Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/close-session"><i class="me-50" data-feather="power"></i> Logout</a>
+                </div>
+            </li>
+        </ul>
     </div>
-    <!-- END: Main Menu-->
-    <!-- Modal -->
+</nav>
+<!-- END: Header-->
+
+
+<!-- BEGIN: Main Menu-->
+<div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-collapsed" data-scroll-to-active="true">
+    <div class="navbar-header">
+        <ul class="nav navbar-nav flex-row box-logo">
+            <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard/{{user.EMAIL}}"><span
+                        class="brand-logo">
+                        <img src="../../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="150"
+                            height="auto"></span>
+                    {{!-- --}}
+                </a></li>
+            <li class="nav-item nav-toggle d-none"><a class="nav-link modern-nav-toggle pe-0"
+                    data-bs-toggle="collapse"><i class="d-block d-xl-none text-primary toggle-icon font-medium-4"
+                        data-feather="x"></i><i
+                        class="d-none d-xl-block collapse-toggle-icon font-medium-4  text-primary" data-feather="disc"
+                        data-ticon="disc"></i></a></li>
+        </ul>
+    </div>
+    <div class="shadow-bottom"></div>
+    <div class="main-menu-content">
+        <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+
+            <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Menu</span><i
+                    data-feather="more-horizontal"></i>
+            </li>
+            <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/dashboard/{{user.EMAIL}}"><i data-feather='bar-chart-2'></i><span
+                        class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
+            </li>
+            <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/close_invoices/{{user.EMAIL}}"><i data-feather='archive'></i><span
+                        class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
+            </li>
+            <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/payments/{{user.EMAIL}}"><i data-feather='layers'></i><span class="menu-title text-truncate"
+                        data-i18n="Email">Payments</span></a>
+            </li>
+            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.EMAIL}}"><i
+                        data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment
+                        Methods</span></a>
+            </li>
+            <li class="{{#if contactUs}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/contactUs"><i data-feather="mail"></i><span class="menu-title text-truncate"
+                        data-i18n="Email">Contact Us</span></a>
+            </li>
+            {{#if admin}} <li class="{{#if sysSettings}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/sysSettings"><i data-feather="settings"></i><span class="menu-title text-truncate"
+                        data-i18n="Email">System Settings</span></a>
+            </li>{{/if}}
+        </ul>
+    </div>
+</div>
+<!-- END: Main Menu-->
+<!-- Modal -->
 <div class="modal fade" id="edit_profile" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
     style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -165,149 +110,136 @@
 
                 <form class="needs-validation" method="post" id="edit_profile_form">
                     <div class="" id="client-info">
-                        <div class="form-group mt-2"><label for="register-firstName" class="form-label">First Name</label>
-                            <input type="text" name="firstName" placeholder="First Name" tabindex="1" class="form-control mb-2" autofocus
-                                id="firstName_edit_profile" value="{{user.FNAME}}">
+                        <div class="form-group mt-2"><label for="register-firstName" class="form-label">First
+                                Name</label>
+                            <input type="text" name="firstName" placeholder="First Name" tabindex="1"
+                                class="form-control mb-2" autofocus id="firstName_edit_profile" value="{{user.FNAME}}">
                         </div>
-                        <div class="form-group mt-2"><label for="register-firstName" class="form-label">Last Name</label>
-                            <input type="text" name="lastName" placeholder="Last Name" tabindex="1" class="form-control mb-2" autofocus
-                                id="lastName_edit_profile" value="{{user.LNAME}}">
+                        <div class="form-group mt-2"><label for="register-firstName" class="form-label">Last
+                                Name</label>
+                            <input type="text" name="lastName" placeholder="Last Name" tabindex="1"
+                                class="form-control mb-2" autofocus id="lastName_edit_profile" value="{{user.LNAME}}">
                         </div>
-            </div>
-            <div class="align-items-end mt-75 ms-1">
-            <div>
-              <label for="account-upload" class="btn btn-sm btn-primary mb-75 me-75 waves-effect waves-float waves-light">Upload pic profile</label>
-              <input type="file" id="account-upload" hidden="" accept="image/*">
-              <div class="progress progress-bar-primary">
-              <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="20" aria-valuemax="100" style="width: 0%"></div>
-            </div>
-              <p class="mb-0" id="subtext-progress">Allowed file types: png, jpg, jpeg.</p>
-            </div>
-          </div>
-            <div class="modal-footer">
-                <button tabindex="26" rippleeffect=""
-                    class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"  id="btn_edit_profile">Save</button>
-                     <a tabindex="26" rippleeffect=""
-                    class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"  href="/resetpassform/{{user.EMAIL}}">Change Password</a>
-            </div>
+                    </div>
+                    <div class="align-items-end mt-75 ms-1">
+                        <div>
+                            <label for="account-upload"
+                                class="btn btn-sm btn-primary mb-75 me-75 waves-effect waves-float waves-light">Upload
+                                pic profile</label>
+                            <input type="file" id="account-upload" hidden="" accept="image/*">
+                            <div class="progress progress-bar-primary">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow="20" aria-valuemin="20" aria-valuemax="100" style="width: 0%"></div>
+                            </div>
+                            <p class="mb-0" id="subtext-progress">Allowed file types: png, jpg, jpeg.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button tabindex="26" rippleeffect=""
+                            class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"
+                            id="btn_edit_profile">Save</button>
+                        <a tabindex="26" rippleeffect=""
+                            class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"
+                            href="/resetpassform/{{user.EMAIL}}">Change Password</a>
+                    </div>
 
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
     </div>
 </div>
 <script>
-     $('#account-upload').on('change', (event)=>{
-      uploadPic(event)
+    /**JQUERY TO UPLOAD PIC PROFILE */
+    $('#account-upload').on('change', (event) => {
+        uploadPic(event)
     })
-     $('#btn_edit_profile').on('click', ()=>{
-
-      updateProfile()
+    /**JQUERY TO EDIT PROFILE */
+    $('#btn_edit_profile').on('click', () => {
+        updateProfile()
     })
 
-const uploadPic = (event) => {
-  console.log('here')
-    const files = event.target.files;
-    const data = new FormData();
-    let imagenX = event.target.id;
-    data.append("file", files[0]);
-    data.append("profile", 'check');
-    $.ajax({
-      url: '/upload-file',
-      type: 'POST',
-      data: data,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function () {        
-          var xhr = $.ajaxSettings.xhr();
-          xhr.upload.onprogress = function (event) {
-              var perc = Math.round((event.loaded / event.total) * 100);
-             // $("#nombreArchivoCalendario1").text(inputFile.name);
-             
-              //$(`#${imagenX}_progressBar3`).text(perc + '%');
-              $(`.progress-bar`).css('width', perc + '%');
-          };
-          return xhr;
-      },
-      beforeSend: function (xhr) {
-        //  $(`#${imagenX}_progressBar3`).text('0%');
-          $(`.progress-bar`).css('width', '0%');
-        
-      },
-      success: function (data, textStatus, jqXHR)
-      {       
-        console.log(data)     
-          //$(`#progressBar3`).addClass("d-none");
-          // $(`.progress-bar`).css('width', '100%');
-          savePic(files[0].name)
-         $(`#subtext-progress`).text('Image uploaded successfully - 100%');
-        ///document.getElementById(imagenX+'_').value = archivos[0].name;
+    /**FUNCTION TO UPLOAD PIC PROFILE WITH AJAX */
+    const uploadPic = (event) => {
+        const files = event.target.files;//Get file
+        const data = new FormData();
+        let imagenX = event.target.id;
+        data.append("file", files[0]);
+        data.append("profile", 'check');
+        $.ajax({
+            url: '/upload-file',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            xhr: function () {
+                var xhr = $.ajaxSettings.xhr();
+                xhr.upload.onprogress = function (event) {
+                    var perc = Math.round((event.loaded / event.total) * 100);
+                    $(`.progress-bar`).css('width', perc + '%');
+                };
+                return xhr;
+            },
+            beforeSend: function (xhr) {
+                $(`.progress-bar`).css('width', '0%');
 
-         
-      },
-      error: function (jqXHR, textStatus) { 
-          $("#subtext-progress").text('100% - Error');
-          //$("#progressBar2").removeClass("progress-bar-success");
-         // $("#progressBar2").addClass("progress-bar-danger");
-      }
-  });
-  };
+            },
+            success: function (data, textStatus, jqXHR) {
+                console.log(data)
+                //When file is upload in Server, save picture name (file name) on SQL TABLE
+                savePic(files[0].name)
+                $(`#subtext-progress`).text('Image uploaded successfully - 100%');
+            },
+            error: function (jqXHR, textStatus) {
+                $("#subtext-progress").text('100% - Error');
+            }
+        });
+    };
 
-const savePic = (picture) => {
-      let email = '{{user.EMAIL}}'
-  console.log(email)
-    const data = new FormData();
-    data.append("email", email);
-    data.append("picture", picture);
-    $.ajax({
-      url: '/save-pic-profile',
-      type: 'POST',
-      data: data,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function (data, textStatus, jqXHR)
-      {       
-        console.log(data)
+    /** FUNCTION TO SAVE WITH AJAX PIC NAME (FILE NAME) ON SQL TABLE AFTER UPLOAD ON SERVER */
+    const savePic = (picture) => {
+        let email = '{{user.EMAIL}}'//Email getting with handlebar
+        const data = new FormData();
+        data.append("email", email);
+        data.append("picture", picture);
+        $.ajax({
+            url: '/save-pic-profile',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data, textStatus, jqXHR) {
+                location.reload()//Reload page to view the new pic
+            },
+            error: function (jqXHR, textStatus) {
+                $("#subtext-progress").text('100% - Error');
+            }
+        });
+    };
 
-        location.reload()  
-        // $(`#subtext-progress`).text('Image uploaded successfully - 100%');
+    /**FUNCTION TO SAVE THE UPDATED PROFILE INFO: FNAME AND LNAME */
+    const updateProfile = (picture) => {
+        let email = '{{user.EMAIL}}', firstName_edit_profile = $(`#firstName_edit_profile`).val(), lastName_edit_profile = $(`#lastName_edit_profile`).val()
 
-         
-      },
-      error: function (jqXHR, textStatus) { 
-          $("#subtext-progress").text('100% - Error');
-      }
-  });
-  };
+        const data = new FormData();
+        data.append("email", email);
+        data.append("lastName_edit_profile", lastName_edit_profile);
+        data.append("firstName_edit_profile", firstName_edit_profile);
+        $.ajax({
+            url: '/update-profile',
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data, textStatus, jqXHR) {
 
-const updateProfile = (picture) => {
-      let email = '{{user.EMAIL}}', firstName_edit_profile = $(`#firstName_edit_profile`).val(),lastName_edit_profile= $(`#lastName_edit_profile`).val()
-  console.log(email)
-    const data = new FormData();
-    data.append("email", email);
-    data.append("lastName_edit_profile", lastName_edit_profile);
-    data.append("firstName_edit_profile", firstName_edit_profile);
-    $.ajax({
-      url: '/update-profile',
-      type: 'POST',
-      data: data,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function (data, textStatus, jqXHR)
-      {       
-        console.log(data)
-
-        location.reload()  
-        // $(`#subtext-progress`).text('Image uploaded successfully - 100%');
-
-         
-      },
-      error: function (jqXHR, textStatus) { 
-          $("#subtext-progress").text('100% - Error');
-      }
-  });
-  };
+                location.reload()//Reload page to update info
+            },
+            error: function (jqXHR, textStatus) {
+                $("#subtext-progress").text('100% - Error');
+            }
+        });
+    };
 </script>

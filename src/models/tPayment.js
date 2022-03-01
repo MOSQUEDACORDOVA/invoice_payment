@@ -1,3 +1,4 @@
+/**MODEL FOR CREATE AND MANIPULATE tPayment TABLE OF SQL */
 const { DataTypes } = require('sequelize');
 const db = require('../config/dbSequelize');
 const tPaymentApplication = require ('./tPaymentApplication')
@@ -89,5 +90,7 @@ const tPayment = db.define('tPayment', {
 		allowNull: true,
 	},
 });
-tPayment.hasMany(tPaymentApplication, {as: 'tPaymentApplication'})
+//WHEN CONSULT TABLE GET THE "tPayment" TABLE INFO
+tPayment.hasMany(tPaymentApplication, {as: 'tPaymentApplication'})//THIS IS FOR ASSOCIATE THIS TABLE WITH "tPayment" TABLE OF SQL (ONE PAYMENT HAS MANY PAYMENTS APPLICATION)
+
 module.exports = tPayment;

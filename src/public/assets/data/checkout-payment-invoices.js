@@ -1,10 +1,7 @@
 /*=========================================================================================
     File Name: app-ecommerce.js
-    Description: Ecommerce pages js
     ----------------------------------------------------------------------------------------
-    Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
-    Author: PIXINVENT
-    Author URL: http://www.themeforest.net/user/pixinvent
+    This script is for checkout payment page, remove payment invoices function
 ==========================================================================================*/
 
 $(function () {
@@ -19,26 +16,24 @@ $(function () {
     moveToCart = $('.move-cart'),
     isRtl = $('html').attr('data-textdirection') === 'rtl';
 
-  // remove items from wishlist page
+  // remove items from invoices payment page, and calculate the amount to pay
   removeItem.on('click', function (e) {
-console.log(e)
-let amountWOT= e.currentTarget.dataset['amount']
-let amountWT = e.currentTarget.dataset['amwt']
-let currentSub = $('#Stotal_preview').text()
-let currentTotal = $('#total_preview').text()
-let currentTax = $('#tax_preview').text()
-console.log(amountWOT + "-"+ amountWT)
-let newSub = 0, newTotal = 0, newTax = 0
-newSub = parseFloat(currentSub)-parseFloat(amountWOT)
-newTotal = parseFloat(currentTotal)-parseFloat(amountWT)
-newTax = parseFloat(newTotal) - parseFloat(newSub)
-$('#Stotal_preview').text((newSub).toFixed(2))
-$('.total_preview').text((newTotal).toFixed(2))
-$('#tax_preview').text((newTax).toFixed(2))
-$('.totalAmountcard').val((newTotal).toFixed(2))
-let items = $('#item_preview').text()
-items = parseInt(items)-1
-$('#item_preview').text(items)
+    let amountWOT = e.currentTarget.dataset['amount']
+    let amountWT = e.currentTarget.dataset['amwt']
+    let currentSub = $('#Stotal_preview').text()
+    let currentTotal = $('#total_preview').text()
+    let currentTax = $('#tax_preview').text()
+    let newSub = 0, newTotal = 0, newTax = 0
+    newSub = parseFloat(currentSub) - parseFloat(amountWOT)
+    newTotal = parseFloat(currentTotal) - parseFloat(amountWT)
+    newTax = parseFloat(newTotal) - parseFloat(newSub)
+    $('#Stotal_preview').text((newSub).toFixed(2))
+    $('.total_preview').text((newTotal).toFixed(2))
+    $('#tax_preview').text((newTax).toFixed(2))
+    $('.totalAmountcard').val((newTotal).toFixed(2))
+    let items = $('#item_preview').text()
+    items = parseInt(items) - 1
+    $('#item_preview').text(items)
 
     $(this).closest('.ecommerce-card').remove();
     toastr['error']('', 'Removed Item 🗑️', {
@@ -48,18 +43,8 @@ $('#item_preview').text(items)
     });
   });
 
-  // move items to cart
-  moveToCart.on('click', function () {
-    $(this).closest('.ecommerce-card').remove();
-    toastr['success']('', 'Added to wishlist ❤️', {
-      closeButton: true,
-      tapToDismiss: false,
-      rtl: isRtl
-    });
-  });
 
   // Checkout Wizard
-
   // Adds crossed class
   if (typeof bsStepper !== undefined && bsStepper !== null) {
     for (var el = 0; el < bsStepper.length; ++el) {

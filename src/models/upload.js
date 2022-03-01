@@ -1,3 +1,5 @@
+/**SCRIPT UPLOAD FILES (IMG) TO SERVER */
+
 let fs = require("fs");
 class FileController
 {
@@ -6,8 +8,7 @@ class FileController
   let date = new Date()
   
     const file = req.files.file;
-    if (file == null) {
-      
+    if (file == null) {      
       fs.writeFile('./error'+Number(date)+'.txt', 'error file Null', error => {
         if (error)
           console.log(error);
@@ -17,8 +18,7 @@ class FileController
   
     }
     const fileName = file.name;
-    const path = __dirname + '/../public/assets/uploads/' + fileName;
-
+    const path = __dirname + '/../public/assets/uploads/' + fileName;// DIR WHERE UPLOAD FILE
 
     try {
       file.mv(path, (error) => {
@@ -31,11 +31,10 @@ class FileController
           res.end(JSON.stringify({ status: 'error', message: error }));
             return;
           }
-            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName });
+            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName });// RETURN SUCCESS AND UBICATION DIR FILE
           
        });
      } catch (e) {
-      console.log("no" +e)
       let date = new Date()
   fs.writeFile('./error'+Number(date)+'.txt', e, error => {
     if (error)

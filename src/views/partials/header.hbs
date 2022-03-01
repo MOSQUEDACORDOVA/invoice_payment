@@ -6,20 +6,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
-    <meta name="description" content="Super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
-    <meta name="keywords" content="admin template, admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="description" content="...">
+    <meta name="keywords" content="admin, dashboard, flat admin , web app">
     <title>{{pageName}}</title>
     <link rel="shortcut icon" type="image/x-icon" href="https://sanantoniowinery.com/apple-touch-icon-57x57.png">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
+        rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/vendors.min.css">
     <!-- END: Vendor CSS-->
     <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/extensions/dataTables.checkboxes.css">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../../app-assets/vendors/css/tables/datatable/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../../app-assets/vendors/css/tables/datatable/extensions/dataTables.checkboxes.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../../app-assets/vendors/css/tables/datatable/responsive.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/authentication.css">
 
@@ -38,18 +42,20 @@
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
 
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/jquery.contextMenu.min.css">
-<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/toastr.min.css">
-<link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-toastr.css">
-<link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-context-menu.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-toastr.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../../app-assets/css/plugins/extensions/ext-component-context-menu.css">
 
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/main.css">
     <!-- END: Page CSS-->
-{{#if pay_invoices}}
-     <!-- BEGIN: Page CSS-->
-      <!-- BEGIN: Vendor CSS-->
+    {{#if pay_invoices}}
+    <!-- this CSS is for pay invoice page-->
+    <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/vendors.min.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/wizard/bs-stepper.min.css">
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../../app-assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/extensions/toastr.min.css">
     <!-- END: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
@@ -59,25 +65,30 @@
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/extensions/ext-component-toastr.css">
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-number-input.css">
     <!-- END: Page CSS-->
-{{/if}}
+    {{/if}}
     <!-- END: Page CSS-->
 
-<!-- PER MODULES -->
-{{#if invoice}}
-<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css" >
-{{/if}}
-{{#if print_inv}}<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-print.css" media="print">{{/if}}
+    <!-- PER MODULES -->
+    {{#if invoice}}
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css">
+    {{/if}}
+    {{#if print_inv}}
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-print.css" media="print">
+    {{/if}}
 </head>
 <!-- END: Head-->
-<!-- END: Head--><!-- END: Head-->
 <!-- BEGIN: Body-->
-{{#if print_inv}}<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">{{else}}
-<body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  menu-collapsed" data-open="click" data-menu="vertical-menu-modern" >    
+{{#if print_inv}}<!-- If charged the print invoices page use this body options css-->
+
+<body class="vertical-layout vertical-menu-modern blank-page navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="blank-page">
+{{else}}
+<!-- Else use this body options css-->
+    <body class="vertical-layout vertical-menu-modern {{#if menu}}{{else}}blank-page{{/if}} navbar-floating footer-static  menu-collapsed" data-open="click" data-menu="vertical-menu-modern">
 {{/if}}
 
-{{#if print_inv}}{{else}}
-{{#if menu}}
-{{>menu}}
-{{/if}}   
+{{#if print_inv}}<!-- If charged the print invoices page don't show the menu-->
+    {{else}}
+        {{#if menu}}
+            {{>menu}}
+        {{/if}}
 {{/if}}
-
