@@ -54,8 +54,17 @@ $('#diferentCardcheck').on('change', (e) => {
   }
   $('#otherCard').addClass('collapse')
 
-})   
+}) 
+  
+$('#bankOptionCheck').on('change', (e) => {
+  /**show the different card form */
+  if ($('#bankOptionCheck').is(':checked')) {
+      $('#bankOption').removeClass('collapse')
+      return
+  }
+  $('#bankOption').addClass('collapse')
 
+}) 
 $('#payotherCard').on('click', (e) => {
   /** Process payment with a diferent method*/
   if ($('#totalAmountcard').val() == 0) {
@@ -114,6 +123,45 @@ $('#payotherCard').on('click', (e) => {
   }
 
 })
+
+$('#payBankOption').on('click', (e) => {
+    /** Process payment with a diferent method*/
+    if ($('#totalAmountcard').val() == 0) {
+        Swal.fire("The amount to pay must be greater than zero.!!")
+        return
+    }
+  
+   /* if ($('#addSaveCard').is(':checked')) {
+        //Save Card for future billing
+        $.ajax({
+            url: `/add_method_pay`,
+            type: 'POST',
+            data: $('#creditCardFormOther').serialize(),
+            beforeSend: function () {
+                // setting a timeout
+                $('#bn_loading').removeClass('d-none')
+                $('#primary').modal('show')
+            },
+            success: function (data, textStatus, jqXHR) {
+                if (data.msg) {
+                    //if error show msg
+                    Swal.fire(data.msg)
+                    return
+                }
+                $('#bn_loading').removeClass('d-none')
+                $('#primary').modal('show')
+                sendformO('creditCardFormOther') //send payment to process function
+                return
+            },
+            error: function (jqXHR, textStatus) {
+                console.log('error:' + jqXHR)
+            }
+        })
+    } else {*/
+        sendformWF('formBankOptions')// Send process payment without save new credit card
+    //}
+  
+  })
 
 $('#addCardExpiryDate').on('keyup', (e) => {
   //Mask for ExpDate on keyup
@@ -212,7 +260,7 @@ const sendformO = (form) => {
                       $('#pmtKey').val(data.paymenKey.toString())
                       let paymenKey = data.paymenKey.toString()
                       appliedAmountForm()//Save the applied amount info in SQL
-                      sendEmailError(data.SystemLogL, paymenKey, '{{user.EMAIL}}', JSON.stringify(errormsg), JSON.stringify(invError))
+                      sendEmailError(data.SystemLogL, paymenKey, $('#user-email').val(), JSON.stringify(errormsg), JSON.stringify(invError))
                       Swal.fire('Payment AUTHORIZED, but something is wrong whit SOAP, please contact support- LOGNUM: ' + data.SystemLogL).then((response) => {
                           if (response.isConfirmed) {
                               window.location.href = "/payment_view/" + data.paymenKey
@@ -261,6 +309,55 @@ const sendformO = (form) => {
   });
 }
 
+//Function to Process payment Wells Fargo
+const sendformWF = (form) => {
+ 
+    $.ajax({
+        url: `/process_paymentWF`,
+        type: 'POST',
+        data: $(`#${form}`).serialize(),
+        beforeSend: function () {
+            // Show modal "Process please wait..."
+            $('#bn_loading').removeClass('d-none')
+            $('#primary').modal('show')
+        },
+        success: function (data, textStatus, jqXHR) {
+            console.log(data)
+            if (data.WF_TransactionID) { //IF Status OK, response the API process payment
+                //SAVE PEDDING PAYMENT
+                    $('#pmtKey').val(data.paymentKey.toString())
+                    $('#status').val('PENDING')
+                    $('#bn_loading').addClass('d-none')
+                    $('#primary').modal('hide') 
+                        appliedAmountForm()//Save the applied amount info in SQL
+                        Swal.fire('Process payment OK and Status "Pending"!').then((response) => {
+                            console.log(response)
+                            if (response.isConfirmed) {
+                                window.location.href = "/payment_view/" + data.paymentKey
+                            }
+                        })
+            }else {
+                   //IF Status not OK, response the API process payment, show error msg and detail about this error, but don't save applied amount
+                $('#bn_loading').addClass('d-none')
+                $('#primary').modal('hide')
+                Swal.fire({
+                    icon: 'error',
+                    title: "Error: " + data.error[0]['error_code'],
+                    text: `${data.error[0]['description']}`,
+                }).then((response) => {
+                    if (response.isConfirmed) {
+                        //SEND EMAIL IF RESPONSE ERROR
+                        sendEmailErrorWF(data.SystemLogL, data.paymentKey, $('#user-email').val(), JSON.stringify(data.error[0]['error_code']), JSON.stringify(data.error[0]['description']))
+                    }
+                })                
+                }
+        },
+        error: function (jqXHR, textStatus) {
+            console.log('error:' + jqXHR)
+        }
+    });
+  }
+
 //Function to Send email in case the SOAP response error or status 0 in one of inv
 const sendEmailError = async (SystemLogNum, paymenKey, UserID, paymentx3SMessage, invError) => {
   let data = new FormData()
@@ -284,7 +381,29 @@ const sendEmailError = async (SystemLogNum, paymenKey, UserID, paymentx3SMessage
       }
   });
 }
-
+//Function to Send email in case the API WF response error
+const sendEmailErrorWF = async (SystemLogNum, paymenKey, UserID, error_code,errorDesc) => {
+    let data = new FormData()
+    data.append('SystemLogNum', SystemLogNum)
+    data.append('paymenKey', paymenKey)
+    data.append('UserID', UserID)
+    data.append('error_code', error_code)
+    data.append('errorDesc', errorDesc)
+    $.ajax({
+        url: `/send_email_errorWF`,
+        type: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data, textStatus, jqXHR) {
+            console.log(data)
+        },
+        error: function (jqXHR, textStatus) {
+            console.log('error:' + jqXHR)
+        }
+    });
+  }
 //Function for verify applied Amount
 var appliedAmount = async (amount, id, inv, amwt) => {
 

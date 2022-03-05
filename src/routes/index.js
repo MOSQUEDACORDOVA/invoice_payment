@@ -53,6 +53,7 @@ router.get('/delete_payM/:IDPay', authController.authenticatedUser, dashboardCon
 router.post('/pay_invoices', authController.authenticatedUser, dashboardController.pay_invoices);
 router.post('/process_payment', authController.authenticatedUser, dashboardController.process_payment);
 router.post('/applied_amount', authController.authenticatedUser, dashboardController.applied_amount);
+router.post('/process_paymentWF', authController.authenticatedUser, dashboardController.process_payment_WF);
 
 //EDIT PROFILE -UPLOAD PIC PROFILE
 router.post('/upload-file', fileController.uploadFile);
@@ -70,6 +71,7 @@ router.get('/payment_view/:id', authController.authenticatedUser, dashboardContr
 //Mails
 router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);
 router.post('/send_email_errorX3', authController.authenticatedUser, mailCtrl.errorPaymentX3);
+router.post('/send_email_errorWF', authController.authenticatedUser, mailCtrl.errorPaymentWF);
 
 //sysSettings
 router.get('/sysSettings',authController.authenticatedUser, dashboardController.settingsPreview)

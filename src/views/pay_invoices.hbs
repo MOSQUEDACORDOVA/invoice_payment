@@ -200,6 +200,19 @@
                                             </div>
                                             <label class="form-check-label fw-bolder" for="diferentCardcheck"> Use
                                                 different card?</label>
+                                                <div class="form-check form-switch form-check-primary me-25" style="margin-left: 12px;">
+                                                <input type="checkbox" class="form-check-input bankOptionCheck"
+                                                    id="bankOptionCheck" />
+                                                <label class="form-check-label" for="bankOptionCheck">
+                                                    <span class="switch-icon-left"><i data-feather="check"></i></span>
+                                                    <span class="switch-icon-right"><i data-feather="x"></i></span>
+                                                </label>
+                                            </div>
+                                            <label class="form-check-label fw-bolder" for="bankOptionCheck"> Use
+                                                Bank Account</label>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            
                                         </div>
                                         <hr class="my-2" />
                                         <div class="row gx-2 collapse" id="otherCard">
@@ -209,6 +222,7 @@
                                                 <input id="emailCard" name="emailCard" value="{{user.EMAIL}}" hidden>
                                                 <input class="invoicesToPay" name="inv" hidden>
                                                 <input class="amountsbyInv" name="appliedAmount" hidden>
+                                                <input class="userIDInv" name="userIDInv">
 
                                                 <div class="col-8 mt-0">
                                                     <label class="form-label" for="addCardNumber">Card Number</label>
@@ -359,6 +373,59 @@
                                                 </div>
                                             </form>
                                         </div>
+
+                                        <div class="row gx-2 collapse" id="bankOption">
+                                            <form id="formBankOptions" class="row gx-2 gy-1 validate-form">
+                                                <input id="totalAmountcard" name="totalAmountcard" value="{{Total}}"
+                                                    class="totalAmountcard" hidden>
+                                                <input id="emailCard" name="emailCard" value="{{user.EMAIL}}" hidden>
+                                                <input class="invoicesToPay" name="inv" hidden>
+                                                <input class="amountsbyInv" name="appliedAmount" hidden>
+                                                <input class="NamePayer-Bank" name="NamePayer_Bank" value="{{user.FNAME}} {{user.LNAME}}" hidden>
+                                                <input class="userIDInv" name="userIDInv" hidden>
+
+                                                <div class="col-6 mt-0">
+                                                    <label class="form-label" for="addCardNumber">ABA routing number</label>
+                                                    <input id="bank_id" name="bank_id"
+                                                        class="form-control add-credit-card-mask" type="text"
+                                                        placeholder="ABA routing number" aria-describedby="addCard2"
+                                                        data-msg="Please enter your ABA routing number" required
+                                                        maxlength="9" value=""/>
+                                                </div>
+                                               <div class="col-6 mt-0">
+                                                    <label class="form-label" for="addCardNumber">Bank Account Number</label>
+                                                    <input id="bank_account_number" name="bank_account_number"
+                                                        class="form-control add-credit-card-mask" type="text"
+                                                        placeholder="5637817212907898" aria-describedby="addCard2"
+                                                        data-msg="Please enter your Bank Account Number" required
+                                                        maxlength="34" value=""/>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="form-check form-switch form-check-primary me-25">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                id="addSaveBank" />
+                                                            <label class="form-check-label" for="addSaveBank">
+                                                                <span class="switch-icon-left"><i
+                                                                        data-feather="check"></i></span>
+                                                                <span class="switch-icon-right"><i
+                                                                        data-feather="x"></i></span>
+                                                            </label>
+                                                        </div>
+                                                        <label class="form-check-label fw-bolder" for="addSaveBank">
+                                                            Save Card for future billing? </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-2 pt-1">
+                                                    <button type="button" class="btn btn-primary me-1"
+                                                        id="payBankOption">Process payment</button>
+                                                    <button type="reset"
+                                                        class="btn btn-outline-secondary">Discard</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -438,7 +505,7 @@
         <input id="pmtKey" name="pmtKey" />
         <input id="status" name="status" />
     </form>
-
+<input id="user-email" name="status" value="{{user.EMAIL}}"/>
 </div>
 
 <!-- END: Content-->

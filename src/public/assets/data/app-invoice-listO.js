@@ -83,6 +83,9 @@ function table_invoices(a) {
                     case "1":
                       status = "AUTHORIZED";
                       break;
+                      case "PENDING":
+                      status = "PENDING";
+                      break;
                     default:
                       status = "SOAP ERROR";
                       break;
@@ -101,6 +104,7 @@ function table_invoices(a) {
               },
               DECLINED: { title: "DECLINED", class: "badge-light-danger" },
               "NOT PAYMENT": { title: "UNPAID", class: "badge-light-info" },
+              "PENDING": { title: "PENDING", class: "badge-light-info" },
             };
             let showStatus = `<span class="badge rounded-pill ${statusClass[status].class} " > ${statusClass[status].title}</span>`;
             return showStatus;
@@ -140,7 +144,8 @@ function table_invoices(a) {
                   "DECLINED" ||
                 arrPayments[i]["tPaymentApplication"][j]["Status"] ==
                   "NOT PAYMENT" ||
-                arrPayments[i]["tPaymentApplication"][j]["Status"] == "1"
+                arrPayments[i]["tPaymentApplication"][j]["Status"] == "1"  ||
+                arrPayments[i]["tPaymentApplication"][j]["Status"] == "PENDING"
               ) {
               } else {
                 $(`#checkbox${arrPayments[i]["tPaymentApplication"][j]["INVOICENUM"]}`).remove();

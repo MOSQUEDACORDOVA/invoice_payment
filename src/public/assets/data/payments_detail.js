@@ -91,7 +91,7 @@ function paymentsTableDetails() {
                 break;
 
               default:
-                span = `<span class="badge rounded-pill badge-light-info" > AUTHORIZED WITH BALANCE</span>`;
+                span = `<span class="badge rounded-pill badge-light-info" > AUTHORIZED WITH BALANCE OR PENDING</span>`;
                 break;
             }
             return span;

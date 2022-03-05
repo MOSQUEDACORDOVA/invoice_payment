@@ -69,6 +69,22 @@ module.exports = {
         });
     });
   }, 
+  RegtPaymentWF(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,ABA_routing,
+    bank_account_number, userIDInv) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+    return new Promise((resolve, reject) => {
+      tPayment.create(
+        {
+          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID, CustID: userIDInv,TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, ABA_routing:ABA_routing, bank_account_number:bank_account_number})
+        .then((data) => {
+          let data_set = JSON.stringify(data);
+          resolve(data_set);
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(err)
+        });
+    });
+  },
 
   /**FUNCTIONS FOR PAYMENTSAPPLICATION TABLE*/
   RegtPaymentApplication(inv, amount, shortDesc, appliedAmount,pmtKey,status) {// THIS FUNCTION INSERT THE NEW PAYMENT IN tPaymentApplication TABLE

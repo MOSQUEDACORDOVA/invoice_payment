@@ -9,11 +9,14 @@ var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys
 const { encrypt, decrypt } = require("./crypto");//Encrypt / decrypt
 var pdf = require("html-pdf");//  THIS MODULE USE IN CASE CREATE PDF FILE
 const xml2js = require("xml2js");//XML parse
-
+var http = require('https');
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+const { v4: uuidv4 } = require('uuid');
 //Payment process configuration
 var cybersourceRestApi = require("cybersource-rest-client");
 var configuration = require("./ConfigurationPayment");
 const { parse } = require("path");
+const WFCCtrl = require('./WFCtrl')
 
 /**START FUNCTIONS FOR PAGES */
 
@@ -1989,4 +1992,128 @@ exports.payments_detail = async (req, res) => {
     payments_st,
     inv_wofilter_st,
   });
+};
+
+/**FUNCTION TO PROCESS PAYMENT WITH WELLS FARGO */
+exports.process_payment_WF = async (req, res) => {
+  const user = res.locals.user["$resources"][0];//User info
+//Save SQL SYSTEMLOG
+var ip = req.connection.remoteAddress;
+const SessionKeyLog = req.session.SessionLog;
+let UserID = user["EMAIL"],
+  IPAddress = ip,
+  LogTypeKey = 7,
+  SessionKey = SessionKeyLog,
+  Description = "Connecting process payment with wells fargo",
+  Status = 1,
+  Comment = "FUNCTION: process_payment_WF-LINE 2009";
+var SystemLogL = await DataBasequerys.tSystemLog(
+  UserID,
+  IPAddress,
+  LogTypeKey,
+  SessionKey,
+  Description,
+  Status,
+  Comment
+);
+
+  //FIRTS GET THE APIkey Token
+  let WF_APIKey= JSON.parse(await WFCCtrl.APYKeyGet().then((response)=>{
+        return JSON.stringify(response)
+  }))
+    
+  //START PROCCESS PAYMENT
+  var {
+    bank_id,
+    bank_account_number,
+    totalAmountcard,
+    inv,
+    appliedAmount,
+    reasonLessAmta,
+    userIDInv,NamePayer_Bank
+  } = req.body;
+console.log(req.body)
+  //SEND PAYMENT TO WF API
+ let WF_TransactionID= JSON.parse(await WFCCtrl.WF(totalAmountcard,WF_APIKey['access_token'],NamePayer_Bank,bank_id,bank_account_number).then((response)=>{
+  return JSON.stringify(response)
+}))
+ console.log(WF_TransactionID)
+ let back_side_res = WF_TransactionID['x-backside-transport'], payment_id= WF_TransactionID['payment-id']
+ let transactionDate = moment(WF_TransactionID['date']).format('YYYY-MM-DD')
+ let error=""
+      if (WF_TransactionID['errors']) {        
+        console.log(WF_TransactionID['errors'][0])
+        error = WF_TransactionID['errors']
+        //IF RESPONSE ERROR, SAVE IN LOGSYSTEM SQL THE ERROR         
+        console.log("\nError : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
+        let errorLogD = "Error:" + WF_TransactionID['errors'][0]['error_code'] + "- process payment";
+        console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
+        let errorLogC = WF_TransactionID['errors'][0]['description'];
+        console.log(errorLogC); //SHOW IN CONSOLE THE ERROR
+        (Description = errorLogD), (Status = 0), (Comment = errorLogC);
+        SystemLogL = await DataBasequerys.tSystemLog(
+          UserID,
+          IPAddress,
+          LogTypeKey,
+          SessionKey,
+          Description,
+          Status,
+          Comment
+        );
+        SystemLogL = JSON.parse(SystemLogL)
+        return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
+      } else if (back_side_res == 'OK OK') {
+        //IF RESPONSE FINE, SAVE PAYMENT INFO IN SQL TABLE
+        let descp;
+        let comm;
+        let TranAmount = parseFloat(totalAmountcard);
+        var tPaymentSave;
+        var paymentKey;
+        //ENCRYPT CREDIT CARD INFO FOR SAVE IN SQL TABLE
+        bank_id = encrypt(bank_id);
+        bank_account_number = encrypt(bank_account_number);
+          //IF PAYMENT STATUS IS "AUTHORIZED" SAVE IN SQL TABLE LOG SYSTEM
+          descp = "Process status res: " + back_side_res;
+          comm = "Process payment success: OK-PENDDING";
+          (Description = descp),
+            (Status = 1),
+            (Comment = comm),
+            (SessionKey = SessionKeyLog);
+          SystemLogL = await DataBasequerys.tSystemLog(
+            UserID,
+            IPAddress,
+            LogTypeKey,
+            SessionKey,
+            Description,
+            Status,
+            Comment
+          );
+          
+          //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT          
+          tPaymentSave = await DataBaseSq.RegtPaymentWF(
+            1,
+            SessionKey,
+            UserID,
+            payment_id,
+            TranAmount,
+            0,
+            transactionDate,
+            0,
+            'PENDING',
+            'PENDING',
+            bank_id,
+            bank_account_number,
+            userIDInv
+          );
+
+          paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
+          //SHOW CONSOLE INFO ABOUT PAYMENT
+          console.log("--Sucess in SQL: " + paymentKey);
+          return res.send({
+            error,
+            WF_TransactionID,
+            SystemLogL,
+            paymentKey,
+          });//SEND RESPONSE TO AJAX REQUEST
+      }
 };

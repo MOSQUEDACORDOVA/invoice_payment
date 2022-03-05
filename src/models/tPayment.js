@@ -89,6 +89,14 @@ const tPayment = db.define('tPayment', {
 		type: DataTypes.STRING(50),
 		allowNull: true,
 	},
+	ABA_routing: {
+		type: DataTypes.STRING(150),
+		allowNull: true,
+	},
+	bank_account_number: {
+		type: DataTypes.STRING(150),
+		allowNull: true,
+	},
 });
 //WHEN CONSULT TABLE GET THE "tPayment" TABLE INFO
 tPayment.hasMany(tPaymentApplication, {as: 'tPaymentApplication'})//THIS IS FOR ASSOCIATE THIS TABLE WITH "tPayment" TABLE OF SQL (ONE PAYMENT HAS MANY PAYMENTS APPLICATION)
