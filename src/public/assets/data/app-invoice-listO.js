@@ -144,8 +144,8 @@ function table_invoices(a) {
                   "DECLINED" ||
                 arrPayments[i]["tPaymentApplication"][j]["Status"] ==
                   "NOT PAYMENT" ||
-                arrPayments[i]["tPaymentApplication"][j]["Status"] == "1"  ||
-                arrPayments[i]["tPaymentApplication"][j]["Status"] == "PENDING"
+                arrPayments[i]["tPaymentApplication"][j]["Status"] == "1"  
+               // || arrPayments[i]["tPaymentApplication"][j]["Status"] == "PENDING"
               ) {
               } else {
                 $(`#checkbox${arrPayments[i]["tPaymentApplication"][j]["INVOICENUM"]}`).remove();

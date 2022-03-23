@@ -63,6 +63,7 @@ router.post('/update-profile', authController.authenticatedUser, userController.
 
 //PRINTS
 router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardController.printInvoice);
+router.get('/print-paymentDetail/:id', authController.authenticatedUser, dashboardController.Print_payments_detail);
 
 //payments
 router.get('/payments/:email', authController.authenticatedUser, dashboardController.payments);

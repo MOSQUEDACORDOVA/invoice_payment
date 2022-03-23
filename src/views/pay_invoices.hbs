@@ -147,41 +147,80 @@
                                         <h4 class="card-title">Payment options</h4>
                                         <p class="card-text text-muted mt-25">Be sure to click on correct payment option
                                         </p>
+                                        <div class="col-12">
+                                            <div class="d-none form-check form-check-inline mb-1">
+                                                <input name="collapsible-payment" class="form-check-input" type="radio"
+                                                    id="CCCheck" checked />
+                                                <label class="form-check-label" for="CCCheck">Credit/Debit/ATM
+                                                    Card</label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-1 ">
+                                                <input name="collapsible-payment" class="form-check-input" type="radio"
+                                                    value="" id="ACHBankCheck" />
+                                                <label class="form-check-label" for="ACHBankCheck">ACH Bank</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        {{#each list_methods_par as |pay_met i|}}
-                                        <h6 class="card-holder-name my-75">{{#decryptData NAME}}{{/decryptData}}</h6>
-                                        <div class="form-check">
-                                            <input type="radio" id="{{PAYID}}" name="paymentOptions"
-                                                class="form-check-input paymentOptions"
-                                                data-card="{{#decryptData CARDNO}}{{/decryptData}}"
-                                                data-name="{{#decryptData NAME}}{{/decryptData}}"
-                                                data-exp="{{#decryptData EXPDAT}}{{/decryptData}}" data-id="{{PAYID}}"
-                                                data-zip="{{#decryptData ZIP}}{{/decryptData}}"
-                                                data-cvv="{{#decryptData CVC}}{{/decryptData}}"
-                                                data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}"
-                                                data-typecc="{{#GetCardType CARDNO}}{{/GetCardType}}" />
-                                            <label class="form-check-label" for="{{PAYID}}">
-                                                {{#GetCardType CARDNO}}{{/GetCardType}} {{#cardHide
-                                                CARDNO}}{{/cardHide}}
-                                            </label>
-                                        </div>
-                                        {{/each}}
 
-                                        <div class="customer-cvv mt-1 row row-cols-lg-auto">
-                                            <div class="col-3 d-flex align-items-center">
-                                                <label class="mb-50 form-label" for="card-holder-cvv">Enter CVV:</label>
+                                    <div class="card-body">
+                                        <div id="CCoptions" class="collapse">
+                                            {{#each CCMethod as |pay_met i|}}
+                                            <h6 class="card-holder-name my-75">{{#decryptData NAME}}{{/decryptData}}
+                                            </h6>
+                                            <div class="form-check">
+                                                <input type="radio" id="{{PAYID}}" name="paymentOptions"
+                                                    class="form-check-input paymentOptions"
+                                                    data-card="{{#decryptData CARDNO}}{{/decryptData}}"
+                                                    data-name="{{#decryptData NAME}}{{/decryptData}}"
+                                                    data-exp="{{#decryptData EXPDAT}}{{/decryptData}}"
+                                                    data-id="{{PAYID}}" data-zip="{{#decryptData ZIP}}{{/decryptData}}"
+                                                    data-cvv="{{#decryptData CVC}}{{/decryptData}}"
+                                                    data-address="{{ADDLIG1}}" data-state="{{SAT}}" data-city="{{CTY}}"
+                                                    data-typecc="{{#GetCardType CARDNO}}{{/GetCardType}}" />
+                                                <label class="form-check-label" for="{{PAYID}}">
+                                                    {{#GetCardType CARDNO}}{{/GetCardType}} {{#cardHide
+                                                    CARDNO}}{{/cardHide}}
+                                                </label>
                                             </div>
-                                            <div class="col-4 p-0">
-                                                <input type="password" class="form-control mb-50 input-cvv"
-                                                    name="input-cvv" id="card-holder-cvv" maxlength="4" minlength="3"
-                                                    required />
-                                            </div>
-                                            <div class="col-3">
-                                                <button type="button" class="btn btn-primary btn-cvv mb-50"
-                                                    id="btn_continue">Continue</button>
+                                            {{/each}}
+
+                                            <div class="customer-cvv mt-1 row row-cols-lg-auto">
+                                                <div class="col-3 d-flex align-items-center">
+                                                    <label class="mb-50 form-label" for="card-holder-cvv">Enter
+                                                        CVV:</label>
+                                                </div>
+                                                <div class="col-4 p-0">
+                                                    <input type="password" class="form-control mb-50 input-cvv"
+                                                        name="input-cvv" id="card-holder-cvv" maxlength="4"
+                                                        minlength="3" required />
+                                                </div>
+                                                <div class="col-3">
+                                                    <button type="button" class="btn btn-primary btn-cvv mb-50"
+                                                        id="btn_continue">Continue</button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div id="ACHOptions" class="">
+                                            {{#each ACHMethod as |pay_met i|}}
+                                            <h6 class="card-holder-name my-75">{{#decryptData PAYNAME}}{{/decryptData}}
+                                            </h6>
+                                            <div class="form-check">
+                                                <input type="radio" id="{{PAYID}}" name="paymentOptionsACH"
+                                                    class="form-check-input paymentOptionsACH"
+                                                    data-bankacct="{{#decryptData BANKACCT}}{{/decryptData}}"
+                                                    data-bankrout="{{#decryptData BANKROUT}}{{/decryptData}}"
+                                                    data-name="{{PAYNAME}}" data-id="{{PAYID}}" />
+                                                <label class="form-check-label" for="{{PAYID}}"> {{#cardHide
+                                                    BANKACCT}}{{/cardHide}}
+                                                </label>
+                                            </div>
+                                            {{/each}}
+                                            <div class="col-3">
+                                                <button type="button" class="btn btn-primary btn-cvv mb-50 mt-2"
+                                                    id="btn_continueACH">Continue</button>
+                                            </div>
+                                        </div>
+
                                         <hr class="my-2" />
                                         <button class="btn btn-outline-primary waves-effect d-none" id="bn_loading"
                                             disabled="" style="border: transparent !important;">
@@ -190,7 +229,7 @@
                                             <span class="ms-25 align-middle">Processing payment, please wait..</span>
                                         </button>
                                         <div class="d-flex align-items-center">
-                                            <div class="form-check form-switch form-check-primary me-25">
+                                            <div class="d-none form-check form-switch form-check-primary me-25">
                                                 <input type="checkbox" class="form-check-input diferentCardcheck"
                                                     id="diferentCardcheck" />
                                                 <label class="form-check-label" for="diferentCardcheck">
@@ -198,9 +237,10 @@
                                                     <span class="switch-icon-right"><i data-feather="x"></i></span>
                                                 </label>
                                             </div>
-                                            <label class="form-check-label fw-bolder" for="diferentCardcheck"> Use
+                                            <label class=" d-none form-check-label fw-bolder" for="diferentCardcheck"> Use
                                                 different card?</label>
-                                                <div class="form-check form-switch form-check-primary me-25" style="margin-left: 12px;">
+                                            <div class="form-check form-switch form-check-primary me-25"
+                                                style="margin-left: 12px;">
                                                 <input type="checkbox" class="form-check-input bankOptionCheck"
                                                     id="bankOptionCheck" />
                                                 <label class="form-check-label" for="bankOptionCheck">
@@ -212,7 +252,7 @@
                                                 Bank Account</label>
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            
+
                                         </div>
                                         <hr class="my-2" />
                                         <div class="row gx-2 collapse" id="otherCard">
@@ -381,24 +421,34 @@
                                                 <input id="emailCard" name="emailCard" value="{{user.EMAIL}}" hidden>
                                                 <input class="invoicesToPay" name="inv" hidden>
                                                 <input class="amountsbyInv" name="appliedAmount" hidden>
-                                                <input class="NamePayer-Bank" name="NamePayer_Bank" value="{{user.FNAME}} {{user.LNAME}}" hidden>
+                                                <input class="NamePayer-Bank" name="NamePayer_Bank"
+                                                    value="{{user.FNAME}} {{user.LNAME}}" hidden>
                                                 <input class="userIDInv" name="userIDInv" hidden>
-
+                                                <input type="text" name="typeM" id="typeM" value="ACH" hidden>
                                                 <div class="col-6 mt-0">
-                                                    <label class="form-label" for="addCardNumber">ABA routing number</label>
+                                                    <label class="form-label" for="addCardNumber">Nick Name</label>
+                                                    <input id="payName" name="payName"
+                                                        class="form-control add-credit-card-mask" type="text"
+                                                        placeholder="Nick name" aria-describedby="addCard2"
+                                                        data-msg="Please enter your Nick NAme" required />
+                                                </div>
+                                                <div class="col-6 mt-0">
+                                                    <label class="form-label" for="addCardNumber">ABA routing
+                                                        number</label>
                                                     <input id="bank_id" name="bank_id"
                                                         class="form-control add-credit-card-mask" type="text"
                                                         placeholder="ABA routing number" aria-describedby="addCard2"
                                                         data-msg="Please enter your ABA routing number" required
-                                                        maxlength="9" value=""/>
+                                                        maxlength="9" value="" />
                                                 </div>
-                                               <div class="col-6 mt-0">
-                                                    <label class="form-label" for="addCardNumber">Bank Account Number</label>
+                                                <div class="col-6 mt-0">
+                                                    <label class="form-label" for="addCardNumber">Bank Account
+                                                        Number</label>
                                                     <input id="bank_account_number" name="bank_account_number"
                                                         class="form-control add-credit-card-mask" type="text"
                                                         placeholder="5637817212907898" aria-describedby="addCard2"
                                                         data-msg="Please enter your Bank Account Number" required
-                                                        maxlength="34" value=""/>
+                                                        maxlength="34" value="" />
                                                 </div>
 
                                                 <div class="col-12">
@@ -476,8 +526,20 @@
         </div>
     </div>
 </div>
-<!-- Form hidden to creddit card info and applied amounts -->
+<!-- Form hidden to creddit card and ACH info and applied amounts -->
 <div class="d-none">
+    <form id="form_processPayACH">
+        <input id="paymentID" name="paymentID">
+        <input id="bankrout" name="bank_id">
+        <input id="bankacct" name="bank_account_number">
+        <input id="name" name="Payname">
+        <input id="totalAmountcard" name="totalAmountcard" value="{{Total}}" class="totalAmountcard">
+        <input id="emailCard" name="emailCard" value="{{user.EMAIL}}">
+        <input class="invoicesToPay" name="inv">
+        <input class="amountsbyInv" name="appliedAmount">
+        <input class="reasonLessAmta" name="reasonLessAmta">
+        <input class="userIDInv" name="userIDInv">
+    </form>
     <form id="form_processPay">
         <input id="paymentID" name="paymentID">
         <input id="cardNumber" name="cardNumber">
@@ -505,8 +567,21 @@
         <input id="pmtKey" name="pmtKey" />
         <input id="status" name="status" />
     </form>
-<input id="user-email" name="status" value="{{user.EMAIL}}"/>
+    <input id="user-email" name="status" value="{{user.EMAIL}}" />
 </div>
 
 <!-- END: Content-->
 <script src="../../../assets/data/pay_inv_functions.js">  </script>
+<script>
+
+    $('#ACHBankCheck').on('change', (e) => {
+        /**show the different card form */
+        $('#CCoptions').addClass('collapse')
+        $('#ACHOptions').removeClass('collapse')
+    })
+    $('#CCCheck').on('change', (e) => {
+        /**show the different card form */
+        $('#ACHOptions').addClass('collapse')
+        $('#CCoptions').removeClass('collapse')
+    })
+</script>

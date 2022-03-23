@@ -18,7 +18,7 @@ exports.testSend = async function (req, res) {
 
   // Definimos el email
   var mailOptions = {
-    from: "portal@riboliwines.com",
+    from: "portal@rfwcadistributors.com",
     to: 'josearzolay287@gmail.com',
     subject: "Welcome to ",
     text: "Welcome to  ",
@@ -60,7 +60,7 @@ exports.errorPaymentX3 = async function (req, res) {
   }
   // Email options
   var mailOptions = {
-    from: "portal@riboliwines.com",
+    from: "portal@rfwcadistributors.com",
     to: mails,
     subject: "Error Save Payment SOAP- UserID: " + UserID,
     text: `The user: ${UserID} made a successful payment, but the SOAP returned the following error: Error msg: ${paymentx3SMessage},Invoice Error: ${invError},tSystemLog Num: ${SystemLogNum},paymenKey: ${paymenKey}`,
@@ -103,7 +103,7 @@ exports.errorPaymentWF = async function (req, res) {
   }
   // Email options
   var mailOptions = {
-    from: "portal@riboliwines.com",
+    from: "portal@rfwcadistributors.com",
     to: mails,
     subject: "Error Save Payment SOAP- UserID: " + UserID,
     text: `The user: ${UserID} made a successful payment, but the API WELLS FARGO returned the following error: error_code: ${error_code},errorDesc: ${errorDesc},tSystemLog Num: ${SystemLogNum},paymenKey: ${paymenKey}`,
@@ -143,7 +143,7 @@ exports.sendtokenResetPass = async function (req, res) {
 
    // Email options
   var mailOptions = {
-    from: "portal@riboliwines.com",
+    from: "portal@rfwcadistributors.com",
     to: mail,
     subject: "Reset Password",
     text: `There was a request to change your password!

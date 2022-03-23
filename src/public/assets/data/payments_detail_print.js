@@ -10,7 +10,7 @@ function paymentsTableDetails() {
 
   array_payments = JSON.parse($("#payments").val());
   array_inv = JSON.parse($("#invoices_details").val());
-console.log(array_payments)
+
   /** VERIFY IS EXIST TABLE ID */
   if (dtPaymentT.length) {
     var dtInvoice = dtPaymentT.DataTable({
@@ -25,8 +25,11 @@ console.log(array_payments)
         { data: "INVOICENUM" },
       ],
       columnDefs: [
+        {/**RENDER COLUMN 0 (TO) */ targets: 0,
+          className: "col-1 col-per",},
         {
           /**RENDER COLUMN 1 (TO) */ targets: 1,
+          className: "col-1 col-per2",
           render: function (data, type, full, meta) {
             let value; // IN THIS VAR ALMACENATED THE BPCINV
             for (let i = 0; i < array_inv.length; i++) {
@@ -39,6 +42,7 @@ console.log(array_payments)
         },
         {
           /**RENDER COLUMN 2 (DATE) */ targets: 2,
+          className: "col-1 col-per2",
           render: function (data, type, full, meta) {
             let value; // IN THIS VAR ALMACENATED THE INVDAT
             for (let i = 0; i < array_inv.length; i++) {
@@ -55,6 +59,7 @@ console.log(array_payments)
         },
         {
           /** RENDER COLUMN 3 (AMOUNT) */ targets: 3,
+          className: "col-1 col-per2",
           render: function (data, type, full, meta) {
             let value; // IN THIS VAR ALMACENATED THE AMTLOC
             for (let i = 0; i < array_inv.length; i++) {
@@ -67,15 +72,15 @@ console.log(array_payments)
         },
         {
           /** RENDER COLUMN 4 (APPLIED AMOUNT) */ targets: 4,
+          className: "col-1 col-per2",
           render: function (data, type, full, meta) {
             return "$" + Number.parseFloat(data).toFixed(2); // RETURN WITH 2 DECIMALS
           },
         },
         {
           /** RENDER COLUMN 5 (STATUS) */ targets: 5,
-          render: function (data, type, full, meta) {            
-            let status = array_payments[0]['ProcessorStatus']
-            console.log(status)
+          className: "col-1 col-per2",
+          render: function (data, type, full, meta) {
             let openAmount, amouintLOC; // ALMACENATED DE OPENLOC AND AMTLOC FOR STATUS
             for (let i = 0; i < array_inv.length; i++) {
               if (data == array_inv[i]["NUM"]) {
@@ -84,18 +89,16 @@ console.log(array_payments)
               }
             }
             let span;
-            switch (true) {              
-              case status == "PENDING":
-                span = `<span class="badge rounded-pill badge-light-success" > PENDING</span>`;
-                break;
+            switch (true) {
               case openAmount == amouintLOC:
                 span = `<span class="badge rounded-pill badge-light-warning" > AUTHORIZED WITH ERROR</span>`;
                 break;
               case openAmount == 0:
                 span = `<span class="badge rounded-pill badge-light-success" > AUTHORIZED </span>`;
                 break;
+
               default:
-                span = `<span class="badge rounded-pill badge-light-info" > AUTHORIZED WITH BALANCE</span>`;
+                span = `<span class="badge badge-light-info" style="white-space: normal;"> AUTHORIZED WITH BALANCE OR PENDING</span>`;
                 break;
             }
             return span;

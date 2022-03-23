@@ -62,6 +62,9 @@
                                             <p class="invoice-date-title">Due Date: {{#format_date
                                                 inv_detail.SIVYPORINV.0.DUDDAT}}{{/format_date}}</p>
                                         </div>
+                                        <div class="invoice-date-wrapper">
+                                            <p class="invoice-date-title">Term: {{inv_detail.PTE_REF.$title}}</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Header ends -->
@@ -197,11 +200,11 @@
 
                             <hr class="invoice-spacing" />
                             <!-- Invoice Note starts -->
-                            <div class="card-body invoice-padding pt-0">
+                            <div class="card-body invoice-padding pt-0" style="font-size:x-small;">
                                 <div class="row">
                                     <div class="col-12">
                                         <span class="fw-bold">Note:</span>
-                                        <span>Thank You!</span>
+                                        <span>Invoices are payable in thirty (30) days. A 1.5% carrying charge will be added to the current statutory charges of 1.5 percent (CA B & P code 25509) on all balances unpaid after forty-two (42) days and each thirty (30) days thereafter and will result in loss of any discount. Customers may lose credit privileges and may be reported to State ABC Authorities when goods are in buyer’s possession or buyer’s agent signs delivery receipt. Such acceptance of goods confirms agreement that this and all prior invoices are payable at the address above.</span>
                                     </div>
                                 </div>
                             </div>

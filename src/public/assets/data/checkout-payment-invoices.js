@@ -85,7 +85,19 @@ $(function () {
       .find('.btn-next')
       .each(function () {
         $(this).on('click', function (e) {
+          let continue0 = true
+          $('.reasons').each(function () {
+            if ($(`#${$(this).attr('id')}`).is(':visible') && $(this).val()=="") {
+              $(`#${$(this).attr('id')}`).addClass('border border-danger')
+              $(`#${$(this).attr('id')}`).focus()              
+              continue0 = false
+            }
+        })
+        if (continue0) {
+          console.log('check here')
           wizard.next();
+        }
+          
         });
       });
 

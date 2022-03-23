@@ -611,7 +611,18 @@ exports.pay_methods = async (req, res) => {
     );
 
     pay_methods = pay_methods["$resources"];//Pay Methods List
-
+    let CCMethod = [], ACHMethod = []
+console.log(pay_methods)
+for (let i = 0; i < pay_methods.length; i++) {
+  switch (pay_methods[i]['PAYTYPE']) {
+    case 'CC':
+      CCMethod.push(pay_methods[i])
+      break;
+      case 'ACH':
+        ACHMethod.push(pay_methods[i])
+        break;
+  }  
+}
     //HERE RENDER PAGE AND INTRO INFO
     res.render("payments_methods", {
       pageName: "Payments Methods",
@@ -621,7 +632,8 @@ exports.pay_methods = async (req, res) => {
       user,
       pay_methods,
       pictureProfile,
-      admin,
+      admin,CCMethod,
+      ACHMethod
     });
   });
 };
@@ -631,6 +643,68 @@ exports.add_pay_methods = async (req, res) => {
   const user = res.locals.user["$resources"][0];//User info
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
+  
+  //console.log(user)
+  let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'";
+  let count = 1000;
+
+  //Save SQL LOG
+  let UserID = user["EMAIL"],
+    IPAddress = ip,
+    LogTypeKey = 9,
+    SessionKey = SessionKeyLog,
+    Description = "Loading Add payments methods module to X3",
+    Status = 1,
+    Comment = "Function: add_pay_methods - line 659";
+  var SystemLogL = await DataBasequerys.tSystemLog(
+    UserID,
+    IPAddress,
+    LogTypeKey,
+    SessionKey,
+    Description,
+    Status,
+    Comment
+  );
+//Get PayMethods for check out if not duplicate
+const payIDs = JSON.parse(
+  await request({
+    uri:
+      URI +
+      "YPORTALPAY?representation=YPORTALPAY.$query&count=" +
+      count +
+      " " +
+      query_consulting,
+    method: "GET",
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+    },
+    json: true,
+  }).then(async (list_pays) => {
+    //SAVE SQL LOG
+    (Description = "Getting payments methods from X3 to created PAYID-Get Success"),
+      (Status = 1),
+      (Comment = "Function: add_pay_methods - line 695");
+    SystemLogL = await DataBasequerys.tSystemLog(
+      UserID,
+      IPAddress,
+      LogTypeKey,
+      SessionKey,
+      Description,
+      Status,
+      Comment
+    );
+
+    return JSON.stringify(list_pays);
+  })
+);
+var typeMP = req.body.typeM
+console.log(typeMP)
+
+if (typeMP =="CC") {
   var {
     cardNumber,
     cardName,
@@ -643,72 +717,12 @@ exports.add_pay_methods = async (req, res) => {
     city,
     cardNickName,
   } = req.body; //This variables contain  info about credit card for save in x3
-
-  //console.log(user)
-  let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'";
-  let count = 1000;
-
-  //Save SQL LOG
-  let UserID = user["EMAIL"],
-    IPAddress = ip,
-    LogTypeKey = 9,
-    SessionKey = SessionKeyLog,
-    Description = "Loading Add payments methods module to X3",
-    Status = 1,
-    Comment = "Function: add_pay_methods - line 655";
-  var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
-    IPAddress,
-    LogTypeKey,
-    SessionKey,
-    Description,
-    Status,
-    Comment
-  );
-
     /**ENCRYPT INFO CREDIT CARD BEFORE SEND TO X3 */
   cardNumber = encrypt(cardNumber);
   cvv = encrypt(cvv);
   addCardExpiryDate = encrypt(addCardExpiryDate);
   zipCode = encrypt(zipCode);
-  cardName = encrypt(cardName);
-
-  //Get PayMethods for check out if not duplicate
-  const payIDs = JSON.parse(
-    await request({
-      uri:
-        URI +
-        "YPORTALPAY?representation=YPORTALPAY.$query&count=" +
-        count +
-        " " +
-        query_consulting,
-      method: "GET",
-      insecure: true,
-      rejectUnauthorized: false,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-      },
-      json: true,
-    }).then(async (list_pays) => {
-      //SAVE SQL LOG
-      (Description = "Getting payments methods from X3 to created PAYID-Get Success"),
-        (Status = 1),
-        (Comment = "Function: add_pay_methods - line 695");
-      SystemLogL = await DataBasequerys.tSystemLog(
-        UserID,
-        IPAddress,
-        LogTypeKey,
-        SessionKey,
-        Description,
-        Status,
-        Comment
-      );
-
-      return JSON.stringify(list_pays);
-    })
-  );
+  cardName = encrypt(cardName);  
 
   // Check out if credit Card is duplicate
   let IDPay = 0;
@@ -790,6 +804,102 @@ exports.add_pay_methods = async (req, res) => {
     req.flash("success", "Card added");
     res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message Card added
   });
+} else {
+  var {
+    payName,
+bank_id,
+bank_account_number,
+  } = req.body; //This variables contain  info about ACH for save in x3
+    /**ENCRYPT INFO ACH BEFORE SEND TO X3 */
+  bank_account_number = encrypt(bank_account_number);
+  bank_id = encrypt(bank_id);
+  payName = encrypt(payName); 
+
+  // Check out if ACH is duplicate
+  let IDPay = 0;
+  for (let i = 0; i < payIDs["$resources"].length; i++) {
+    IDPay = parseInt(payIDs["$resources"][i]["PAYID"]);
+    if (payIDs["$resources"][i]["BANKACCT"] === bank_account_number) {
+      // Card Number exist in X3
+      (Description = "Card Number exist in payments methods from X3 "),
+        (Status = 1),
+        (Comment = "Function: add_pay_methods - line 827");
+      SystemLogL = await DataBasequerys.tSystemLog(
+        UserID,
+        IPAddress,
+        LogTypeKey,
+        SessionKey,
+        Description,
+        Status,
+        Comment
+      );
+
+      if (totalAmountcard) {//If the request comes from the payment of invoices Page, it returns a message of Card Number exist, try another
+        res.send({ msg: "Bank Account exist, try another" });
+        return;
+      }
+      req.flash("error", "Bank Account exist, try another");
+      return res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
+    } 
+  }
+
+  //If ACH not exist in X3 Save
+  IDPay = parseInt(IDPay) + 1; //Create PayID
+  request({
+    uri: URI + "YPORTALPAY?representation=YPORTALPAY.$create",
+    method: "POST",
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+    },
+    body: {
+      PAYTYPE: typeMP,
+      EMAIL: user.EMAIL,
+      PAYID: IDPay,
+      PAYNAME: payName,
+      BANKACCT: bank_account_number,
+      BANKROUT:bank_id,
+      BPCNUM: "",
+      CARDNO: "",
+      CVC: "",
+      EXPDAT: "",
+      NAME: "",
+      ADDLIG1: "",
+      ADDLIG2: "",
+      ADDLIG3: "",
+      CTY: "city",
+      SAT: "state",
+      ZIP: "zipCode",
+      CRY: "",
+    },
+    json: true, 
+  }).then(async (added_pay_methods) => {
+    //Save LOG SYSTEM SQL
+    (Description = "Payments methods added to X3 "),
+      (Status = 1),
+      (Comment = "Payment method added success");
+    SystemLogL = await DataBasequerys.tSystemLog(
+      UserID,
+      IPAddress,
+      LogTypeKey,
+      SessionKey,
+      Description,
+      Status,
+      Comment
+    );
+
+    if (totalAmountcard) {//If the request comes from the payment of invoices Page, it returns success
+      res.send({ success: "success" });
+      return;
+    }
+    req.flash("success", "ACH added");
+    res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message Card added
+  }); 
+}
+ 
 };
 
 /**FUNCTION TO SAVE EDITED PAYMENTS METHODS TO X3 */
@@ -815,7 +925,9 @@ exports.edit_pay_methods = async (req, res) => {
     Status,
     Comment
   );
-
+var typeMP = req.body.typeM
+console.log(typeMP)
+if (typeMP =="CC") {
   //GET INFO OF CC
   var {
     cardNumber,
@@ -851,6 +963,7 @@ exports.edit_pay_methods = async (req, res) => {
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     body: {
+      PAYTYPE: typeMP,
       BPCNUM: "",
       CARDNAME: cardNickName,
       CARDNO: cardNumber,
@@ -883,6 +996,72 @@ exports.edit_pay_methods = async (req, res) => {
     req.flash("success", "Card edited");
     res.redirect("/payments_methods/" + user.EMAIL);//Redirect with msg success Card Edited
   });
+} else {
+ //GET INFO OF ACH
+ var {
+  payName,
+  bank_id,
+  bank_account_number,payID,
+} = req.body;
+
+//ENCRYPT INFO ABOUT ACH
+bank_account_number = encrypt(bank_account_number);
+bank_id = encrypt(bank_id);
+payName = encrypt(payName); 
+
+//SAVE ACH EDITED INFO
+request({
+  uri:
+    URI +
+    `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+  method: "PUT",
+  insecure: true,
+  rejectUnauthorized: false,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+  },
+  body: {
+    PAYTYPE: typeMP,
+    EMAIL: user.EMAIL,
+    PAYNAME: payName,
+    BANKACCT: bank_account_number,
+    BANKROUT:bank_id,
+    BPCNUM: "",
+    CARDNO: "",
+    CVC: "",
+    EXPDAT: "",
+    NAME: "",
+    ADDLIG1: "",
+    ADDLIG2: "",
+    ADDLIG3: "",
+    CTY: "city",
+    SAT: "state",
+    ZIP: "zipCode",
+    CRY: "",
+  },
+  json: true, 
+}).then(async (added_pay_methods) => {
+  // SAVE SQL LOGSYSTEM
+  (Description = "Success Edit payments methods module to X3"),
+    (Status = 1),
+    (Comment = "Function: edit_pay_methods- line 1049");
+  SystemLogL = await DataBasequerys.tSystemLog(
+    UserID,
+    IPAddress,
+    LogTypeKey,
+    SessionKey,
+    Description,
+    Status,
+    Comment
+  );
+  req.flash("success", "ACH Edited");
+  res.redirect("/payments_methods/" + user.EMAIL);//Redirect with msg success Card Edited
+}); 
+}
+  
+
 };
 
 /**FUNCTION TO DELETE PAYMENT METHOD */
@@ -1002,7 +1181,18 @@ exports.pay_invoices = async (req, res) => {
       return JSON.stringify(pay_methods["$resources"]);
     })
   );
-
+  let CCMethod = [], ACHMethod = []
+  console.log(list_methods_par)
+  for (let i = 0; i < list_methods_par.length; i++) {
+    switch (list_methods_par[i]['PAYTYPE']) {
+      case 'CC':
+        CCMethod.push(list_methods_par[i])
+        break;
+        case 'ACH':
+          ACHMethod.push(list_methods_par[i])
+          break;
+    }  
+  }
   //GET INVOICES INFO BY SELECTED IN THE OPEN INV TABLE
   let count = 100;
   const { ids_invoices } = req.body;
@@ -1136,7 +1326,8 @@ exports.pay_invoices = async (req, res) => {
     items,
     list_methods_par,
     pictureProfile,
-    admin,
+    admin,CCMethod,
+    ACHMethod
   });
 };
 
@@ -1566,7 +1757,7 @@ exports.applied_amount = async (req, res) => {
     SessionKey = SessionKeyLog,
     Description = "Applied amount int process",
     Status = 1,
-    Comment = "FUNCITON: applied_amount - LINE 1566";
+    Comment = "FUNCITON: applied_amount - LINE 1760";
   var SystemLogL = await DataBasequerys.tSystemLog(
     UserID,
     IPAddress,
@@ -1994,8 +2185,159 @@ exports.payments_detail = async (req, res) => {
   });
 };
 
+/**FUNCTION TO PRINT  PAYMENTS DETAIL PAGE */
+exports.Print_payments_detail = async (req, res) => {
+  const user = res.locals.user["$resources"][0];//USER INFO
+  const pictureProfile = res.locals.user["$resources"][1]["pic"];//PIC PROFILE
+  var admin = false;
+  if (user["ROLE"] == 4) {
+    admin = true;
+  }
+
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let count = 1000;
+  let UserID = user["EMAIL"],
+    IPAddress = ip,
+    LogTypeKey = 6,
+    SessionKey = SessionKeyLog,
+    Description = "Init consulting payments details",
+    Status = 1,
+    Comment = "FUNCTION: payments_detail-line 1864";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+
+    //FIRTS GET PAYMENTS FROM SQL TABLE BY "PMTKEY"
+  let pmtKey = req.params.id;
+  let payments_dt = [];//USE THIS ARRAY TO STORE PAYMENTS
+  await DataBaseSq.Get_tPaymentsBypmtKey(pmtKey).then((response) => {
+    response = JSON.parse(response);
+    //PUSH IN ARRAY PAYMENTS INFO
+    payments_dt.push({
+      pmtKey: response.pmtKey,
+      CustID: response.CustID,
+      TransactionID: response.TransactionID,
+      TranAmount: response.TranAmount,
+      ProcessorStatus: response.ProcessorStatus,
+      ProcessorStatusDesc: response.ProcessorStatusDesc,
+      DateProcessesed: response.DateProcessesed,
+      tPaymentApplication: response.tPaymentApplication,
+    });
+  });
+
+  let where_filter_inv;
+  var inv_wofilter = [];//USE THIS ARRAY TO STORE INVOICES INFO
+  //GET FROM X3, INVOICE IN PAYMENTS ARRAY INFO ONE BY ONE
+  for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
+    //THIS IS FOR GET INFO OF CLOSED INVOICES WITH STATUS SOAP 1
+    if (payments_dt[0].tPaymentApplication[i]["OpenAmount"] == payments_dt[0].tPaymentApplication[i]["AppliedAmount"] && payments_dt[0].tPaymentApplication[i]["Status"] == "1" ) {
+      where_filter_inv ="&where=NUM eq '" +payments_dt[0].tPaymentApplication[i].INVOICENUM + "' ";//WHERE CLAUSE WITH INVNUM,FOR X3
+      //STORE INFO INVOICE IN ARRAY
+      inv_wofilter.push(
+        await request({
+          uri:
+            URI +
+            "YPORTALINV?representation=YPORTALINVC.$query&count=" +
+            count +
+            " " +
+            where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true, 
+        }).then(async (inv_wofilter2) => {
+          // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
+          if (inv_wofilter2["$resources"].length == 0) {
+            (Description = "Error get invoice for pay"),
+              (Status = 1),
+              (Comment ="Invoice query response blank or closed inv trying to pay. - Line 1915");
+            SystemLogL = await DataBasequerys.tSystemLog(
+              UserID,
+              IPAddress,
+              LogTypeKey,
+              SessionKey,
+              Description,
+              Status,
+              Comment
+            );
+            return false;
+          }          
+          return inv_wofilter2["$resources"][0];//RETURN INFO INVOICE IN ARRAY
+        })
+      );
+    } else {
+      //GET INFO OPEN INVOICES OR WITH STATUS SOAP 0
+      where_filter_inv ="&where=NUM eq '" + payments_dt[0].tPaymentApplication[i].INVOICENUM + "' ";//WHERE CLAUSE FOR X3
+      //STORE INFO INVOICE IN ARRAY
+      inv_wofilter.push(
+        await request({
+          uri:
+            URI +
+            "YPORTALINV?representation=YPORTALINVO.$query&count=" +
+            count +
+            " " +
+            where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true, 
+        }).then(async (inv_wofilter2) => {
+          // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
+          if (inv_wofilter2["$resources"].length == 0) {
+            (Description = "Error get invoice for pay"),
+              (Status = 1),
+              (Comment =
+                "Invoice query response blank or closed inv trying to pay. - Line 1957");
+            SystemLogL = await DataBasequerys.tSystemLog(
+              UserID,
+              IPAddress,
+              LogTypeKey,
+              SessionKey,
+              Description,
+              Status,
+              Comment
+            );
+            return false;
+          }
+          return inv_wofilter2["$resources"][0];//RETURN INFO INVOICES TO ARRAY
+        })
+      );
+    }
+  }
+
+  let payments_st = JSON.stringify(payments_dt),//CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
+      inv_wofilter_st = JSON.stringify(inv_wofilter);//CONVERT ARRAY INVOICES INFO IN STRING FOR DATATABLE
+  
+      //RENDER PAGE
+  res.render("print_details_payment", {
+    pageName: "Payments Details",
+    dashboardPage: true,
+    menu: true,
+    payment_detail_print: true,
+    print_inv: true,
+    user,
+    pictureProfile,
+    payments_dt,
+    admin,
+    inv_wofilter,
+    payments_st,
+    inv_wofilter_st,
+  });
+};
+
 /**FUNCTION TO PROCESS PAYMENT WITH WELLS FARGO */
 exports.process_payment_WF = async (req, res) => {
+
   const user = res.locals.user["$resources"][0];//User info
 //Save SQL SYSTEMLOG
 var ip = req.connection.remoteAddress;
@@ -2033,11 +2375,19 @@ var SystemLogL = await DataBasequerys.tSystemLog(
     userIDInv,NamePayer_Bank
   } = req.body;
 console.log(req.body)
+let consult_paymentID = JSON.parse( await DataBaseSq.GetLastPaymenTIDWF())//GET Last PaymentID WF to create next 
+   //CREATE THE NEXT PAYMENT ID
+   let payment_id0 = consult_paymentID[0]['TransactionID']// GET TRANSACTIONID FOR CREATE NEXT NUM
+   let prepare_idWF = payment_id0.replace('POR','')//
+   prepare_idWF = parseInt(consult_paymentID[0]['pmtKey'])+1
+   let complete_seq= prepare_idWF.toString().padStart(12, "0");
+   prepare_idWF = 'POR'+complete_seq
+   
   //SEND PAYMENT TO WF API
- let WF_TransactionID= JSON.parse(await WFCCtrl.WF(totalAmountcard,WF_APIKey['access_token'],NamePayer_Bank,bank_id,bank_account_number).then((response)=>{
+ let WF_TransactionID= JSON.parse(await WFCCtrl.WF(totalAmountcard,WF_APIKey['access_token'],NamePayer_Bank,bank_id,bank_account_number,prepare_idWF).then((response)=>{
   return JSON.stringify(response)
 }))
- console.log(WF_TransactionID)
+ 
  let back_side_res = WF_TransactionID['x-backside-transport'], payment_id= WF_TransactionID['payment-id']
  let transactionDate = moment(WF_TransactionID['date']).format('YYYY-MM-DD')
  let error=""

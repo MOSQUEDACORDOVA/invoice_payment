@@ -33,55 +33,64 @@
                             </div>
 
                         </div>
-                        <p class="card-text mb-25">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
-                        <p class="card-text mb-0">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
+                        <p class="card-text mb-25" style="font-size: smaller;">737 LAMAR STREET, LOS ANGELES, CA 90031 USA</p>
+                        <p class="card-text mb-0" style="font-size: smaller;">TEL: +1 (323) 223 1401, FAX: +44 (323) 221 5957</p>
                     </div>
                     <div class="mt-md-0 mt-2">
-                        <h4 class="invoice-title">
+                        <h4 class="invoice-title" style="font-size: smaller;">
                             Invoice:
                             <span class="invoice-number">{{inv_detail.NUM}}</span>
                         </h4>
                         <div class="invoice-date-wrapper">
-                            <p class="invoice-date-title">Date Issued: {{#format_date
+                            <p class="mb-0" style="font-size: smaller;">Date Issued: {{#format_date
                                 inv_detail.INVDAT}} {{/format_date}}</p>
                         </div>
                         <div class="invoice-date-wrapper">
-                            <p class="invoice-date-title">Due Date: {{#format_date
+                            <p class="mb-0" style="font-size: smaller;">Due Date: {{#format_date
                                 inv_detail.SIVYPORINV.0.DUDDAT}}{{/format_date}}</p>
+                        </div>
+                        <div class="invoice-date-wrapper">
+                            <p class="mb-0" style="font-size: smaller;">Account#: {{inv_detail.BPCINV}}</p>
+                        </div>
+                        <div class="invoice-date-wrapper">
+                            <p class="mb-0" style="font-size: smaller;">Ship-To Account#: {{inv_detail.BPCORD}}</p>
+                        </div>
+                        <div class="invoice-date-wrapper">
+                            <p class="mb-0" style="font-size: smaller;">PO#: {{inv_detail.INVREF}}</p>
                         </div>
                     </div>
                 </div>
 
-                <hr class="my-1" />
+                {{!-- <hr class="my-1" /> --}}
 
-                <div class="row pb-2" style="margin-left: 2rem;">
+                <div class="row pb-2" style="margin-left: 1rem;">
                     <div class="row invoice-spacing invoices-details-colums">
                         <div class="col-xl-8 p-0">
-                            <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Address:</h6>
-                            <h6 class="mb-25">{{inv_detail.SIVYPORINV.0.BPINAM}}</h6>
-                            <h6 class="mb-25">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}}
+                            <h6 class="mb-25 text-uppercase" style="font-size: smaller;font-weight: normal;">Bill to:</h6>
+                            <h6 class="mb-25" style="font-size: smaller;font-weight: normal;">{{inv_detail.SIVYPORINV.0.BPINAM}}</h6>
+                            <h6 class="mb-25" style="font-size: smaller;font-weight: normal;">{{inv_detail.SIVBPIADD.0.BPIADDLIG1}}
                                 {{inv_detail.SIVBPIADD.0.BPIADDLIG2}} {{inv_detail.SIVBPIADD.0.BPIADDLIG3}}</h6>
-                            <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICTY}},
+                            <p class="card-text mb-25" style="font-size: smaller;">{{inv_detail.SIVBPIADD.0.BPICTY}},
                                 {{inv_detail.SIVBPIADD.0.BPISAT}} {{inv_detail.SIVBPIADD.0.BPIPOSCOD}}</p>
-                            <p class="card-text mb-25">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
+                            <p class="card-text mb-25" style="font-size: smaller;">{{inv_detail.SIVBPIADD.0.BPICRYNAM}}</p>
                         </div>
-                        <div class="col-xl-8 p-0 mt-xl-0 mt-2">
-                            <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Ship to:</h6>
-                            <h6 class="card-text mb-25">{{inv_detail.SIVYPORINV.0.BPDNAM}}</h6>
-                            <p class="card-text mb-25">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}}
+                        <div class="col-xl-8 p-0 mt-xl-0">
+                            <h6 class="mb-25 text-uppercase" style="font-size: smaller;font-weight: normal;">Ship to:</h6>
+                            <h6 class="card-text mb-25" style="font-size: smaller;font-weight: normal;">{{inv_detail.SIVYPORINV.0.BPDNAM}}</h6>
+                            <p class="card-text mb-25" style="font-size: smaller;font-weight: normal;">{{inv_detail.BPDADDLIG1}} {{inv_detail.BPDADDLIG2}}
                                 {{inv_detail.BPDADDLIG3}}</p>
-                            <p class="card-text mb-25">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}}
+                            <p class="card-text mb-25" style="font-size: smaller;">{{inv_detail.BPDCTY}}, {{inv_detail.BPDSAT}}
                                 {{inv_detail.BPDPOSCOD}}</p>
-                            <p class="card-text mb-25">{{inv_detail.BPDCRYNAM}}</p>
+                            <p class="card-text mb-25" style="font-size: smaller;">{{inv_detail.BPDCRYNAM}}</p>
 
                         </div>
-                        <div class="col-xl-8 p-0 mt-xl-0 mt-2">
+                        <div class="col-xl-8 p-0 mt-xl-0">
                             {{!-- <h6 class="mb-25 text-uppercase" style="font-weight: bold;">Invoice Details:</h6> --}}
-                            <p class="card-text mb-25">Rep: {{inv_detail.SIVYPORINV.0.SOLDREP_REF.$description}}</p>
-                            <p class="card-text mb-25">Phone: {{#phonenumberFormat
+                            <p class="card-text mb-25" style="font-size: smaller;">Rep: {{inv_detail.SIVYPORINV.0.SOLDREP_REF.$description}}</p>
+                            <p class="card-text mb-25" style="font-size: smaller;">Phone: {{#phonenumberFormat
                                 inv_detail.SIVYPORINV.0.SOLDREPTEL}}{{/phonenumberFormat}}</p>
-                            <p class="card-text mb-25">Email: {{inv_detail.SIVYPORINV.0.SOLDREPWEB}}</p>
-                            <p class="card-text mb-0"> </p>
+                            <p class="card-text mb-25" style="font-size: smaller;">Email: {{inv_detail.SIVYPORINV.0.SOLDREPWEB}}</p>
+                            <p class="card-text mb-0" style="font-size: smaller;"> </p>
 
                         </div>
                     </div>
@@ -132,7 +141,7 @@
                 <div class="row invoice-sales-total-wrapper mt-1">
                     <div class="row invoice-sales-total-wrapper">
                         <div class="col-8">
-                            <p class="card-text mb-0">
+                            <p class="card-text mb-0" style="font-size: smaller;">
                                 <span class="fw-bold">Last payment date:</span> <span class="ms-75">{{#format_date
                                     inv_detail.SIVYPORINV.0.LASTPAYDAT}} {{/format_date}}</span>
                             </p>
@@ -140,15 +149,15 @@
                         <div class="col-4">
                             <div class="invoice-total-wrapper me-md-3 me-lg-5 d-flex flex-column">
                                 <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Subtotal:
+                                    <p class="invoice-total-title" style="font-size: smaller;">Subtotal:
                                         <span>${{#decimals inv_detail.AMTNOT}}{{/decimals}}</span>
                                     </p>
                                 </div>
                                 <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Discount: <span>$0</span></p>
+                                    <p class="invoice-total-title" style="font-size: smaller;">Discount: <span>$0</span></p>
                                 </div>
                                 <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Tax: ${{#tax_calculate inv_detail.AMTNOT
+                                    <p class="invoice-total-title" style="font-size: smaller;">Tax: ${{#tax_calculate inv_detail.AMTNOT
                                         inv_detail.AMTATI}} {{/tax_calculate}}<span></span></p>
                                 </div>
                                 <hr class="my-50" />
@@ -159,13 +168,13 @@
                                 </div>
                                 <hr class="my-50" />
                                 <div class="invoice-total-item">
-                                    <p class="invoice-total-title">Payment applied:
+                                    <p class="invoice-total-title" style="font-size: smaller;">Payment applied:
                                         <span>${{#appliedAmt inv_detail.SIVYPORINV.0.AMTLOC
                                             inv_detail.SIVYPORINV.0.OPENLOC}}{{/appliedAmt}}</span>
                                     </p>
                                 </div>
                                 <div class="invoice-total-item" style="font-weight: bold;">
-                                    <p class="invoice-total-title">Balance:
+                                    <p class="invoice-total-title" style="font-size: smaller;">Balance:
                                         <span>${{#decimals inv_detail.SIVYPORINV.0.OPENLOC}}{{/decimals}}</span>
                                     </p>
                                 </div>
@@ -176,15 +185,12 @@
 
                 <hr class="my-2" />
 
-                <div class="row">
-                    <div class="col-12">
-                        <span class="fw-bold">Note:</span>
-                        <span>It was a pleasure working with you and your team. Thank You!</span>
-                    </div>
-                </div>
+               
             </div>
 
         </div>
     </div>
+    
 </div>
+ 
 <!-- END: Content-->

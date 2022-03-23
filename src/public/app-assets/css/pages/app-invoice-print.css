@@ -43,7 +43,7 @@ body {
   .invoice-header {
     border-bottom: 1px solid #ebe9f1;
     flex-direction: row !important;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
     padding-right: 5rem; }
   .table-responsive {
     overflow-x: hidden; }

@@ -68,6 +68,18 @@ module.exports = {
           console.log(err);
         });
     });
+  },
+  GetLastPaymenTIDWF(){// SELECT PAYMENTID LAST, WF
+    return new Promise((resolve, reject) => {
+      tPayment.findAll({attributes:['TransactionID','pmtKey'],limit: 1, where: {TransactionID:{[Op.like]: '%POR%'} },order: [ [ 'createdAt', 'DESC' ]]})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   }, 
   RegtPaymentWF(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,ABA_routing,
     bank_account_number, userIDInv) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API

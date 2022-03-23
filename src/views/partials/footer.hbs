@@ -3,9 +3,19 @@
 <div class="drag-target"></div>
 
 <!-- BEGIN: Footer-->
-<footer class="footer footer-static footer-light">
-    <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="#">SAN ANTONIO WINERY</a><span class="d-none d-sm-inline-block">, All rights
-                Reserved</span></span></p>
+<footer class="footer footer-static footer-light" {{#if print_inv}} style="position: fixed;bottom: 0; text-align: justify;"{{/if}}>
+    {{#if print_inv}}
+    <div class="row" style="font-size:x-small;">
+                    <div class="col-12">
+                        <span class="fw-bold">Note:</span>
+                        <span>Invoices are payable in thirty (30) days. A 1.5% carrying charge will be added to the current statutory charges of 1.5 percent (CA B & P code 25509) on all balances unpaid after forty-two (42) days and each thirty (30) days thereafter and will result in loss of any discount. Customers may lose credit privileges and may be reported to State ABC Authorities when goods are in buyer’s possession or buyer’s agent signs delivery receipt. Such acceptance of goods confirms agreement that this and all prior invoices are payable at the address above.</span>
+                    </div>
+                </div>
+                {{else}}
+               <p class="clearfix mb-0"><span class="float-md-start d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2021<a class="ms-25" href="#">SAN ANTONIO WINERY</a><span class="d-none d-sm-inline-block">, All rights
+                Reserved</span></span></p> 
+    {{/if}}
+    
 </footer>
 <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
 <!-- END: Footer-->
@@ -68,6 +78,11 @@
 {{!-- This this script is loaded only on the payment detail page --}}
 {{!-- Contains what is related to the dataTable --}}
 <script src="../../../assets/data/payments_detail.js"></script>
+{{/if}}
+{{#if payment_detail_print}}
+{{!-- This this script is loaded only on the payment detail page printable --}}
+{{!-- Contains what is related to the dataTable --}}
+<script src="../../../assets/data/payments_detail_print.js"></script>
 {{/if}}
 
 {{#if print_inv}}

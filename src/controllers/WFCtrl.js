@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   /**THIS FUNCTION IS FOR SEND PAYMENT TO WELLS FARGO API */
-   WF(totalAmountcard,apiKey,NamePayer_Bank,bank_id,bank_account_number) {
+   WF(totalAmountcard,apiKey,NamePayer_Bank,bank_id,bank_account_number,payment_id) {
     return new Promise((resolve, reject) => {
       //SET HEADER
     var options = {
@@ -41,8 +41,7 @@ module.exports = {
         
       });
     });
-    //CREATE THE PAYMENT ID
-    let payment_id = 'POAR123456'
+   
     // THIS HAVE THE JSON WITH THE PAYMENT INFO FOR SEND TO WF API
     var payload = JSON.stringify({
       'payment_method': 'NURG',

@@ -25,7 +25,19 @@ $('.paymentOptions').on('click', (e) => {
   $('#cvv').val(cvv)
   $('#typeCC').val(typeCC)
 })
-
+$('.paymentOptionsACH').on('click', (e) => {
+    /**Get de CC info, for selected CC and put it in form hidden */
+    let bankacct = e.currentTarget.dataset['bankacct'],
+        bankrout = e.currentTarget.dataset['bankrout'],
+        name = e.currentTarget.dataset['name'],
+        id = e.currentTarget.dataset['id'];
+    console.log(typeCC)
+    $('#paymentID').val(id)
+    $('#bankacct').val(bankacct)
+    $('#bankrout').val(bankrout)
+    $('#name').val(name)
+    
+  })
 $('#btn_continue').on('click', (e) => {
 /** Firts verify if info is not blank, and send form with de payment info */
 
@@ -45,7 +57,20 @@ $('#btn_continue').on('click', (e) => {
   }
   sendformO('form_processPay') // Process payment
 })
-
+$('#btn_continueACH').on('click', (e) => {
+    /** Firts verify if info is not blank, and send form with de payment info */
+    
+      if ($('#totalAmountcard').val() == 0) {
+          Swal.fire("The amount to pay must be greater than zero.!!")
+          return
+      }
+      if ($('#bankrout').val() == "") {
+          Swal.fire("You must select a payment method")
+          $('.paymentOptionsACH').focus()
+          return
+      }
+      sendformWF('form_processPayACH') // Process payment
+    })
 $('#diferentCardcheck').on('change', (e) => {
   /**show the different card form */
   if ($('#diferentCardcheck').is(':checked')) {
@@ -131,12 +156,12 @@ $('#payBankOption').on('click', (e) => {
         return
     }
   
-   /* if ($('#addSaveCard').is(':checked')) {
+    if ($('#addSaveBank').is(':checked')) {
         //Save Card for future billing
         $.ajax({
             url: `/add_method_pay`,
             type: 'POST',
-            data: $('#creditCardFormOther').serialize(),
+            data: $('#formBankOptions').serialize(),
             beforeSend: function () {
                 // setting a timeout
                 $('#bn_loading').removeClass('d-none')
@@ -150,16 +175,16 @@ $('#payBankOption').on('click', (e) => {
                 }
                 $('#bn_loading').removeClass('d-none')
                 $('#primary').modal('show')
-                sendformO('creditCardFormOther') //send payment to process function
+                sendformWF('formBankOptions') //send payment to process function
                 return
             },
             error: function (jqXHR, textStatus) {
                 console.log('error:' + jqXHR)
             }
         })
-    } else {*/
-        sendformWF('formBankOptions')// Send process payment without save new credit card
-    //}
+    } else {
+        sendformWF('formBankOptions')// Send process payment without save new ACH
+    }
   
   })
 
@@ -181,7 +206,8 @@ $('#addCardExpiryDate').on('keyup', (e) => {
   $('#addCardExpiryDate').val(valor)
 })
 
-$(`#btnplaceOrder`).click(() => {
+$(`#btnplaceOrder`).click((event) => {
+event.preventDefault();
   /** Cheack out order, check the applieds amounts and shhort reasons and send the arrays to form hidden */
   var applied_amountPlus = [], applied_amountINV = [], reasons = [], amountInvs = [], bpcinv = []
   $('.applied_amount').each(function () {
@@ -195,7 +221,15 @@ $(`#btnplaceOrder`).click(() => {
       applied_amountINV.push($(this).val())
   })
   $('.invoicesToPay').val(applied_amountINV.toString())
-  $('.reasons').each(function () {
+  $('.reasons').each(function (e) {
+      console.log($(this).val())
+      console.log($(this).attr('id'))
+      if ($(`#${$(this).attr('id')}`).is(':visible') && $(this).val()=="") {
+        $(`#${$(this).attr('id')}`).addClass('border border-danger')
+        $(`#${$(this).attr('id')}`).focus()
+        
+        return
+      }
       reasons.push($(this).val())
   })
   $('.reasonLessAmta').val(reasons.toString())
@@ -250,7 +284,7 @@ const sendformO = (form) => {
                       appliedAmountForm()//Save the applied amount info in SQL
                       Swal.fire('Process payment success!').then((response) => {
                           console.log(response)
-                          if (response.isConfirmed) {
+                          if (response.isConfirmed || response.isDismissed) {
                               window.location.href = "/payment_view/" + data.paymenKey
                           }
                       })
@@ -332,7 +366,7 @@ const sendformWF = (form) => {
                         appliedAmountForm()//Save the applied amount info in SQL
                         Swal.fire('Process payment OK and Status "Pending"!').then((response) => {
                             console.log(response)
-                            if (response.isConfirmed) {
+                            if (response.isConfirmed || response.isDismissed) {
                                 window.location.href = "/payment_view/" + data.paymentKey
                             }
                         })

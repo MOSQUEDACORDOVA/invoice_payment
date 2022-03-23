@@ -131,6 +131,7 @@ exports.sendToken = async (req, res) => {
 
   //CREATE THE URL WITH TOKEN AND SEND BY EMAIL
   const resetUrl = `https://${req.headers.host}/set-password/${token}`;
+  console.log(resetUrl)
   res.redirect(`/send-token/${email}/${token}`);
 
 };
@@ -187,6 +188,7 @@ exports.updatePassword = async (req, res) => {
     },
     body: {
       "PASS": password_new,
+      "TOKEN": "",
     },
     json: true,
   }).then(saved => {
