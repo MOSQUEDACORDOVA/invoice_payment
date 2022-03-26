@@ -76,11 +76,11 @@ exports.dashboard = async (req, res) => {
   );
   if (user["ROLE"] > 1) {
     // If User rol is 1, consulting query by EMAIL
-    count = 100;
+    count = 50;
     where_filter_inv = "&where=EMAIL eq '" + user.EMAIL + "' ";
   } else {
     //Else consulting Loggin Map
-    count = 100;
+    count = 50;
 
     const maping_login = JSON.parse(
       await request({
@@ -164,7 +164,61 @@ exports.dashboard = async (req, res) => {
       Comment
     );
 
-    var paymentsL = await DataBaseSq.Get_tPaymentsByUser(UserID);//Get Payments by userID from SQLTable
+    var paymentsL
+//FIRTS MAPPING LOG FOR GET BPCNUM'S
+let query_consulting = "&where=EMAIL eq '" + UserID + "'";
+let count = 1000;
+const maping_login = JSON.parse(
+  await request({
+    uri:
+      URI +
+      "YPORTALBPS?representation=YPORTALBPS.$query&count=1000" +
+      query_consulting,
+    method: "GET",
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+    },
+    json: true, 
+  }).then(async (map_loggin) => {
+    
+    return JSON.stringify(map_loggin);
+  })
+);
+  // STORE BPCNUM FORM MAPPINGLOGGING
+let bpcnum = [];
+for (let i = 0; i < maping_login["$resources"].length; i++) {
+  bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+}
+
+//GET PAYMENTS FROM SQL TABLE
+let payments = [],
+  getPayments;
+for (let i = 0; i < bpcnum.length; i++) {
+  await DataBaseSq.Get_tPayments(bpcnum[i]).then((response) => {
+    response = JSON.parse(response);//PARSE RESPONSE
+    //STORE IN ARRAY PAYMENTS
+    for (let j = 0; j < response.length; j++) {
+      console.log(payments.length);
+      payments.push({
+        pmtKey: response[j].pmtKey,
+        CustID: response[j].CustID,
+        TransactionID: response[j].TransactionID,
+        TranAmount: response[j].TranAmount,
+        ProcessorStatus: response[j].ProcessorStatus,
+        ProcessorStatusDesc: response[j].ProcessorStatusDesc,
+        DateProcessesed: response[j].DateProcessesed,
+        tPaymentApplication: response[j].tPaymentApplication,
+      });
+    }
+  });
+}
+
+//CLEAN PAYMENTS BLANK
+paymentsL = JSON.stringify(payments.filter((el) => el != ""));
 
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
@@ -2372,7 +2426,7 @@ var SystemLogL = await DataBasequerys.tSystemLog(
     inv,
     appliedAmount,
     reasonLessAmta,
-    userIDInv,NamePayer_Bank
+    userIDInv,NamePayer_Bank,payName
   } = req.body;
 console.log(req.body)
 let consult_paymentID = JSON.parse( await DataBaseSq.GetLastPaymenTIDWF())//GET Last PaymentID WF to create next 
@@ -2382,7 +2436,9 @@ let consult_paymentID = JSON.parse( await DataBaseSq.GetLastPaymenTIDWF())//GET 
    prepare_idWF = parseInt(consult_paymentID[0]['pmtKey'])+1
    let complete_seq= prepare_idWF.toString().padStart(12, "0");
    prepare_idWF = 'POR'+complete_seq
-   
+   if (NamePayer_Bank == "") {
+    NamePayer_Bank = payName
+   }
   //SEND PAYMENT TO WF API
  let WF_TransactionID= JSON.parse(await WFCCtrl.WF(totalAmountcard,WF_APIKey['access_token'],NamePayer_Bank,bank_id,bank_account_number,prepare_idWF).then((response)=>{
   return JSON.stringify(response)
