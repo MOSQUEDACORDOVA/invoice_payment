@@ -69,18 +69,18 @@
                     data-feather="more-horizontal"></i>
             </li>
             <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/dashboard/{{user.EMAIL}}"><i data-feather='bar-chart-2'></i><span
+                    href="/dashboard/{{user.ID}}"><i data-feather='bar-chart-2'></i><span
                         class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
             </li>
             <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/close_invoices/{{user.EMAIL}}"><i data-feather='archive'></i><span
+                    href="/close_invoices/{{user.ID}}"><i data-feather='archive'></i><span
                         class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
             </li>
             <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/payments/{{user.EMAIL}}"><i data-feather='layers'></i><span class="menu-title text-truncate"
+                    href="/payments/{{user.ID}}"><i data-feather='layers'></i><span class="menu-title text-truncate"
                         data-i18n="Email">Payments</span></a>
             </li>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.EMAIL}}"><i
+            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.ID}}"><i
                         data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment
                         Methods</span></a>
             </li>

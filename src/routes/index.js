@@ -28,12 +28,12 @@ router.get('/set-password/:token', userController.resetPasswordForm)
 
 //OPEN INVOICES FUNCTIONS
 router.get('/dashboard', dashboardController.dashboard);
-router.get('/dashboard/:email', authController.authenticatedUser, dashboardController.dashboard);
-router.get('/dashboard/:email/:msg', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/dashboard/:id', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/dashboard/:id/:msg', authController.authenticatedUser, dashboardController.dashboard);
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
 
 //CLOSED INVOICES FUNCTIONS
-router.get('/close_invoices/:email', authController.authenticatedUser, dashboardController.close_invoices);
+router.get('/close_invoices/:id', authController.authenticatedUser, dashboardController.close_invoices);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
 //NEXT OR PREVIOUS FUNCTIONS
@@ -44,7 +44,7 @@ router.get('/closed_invoices/p/:data', authController.authenticatedUser, dashboa
 router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
 
 //PAYMENTS METHODS
-router.get('/payments_methods/:email', authController.authenticatedUser, dashboardController.pay_methods);
+router.get('/payments_methods/:id', authController.authenticatedUser, dashboardController.pay_methods);
 router.post('/add_method_pay', authController.authenticatedUser, dashboardController.add_pay_methods);
 router.post('/edit_apy_method', authController.authenticatedUser, dashboardController.edit_pay_methods);
 router.get('/delete_payM/:IDPay', authController.authenticatedUser, dashboardController.delete_pay_methods);
@@ -66,7 +66,7 @@ router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardCon
 router.get('/print-paymentDetail/:id', authController.authenticatedUser, dashboardController.Print_payments_detail);
 
 //payments
-router.get('/payments/:email', authController.authenticatedUser, dashboardController.payments);
+router.get('/payments/:id', authController.authenticatedUser, dashboardController.payments);
 router.get('/payment_view/:id', authController.authenticatedUser, dashboardController.payments_detail);
 
 //Mails

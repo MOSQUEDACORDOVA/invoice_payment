@@ -64,7 +64,7 @@ exports.loginUser2 = async (req, res) => {
       let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
       const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)   
 
-      res.redirect('/dashboard/' + req.body.email)//REDIRECT TO OPEN INVOICES PAGE
+      res.redirect('/dashboard/' + user['$resources'][0]['ID'])//REDIRECT TO OPEN INVOICES PAGE
     });
   })(req, res);
 };

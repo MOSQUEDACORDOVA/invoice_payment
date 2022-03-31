@@ -45,10 +45,11 @@ exports.dashboard = async (req, res) => {
 
   const user = res.locals.user["$resources"][0];//User info
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//Pic Profile
+console.log(user)
 
   const SessionKeyLog = req.session.SessionLog;// SessionKey from SQL Table
   var ip = req.connection.remoteAddress;
-  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'";//Clause where with email
+  let query_consulting = "&where=ID eq " + req.params.id + "";//Clause where with email
   let where_filter_inv = "", //Prepare the var for consulting invoices
     count = 0;
   if (user["ROLE"] == 4) {
@@ -57,14 +58,13 @@ exports.dashboard = async (req, res) => {
   }
 
   //Declare and send log to SystemLo
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
     Description = "Preparing openInv list",
     Status = 1,
     Comment = "Starting- line 20-";
-
   var SystemLogL = await DataBasequerys.tSystemLog(
     UserID,
     IPAddress,
@@ -77,7 +77,7 @@ exports.dashboard = async (req, res) => {
   if (user["ROLE"] > 1) {
     // If User rol is 1, consulting query by EMAIL
     count = 50;
-    where_filter_inv = "&where=EMAIL eq '" + user.EMAIL + "' ";
+    where_filter_inv = "&where=ID eq " + user["ID"] + " ";
   } else {
     //Else consulting Loggin Map
     count = 50;
@@ -111,7 +111,7 @@ exports.dashboard = async (req, res) => {
         return JSON.stringify(map_loggin); // return response
       })
     );
-    where_filter_inv = "&where=EMAIL eq '" + user["EMAIL"] + "' "; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   // Save Log: Init GET open Invoices List
   (Description = "Request Open invoices list from X3"),
@@ -166,7 +166,7 @@ exports.dashboard = async (req, res) => {
 
     var paymentsL
 //FIRTS MAPPING LOG FOR GET BPCNUM'S
-let query_consulting = "&where=EMAIL eq '" + UserID + "'";
+let query_consulting = "&where=ID eq " + user["ID"] + "";
 let count = 1000;
 const maping_login = JSON.parse(
   await request({
@@ -256,7 +256,7 @@ exports.next_pageIO = async (req, res) => {
   request({
     uri:
       URI +
-      `YPORTALINV?representation=YPORTALINVO.$query&${data}&orderBy=EMAIL,NUM&where=EMAIL eq '${user["EMAIL"]}'`,
+      `YPORTALINV?representation=YPORTALINVO.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -309,7 +309,7 @@ exports.next_pageIC = async (req, res) => {
   request({
     uri:
       URI +
-      `YPORTALINV?representation=YPORTALINVC.$query&${data}&orderBy=EMAIL,NUM&where=EMAIL eq '${user["EMAIL"]}'`,
+      `YPORTALINV?representation=YPORTALINVC.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -355,7 +355,7 @@ exports.close_invoices = async (req, res) => {
   }
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'";
+  let query_consulting = "&where=ID eq " + req.params.id + "";
   let where_filter_inv = "",
     count = 0;
   if (user["ROLE"] == 3 || user["ROLE"] == 4) {
@@ -383,10 +383,10 @@ exports.close_invoices = async (req, res) => {
       })
     );
 
-    where_filter_inv = "&where=EMAIL eq '" + user["EMAIL"] + "' ";//Where clause eq EMAIL
+    where_filter_inv = "&where=ID eq " + user["ID"] + "";//Where clause eq EMAIL
   }
   //Save LogSystem SQL init Request Closed invoices from X3
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
@@ -468,7 +468,7 @@ exports.inoviceO_detail = async (req, res) => {
   let inv_num = req.params.inv_num;//Invoice NUM to consult
 
   //SAVE SYSTEMLOG SQL
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
@@ -541,7 +541,7 @@ exports.inoviceC_detail = async (req, res) => {
   let inv_num = req.params.inv_num;//Invoice NUM to consult
 
    //SAVE SYSTEMLOG SQL
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
@@ -611,11 +611,11 @@ exports.pay_methods = async (req, res) => {
     admin = true;
   }
 
-  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'";//Where clause with EMAIL
+  let query_consulting = "&where=ID eq " + req.params.id + "";//Where clause with EMAIL
   let count = 1000;
 
   //SAVE SYSTEMLOG SQL
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -699,11 +699,11 @@ exports.add_pay_methods = async (req, res) => {
   var ip = req.connection.remoteAddress;
   
   //console.log(user)
-  let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'";
+  let query_consulting = "&where=ID eq " + user["ID"] + "";
   let count = 1000;
 
   //Save SQL LOG
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 9,
     SessionKey = SessionKeyLog,
@@ -802,7 +802,7 @@ if (typeMP =="CC") {
         return;
       }
       req.flash("error", "Card Number exist, try another");
-      return res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
+      return res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
     } 
   }
 
@@ -819,7 +819,7 @@ if (typeMP =="CC") {
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     body: {
-      EMAIL: user.EMAIL,
+      ID: user.ID,
       PAYID: IDPay,
       CARDNAME: cardNickName,
       BPCNUM: "",
@@ -856,7 +856,7 @@ if (typeMP =="CC") {
       return;
     }
     req.flash("success", "Card added");
-    res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message Card added
+    res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message Card added
   });
 } else {
   var {
@@ -911,7 +911,7 @@ bank_account_number,
     },
     body: {
       PAYTYPE: typeMP,
-      EMAIL: user.EMAIL,
+      ID: user.ID,
       PAYID: IDPay,
       PAYNAME: payName,
       BANKACCT: bank_account_number,
@@ -950,7 +950,7 @@ bank_account_number,
       return;
     }
     req.flash("success", "ACH added");
-    res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message Card added
+    res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message Card added
   }); 
 }
  
@@ -963,7 +963,7 @@ exports.edit_pay_methods = async (req, res) => {
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 9,
     SessionKey = SessionKeyLog,
@@ -1007,7 +1007,7 @@ if (typeMP =="CC") {
   request({
     uri:
       URI +
-      `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+      `YPORTALPAY('${user.ID}~${payID}')?representation=YPORTALPAY.$edit`,
     method: "PUT",
     insecure: true,
     rejectUnauthorized: false,
@@ -1067,7 +1067,7 @@ payName = encrypt(payName);
 request({
   uri:
     URI +
-    `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+    `YPORTALPAY('${user.ID}~${payID}')?representation=YPORTALPAY.$edit`,
   method: "PUT",
   insecure: true,
   rejectUnauthorized: false,
@@ -1125,7 +1125,7 @@ exports.delete_pay_methods = async (req, res) => {
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -1147,7 +1147,7 @@ exports.delete_pay_methods = async (req, res) => {
   request({
     uri:
       URI +
-      `YPORTALPAY('${user.EMAIL}~${payID}')?representation=YPORTALPAY.$edit`,
+      `YPORTALPAY('${user.ID}~${payID}')?representation=YPORTALPAY.$edit`,
     method: "DELETE",
     insecure: true,
     rejectUnauthorized: false,
@@ -1172,7 +1172,7 @@ exports.delete_pay_methods = async (req, res) => {
       Comment
     );
     req.flash("success", "Card deleted");
-    res.redirect("/payments_methods/" + user.EMAIL);//Redirect to payment Methods page with success card deleted message
+    res.redirect("/payments_methods/" + user.ID);//Redirect to payment Methods page with success card deleted message
   });
 };
 
@@ -1184,7 +1184,7 @@ exports.pay_invoices = async (req, res) => {
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -1202,7 +1202,7 @@ exports.pay_invoices = async (req, res) => {
   );
 
   //GET PAYMENTS METHODS FOR USE TO PAY BY USER EMAIL
-  let query_consulting = "&where=EMAIL eq '" + user.EMAIL + "'";
+  let query_consulting = "&where=ID eq " + user["ID"] + "";
   const list_methods_par = JSON.parse(
     await request({
       uri:
@@ -1346,7 +1346,7 @@ exports.pay_invoices = async (req, res) => {
   //IF INVOICES INFO IS BLANK REDIRECT TO OPEN INVOICE PAGE AND SHOW MSG WITH THE ERROR
   if (inv_wofilter[0] == false) {
     msg ="One or more invoice don't  exist in query for openInv. chekeout wiht support";
-    return res.redirect(`/dashboard/${user["EMAIL"]}/${msg}`);
+    return res.redirect(`/dashboard/${user["ID"]}/${msg}`);
   }
 
   //IF INVOICES INFO IS OK, CALCULATE THE TAXES AND TOTAL AMOUNT TO PAY, AND QUANTITY OF INVOICES  TO PAY
@@ -1392,7 +1392,7 @@ exports.process_payment = async (req, res) => {
   //Save SQL SYSTEMLOG
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 7,
     SessionKey = SessionKeyLog,
@@ -1805,7 +1805,7 @@ exports.applied_amount = async (req, res) => {
   // SAVE SQL SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -1853,7 +1853,7 @@ exports.save_PicProfile = async (req, res) => {
   //SAVE IN SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
@@ -1897,7 +1897,7 @@ exports.printInvoice = async (req, res) => {
   var ip = req.connection.remoteAddress;
   console.log(user);
   let inv_num = req.params.inv;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 5,
     SessionKey = SessionKeyLog,
@@ -1947,7 +1947,7 @@ exports.payments = async (req, res) => {
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -1970,7 +1970,7 @@ exports.payments = async (req, res) => {
   }
 
   //FIRTS MAPPING LOG FOR GET BPCNUM'S
-  let query_consulting = "&where=EMAIL eq '" + req.params.email + "'";
+  let query_consulting = "&where=ID eq " + req.params.id + "";
   let count = 1000;
   const maping_login = JSON.parse(
     await request({
@@ -2103,7 +2103,7 @@ exports.payments_detail = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let count = 1000;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -2252,7 +2252,7 @@ exports.Print_payments_detail = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let count = 1000;
-  let UserID = user["EMAIL"],
+  let UserID = (user["ID"]).toString(),
     IPAddress = ip,
     LogTypeKey = 6,
     SessionKey = SessionKeyLog,
@@ -2396,7 +2396,7 @@ exports.process_payment_WF = async (req, res) => {
 //Save SQL SYSTEMLOG
 var ip = req.connection.remoteAddress;
 const SessionKeyLog = req.session.SessionLog;
-let UserID = user["EMAIL"],
+let UserID = (user["ID"]).toString(),
   IPAddress = ip,
   LogTypeKey = 7,
   SessionKey = SessionKeyLog,
