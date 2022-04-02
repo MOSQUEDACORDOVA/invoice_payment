@@ -21,6 +21,7 @@
 
   // Default
   if (basicPickr.length) {
+    console.log('yes')
     basicPickr.flatpickr();
   }
 

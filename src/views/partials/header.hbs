@@ -48,6 +48,10 @@
         href="../../../app-assets/css/plugins/extensions/ext-component-context-menu.css">
 
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/main.css">
+        <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/pickers/form-flat-pickr.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/pickers/form-pickadate.css">
+     <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/pickers/pickadate/pickadate.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
     <!-- END: Page CSS-->
     {{#if pay_invoices}}
     <!-- this CSS is for pay invoice page-->
@@ -71,11 +75,15 @@
     <!-- PER MODULES -->
     {{#if invoice}}
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css">
-    {{/if}}
-    {{#if print_inv}}
     
+    {{/if}}
+    {{#if print_inv}}    
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-print.css" media="print">
     {{/if}}
+    {{#if postResetPass}}
+<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/page-misc.css">
+    {{/if}}
+
 </head>
 <!-- END: Head-->
 <!-- BEGIN: Body-->

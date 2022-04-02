@@ -48,7 +48,7 @@
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-collapsed" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row box-logo">
-            <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard/{{user.EMAIL}}"><span
+            <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard"><span
                         class="brand-logo">
                         <img src="../../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="150"
                             height="auto"></span>
@@ -69,18 +69,18 @@
                     data-feather="more-horizontal"></i>
             </li>
             <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/dashboard/{{user.ID}}"><i data-feather='bar-chart-2'></i><span
+                    href="/dashboard"><i data-feather='bar-chart-2'></i><span
                         class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
             </li>
             <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/close_invoices/{{user.ID}}"><i data-feather='archive'></i><span
+                    href="/close_invoices"><i data-feather='archive'></i><span
                         class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
             </li>
             <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/payments/{{user.ID}}"><i data-feather='layers'></i><span class="menu-title text-truncate"
+                    href="/payments"><i data-feather='layers'></i><span class="menu-title text-truncate"
                         data-i18n="Email">Payments</span></a>
             </li>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods/{{user.ID}}"><i
+            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods"><i
                         data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment
                         Methods</span></a>
             </li>

@@ -100,12 +100,14 @@ function table_invoices(a) {
          let link = $("#links").val();
          let arrLink = JSON.parse(link);
          if (arrLink["$next"]) {
-           //If exist next, create a button with link to next page
+           //If exist next
            let data = arrLink["$next"]["$url"].split("&");
-           if ($("#invoiceTable_next").hasClass("disabled")) {
-             $("#invoiceTable_paginate .pagination").append(
-               `<li class="paginate_button page-item"><a href="/closed_invoices/p/${data[1]}" class="page-link" data-bs-toggle="tooltip" data-bs-placement="top" title="View more"> >> </></li>`
-             );
+           let inputSearch= $('#DataTables_Table_0_filter input[type="search"]').val()
+           if ($("#DataTables_Table_0_next").hasClass("disabled") && inputSearch=="" &&$('#UserRole').val()=="") {
+            nextPage()
+            $("#DataTables_Table_0_paginate .pagination").append(
+             `<div class="spinner"></div>`
+              );
            }
          }
          if (arrLink["$previous"]) {
@@ -130,4 +132,53 @@ $(function () {
   "use strict";
 // Charged DataTable
   table_invoices();
+  let counter = 0;
 });
+async function paymentsL0() {
+  console.log('responseData'); 
+  let responseData = await fetch( "/paymentsL" )
+     .then((response) => response.json())
+     .then((data) => {
+      console.log(data); 
+       return data;
+     });
+    console.log(responseData);     
+    $("#payments").val(responseData.paymentsL)
+    table_invoices();
+ }
+ async function nextPage() { 
+  console.log('responseData');
+    /**Check out if exist "Link Next" for more that 100 result of query */
+    let link = $("#links").val();
+    let arrLink = JSON.parse(link);
+    if (arrLink["$next"]) {
+      //If exist next, create a button with link to next page
+      let data = arrLink["$next"]["$url"].split("&");
+      let responseData = await fetch( `/closed_invoices/p/${data[1]}` )
+     .then((response) => response.json())
+     .then((data) => {
+       return data;
+     });
+    console.log(responseData); 
+    for (let i = 0; i < responseData.inv_wofilter.length; i++) {
+      $('.invoice-list-table').DataTable().row.add([
+        responseData.inv_wofilter[i].NUM,
+        responseData.inv_wofilter[i].NUM,
+        responseData.inv_wofilter[i].INVREF,
+        responseData.inv_wofilter[i].BPCORD,
+        responseData.inv_wofilter[i].BPCORD_REF.$description,
+        responseData.inv_wofilter[i].INVDAT,
+responseData.inv_wofilter[i].DUDDAT,
+responseData.inv_wofilter[i].INVDAT,
+responseData.inv_wofilter[i].CUR_REF.$symbol +""+Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2),
+responseData.inv_wofilter[i].AMTNOT,
+responseData.inv_wofilter[i].CUR_REF.$symbol +""+Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2),
+responseData.inv_wofilter[i].NUM
+    ] ).draw( false );
+    } 
+    $("#links").val(responseData.links)
+    
+    }
+     
+     
+ }

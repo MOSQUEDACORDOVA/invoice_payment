@@ -20,7 +20,26 @@ exports.formLogin = async (req, res) => {
     messages: error
   });
 };
-
+/**FUNCTION TO RENDER verify_email US PAGE */
+exports.verify_email = async (req, res) => {
+  var mail = req.params.email; //Email of form reset password page
+  res.render("verify-email", {
+    pageName: "Thanks",
+    layout: "page-form",
+    verify_email: true,
+    mail
+  });
+};
+/**FUNCTION TO RENDER CONTACT US PAGE */
+exports.resetPassFine = async (req, res) => {
+  //var mail = req.params.email; //Email of form reset password page
+  res.render("post-reset-pass", {
+    pageName: "Reset Pass Fine",
+    layout: "page-form",
+    postResetPass: true,
+   // mail
+  });
+};
 /**FUNCTION TO LOGGIN USER */
 exports.loginUser2 = async (req, res) => {
   //USE PASSPORT TO AUTHENTICATE
@@ -63,8 +82,7 @@ exports.loginUser2 = async (req, res) => {
       //SAVE SQL LOGSYSTEM
       let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
       const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)   
-
-      res.redirect('/dashboard/' + user['$resources'][0]['ID'])//REDIRECT TO OPEN INVOICES PAGE
+      res.redirect('/dashboard')//REDIRECT TO OPEN INVOICES PAGE
     });
   })(req, res);
 };
@@ -196,7 +214,7 @@ exports.updatePassword = async (req, res) => {
   }))
   console.log(save_pass)
   req.session.errorLogin = req.flash("error", "Your password changed successfully");
-  return res.redirect("/login");
+  return res.redirect("/reset-pass-fine");
 };
 
 /**FUNCTION TO CLOSE SESSION */

@@ -4,6 +4,25 @@
     pointer-events: none;
     color: #ffcc9a;
     }
+    @keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+ 
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #333;
+  animation: spinner .6s linear infinite;
+}
 </style>
 {{#if msg}}
 <label id="msgs" hidden>{{msg}}</label>
@@ -31,7 +50,7 @@
                                     <th>Payment Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-white-space">
+                            <tbody class="table-white-space" id="invoices-table-body">
                                 {{#each inv_wofilter as |invoces i|}}
                                 <tr>
                                     <td>{{NUM}}</td>
@@ -50,6 +69,7 @@
                                 {{/each}}
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
             </section>

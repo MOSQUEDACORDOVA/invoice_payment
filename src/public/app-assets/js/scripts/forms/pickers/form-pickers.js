@@ -8,7 +8,7 @@
 ==========================================================================================*/
 (function (window, document, $) {
   'use strict';
-
+  
   /*******  Flatpickr  *****/
   var basicPickr = $('.flatpickr-basic'),
     timePickr = $('.flatpickr-time'),
@@ -21,6 +21,7 @@
 
   // Default
   if (basicPickr.length) {
+    console.log('yes')
     basicPickr.flatpickr();
   }
 

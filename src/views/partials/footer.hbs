@@ -44,6 +44,11 @@
 <script src="../../../app-assets/js/core/app.js"></script>
 <!-- END: Theme JS-->
 <!-- BEGIN: Page JS-->
+    <script src="../../../app-assets/vendors/js/pickers/pickadate/picker.js"></script>
+    <script src="../../../app-assets/vendors/js/pickers/pickadate/picker.date.js"></script>
+    <script src="../../../app-assets/vendors/js/pickers/pickadate/picker.time.js"></script>
+    <script src="../../../app-assets/vendors/js/pickers/pickadate/legacy.js"></script>
+    <script src="../../../app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
 
 {{#if login}}
 {{!-- This this script is loaded only on the login page --}}
@@ -60,6 +65,7 @@
 {{!-- This this script is loaded only on the open invoices page --}}
 {{!-- Contains what is related to the dataTable --}}
 <script src="../../../assets/data/app-invoice-listO.js"></script>
+
 {{/if}}
 
 {{#if sysSettings}}

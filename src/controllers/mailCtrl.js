@@ -179,7 +179,7 @@ exports.sendtokenResetPass = async function (req, res) {
     } else {
       console.log(info);
       console.log("Email sent fine");
-      res.status(200).jsonp(info);
+      res.redirect('/verify-email/'+mail)
     }
   });
 };

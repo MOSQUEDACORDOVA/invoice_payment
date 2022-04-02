@@ -25,26 +25,32 @@ router.get('/forgot-pass', userController.formSearchAccount);
 router.post('/new-pass-save', userController.updatePassword);
 router.get('/send-token/:email/:token', mailCtrl.sendtokenResetPass)
 router.get('/set-password/:token', userController.resetPasswordForm)
+router.get('/verify-email/:email', userController.verify_email);
+router.get('/reset-pass-fine', userController.resetPassFine);
 
 //OPEN INVOICES FUNCTIONS
-router.get('/dashboard', dashboardController.dashboard);
-router.get('/dashboard/:id', authController.authenticatedUser, dashboardController.dashboard);
-router.get('/dashboard/:id/:msg', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/dashboard', authController.authenticatedUser, dashboardController.dashboard);
+router.get('/dashboard/:msg', authController.authenticatedUser, dashboardController.dashboard);
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
+router.get('/open-invNext50', authController.authenticatedUser, dashboardController.openInvMore);
+router.get('/searchOpenAPI/:filter/:search', authController.authenticatedUser, dashboardController.searchOpenInvO);
+
+//PAYMENTS CONSULTING
+router.get('/paymentsL', authController.authenticatedUser, dashboardController.paymentsL);
 
 //CLOSED INVOICES FUNCTIONS
-router.get('/close_invoices/:id', authController.authenticatedUser, dashboardController.close_invoices);
+router.get('/close_invoices', authController.authenticatedUser, dashboardController.close_invoices);
 router.get('/invoiceC_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceC_detail);
 
 //NEXT OR PREVIOUS FUNCTIONS
-router.get('/open_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIO)
-router.get('/closed_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIC)
+router.get('/open_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIO2)
+router.get('/closed_invoices/p/:data', authController.authenticatedUser, dashboardController.next_pageIC2)
 
 //CONTACT US PAGE
 router.get('/contactUs', authController.authenticatedUser, dashboardController.contactUs);
 
 //PAYMENTS METHODS
-router.get('/payments_methods/:id', authController.authenticatedUser, dashboardController.pay_methods);
+router.get('/payments_methods', authController.authenticatedUser, dashboardController.pay_methods);
 router.post('/add_method_pay', authController.authenticatedUser, dashboardController.add_pay_methods);
 router.post('/edit_apy_method', authController.authenticatedUser, dashboardController.edit_pay_methods);
 router.get('/delete_payM/:IDPay', authController.authenticatedUser, dashboardController.delete_pay_methods);
@@ -66,13 +72,14 @@ router.get('/print-invoice/:inv', authController.authenticatedUser, dashboardCon
 router.get('/print-paymentDetail/:id', authController.authenticatedUser, dashboardController.Print_payments_detail);
 
 //payments
-router.get('/payments/:id', authController.authenticatedUser, dashboardController.payments);
+router.get('/payments', authController.authenticatedUser, dashboardController.payments);
 router.get('/payment_view/:id', authController.authenticatedUser, dashboardController.payments_detail);
 
 //Mails
 router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);
 router.post('/send_email_errorX3', authController.authenticatedUser, mailCtrl.errorPaymentX3);
 router.post('/send_email_errorWF', authController.authenticatedUser, mailCtrl.errorPaymentWF);
+
 
 //sysSettings
 router.get('/sysSettings',authController.authenticatedUser, dashboardController.settingsPreview)
