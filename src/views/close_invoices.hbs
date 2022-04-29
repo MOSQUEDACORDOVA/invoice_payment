@@ -47,7 +47,7 @@
                                         {{!-- <th>Actions</th> --}}
                                     </tr>
                                 </thead>
-                                <tbody class="table-white-space">
+                                <tbody class="table-white-space" id="invoices-table-body">
                                     {{#each inv_wofilter as |invoces i|}}
                                     <tr>
                                         <td>{{NUM}}</td>
@@ -90,6 +90,19 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade text-start modal-primary" id="wait_modal" tabindex="-1" aria-labelledby="myModalLabel160"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-center" role="status" style="width: 10rem;height: 10rem;">
+
+                </div>
+                <span class="visually-">Processing, please wait..</span>
             </div>
         </div>
     </div>

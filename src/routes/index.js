@@ -34,6 +34,7 @@ router.get('/dashboard/:msg', authController.authenticatedUser, dashboardControl
 router.get('/invoiceO_detail/:inv_num', authController.authenticatedUser, dashboardController.inoviceO_detail);
 router.get('/open-invNext50', authController.authenticatedUser, dashboardController.openInvMore);
 router.get('/searchOpenAPI/:filter/:search', authController.authenticatedUser, dashboardController.searchOpenInvO);
+router.get('/searchCloseAPI/:filter/:search', authController.authenticatedUser, dashboardController.searchCloseInvC);
 
 //PAYMENTS CONSULTING
 router.get('/paymentsL', authController.authenticatedUser, dashboardController.paymentsL);

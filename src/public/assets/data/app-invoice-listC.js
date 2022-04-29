@@ -19,6 +19,7 @@ function table_invoices(a) {
         {// Format to Invoice Date
           targets: 4,
           render: function (data, type, full, meta) {
+            console.log(data)
             return moment(data).format("MM/DD/YYYY");
           },
         },
@@ -60,65 +61,59 @@ function table_invoices(a) {
       },
       // Buttons with Dropdown
       buttons: [
-        
+
       ],
       initComplete: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
         // Sold to filter once table initialized
-        this.api()
-          .columns(3)
-          .every(function () {
-            var column = this;
-            var select = $(
-              '<select id="UserRole" class="form-select ms-50 text-capitalize"><option value=""> Select company </option></select>'
-            )
-              .appendTo(".invoice_status")
-              .on("change", function () {
-                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                column.search(val ? "^" + val + "$" : "", true, false).draw();
-              });
+        var select = $(
+          `<select id="SoldTo" class="form-select ms-50 text-capitalize"><option value=""> Search Option </option>
+          <option value="NUM"> Invoice Number </option>
+          <option value="INVREF"> REF </option>
+          <option value="BPCORD"> SOLD TO </option>
+          <option value="BPCORD"> COMPANY NAME </option>
+          <option value="INVDAT"> INVOICE DATE </option>
+          <option value="DUDDAT"> DUE DATE </option>
+          </select>
+          `
+        )
+          .appendTo(".invoice_status")
+          .on("change", async function (e) {
+            var val = $(this).val();
 
-            column
-              .data()
-              .unique()
-              .sort()
-              .each(function (d, j) {
-                select.append(
-                  '<option value="' +
-                    d +
-                    '" class="text-capitalize">' +
-                    d +
-                    "</option>"
-                );
-              });
+            if (val == "INVDAT" || val == "DUDDAT") {
+              $('#search-input-text').addClass('collapse')
+              $('#search-input-date').removeClass('collapse')
+            } else {
+              $('#search-input-text').removeClass('collapse')
+              $('#search-input-date').addClass('collapse')
+            }
+
           });
       },
       drawCallback: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
-
-         /**Check out if exist "Link Next" for more that 100 result of query */
-         let link = $("#links").val();
-         let arrLink = JSON.parse(link);
-         if (arrLink["$next"]) {
-           //If exist next
-           let data = arrLink["$next"]["$url"].split("&");
-           let inputSearch= $('#DataTables_Table_0_filter input[type="search"]').val()
-           if ($("#DataTables_Table_0_next").hasClass("disabled") && inputSearch=="" &&$('#UserRole').val()=="") {
-            nextPage()
+        var link = $("#links").val();
+        var info = dtInvoiceTable.DataTable().page.info();
+        var currentP = parseInt(info.page)+1
+        var LastP = parseInt(info.pages)
+        /**Check out if exist "Link Next"  */        
+        if (link == "") {
+          return
+        }
+        let arrLink = JSON.parse(link);
+        
+        if (arrLink["$next"]&& currentP == LastP) {
+          let data = arrLink["$next"]["$url"].split("&");
+          if (currentP == LastP) {
+            console.log(data[1]);
+            
+            nextPage(data)
             $("#DataTables_Table_0_paginate .pagination").append(
-             `<div class="spinner"></div>`
-              );
-           }
-         }
-         if (arrLink["$previous"]) {
-           //If exist previous, create a button with link to previous page
-           let data2 = arrLink["$previous"]["$url"].split("&");
-           if ($("#invoiceTable_previous").hasClass("disabled")) {
-             $("#invoiceTable_paginate .pagination").prepend(
-               `<li class="paginate_button page-item"><a href="/closed_invoices/p/${data2[1]}" class="page-link" data-bs-toggle="tooltip" data-bs-placement="top" title="View previous"> << </></li>`
-             );
-           }
-         }
+              `<div class="spinner"></div>`
+            );
+          }
+        }
       },
     });
     $("#DataTables_Table_0_info").addClass("py-2");
@@ -126,59 +121,221 @@ function table_invoices(a) {
       .getElementById("DataTables_Table_0_info")
       .parentElement.parentElement.classList.add("align-items-center");
   }
+  $('.dataTables_filter').empty(); // clears the content generated    
+  $('.dataTables_filter').append(`        
+  <div class="input-group" id="search-input-text">
+  <button class="btn btn-outline-primary" type="button" id="button-clear">Clear</button>
+  <input type='search' class='form-control' placeholder='Search..' id='search-val'/>
+  <button class="btn btn-outline-primary" id="button-search" type="button">Search</button>
+</div>
+
+                          <div class="collapse" id="search-input-date">
+                              <input type="text" class="form-control flatpickr-basic" placeholder="YYYY-MM-DD" id='search-val-date'/>
+                          </div>
+
+`)
+  var basicPickr = $('.flatpickr-basic');
+
+  // Default
+  if (basicPickr.length) {
+    basicPickr.flatpickr();
+  }
+  $('#button-search').click(async () => {
+    let val = $('#SoldTo').val()
+    let search = $('#search-val').val()
+    if (val == "" && search != "") {
+      Swal.fire('Please select one option to search"')
+      $('#SoldTo').focus()
+      return
+    }
+    if (val == "" && search == "") {
+      val = "NUM"
+      search = "INV-"
+    }
+    $("#wait_modal").modal("show");
+    let responseData = await fetch(`/searchCloseAPI/${val}/${search}`)
+      .then((response) => response.json())
+      .then((data) => {
+        $("#wait_modal").modal("hide");
+        return data;
+      });
+    $("#links").val(responseData.links);
+    /// $('.invoice-list-table').DataTable().clear().draw();
+    $('.invoice-list-table').dataTable().fnDestroy();
+    $('.invoice-list-table').empty();
+    $('.invoice-list-table').html(`<thead>
+    <tr>
+        <th>Invoice number</th>
+        <th>Ref</th>
+        <th>Sold to</th>
+        <th>Company Name</th>
+        <th>Invoice Date</th>
+    <th>Due Date</th>
+        <th>Amt</th>
+        <th>Tax</th>
+        <th>Total</th>
+    </tr>
+</thead>
+<tbody class="table-white-space" id="invoices-table-body">
+</tbody>`);
+    for (let i = 0; i < responseData.inv_wofilter.length; i++) {
+      $('#invoices-table-body').append(`<tr>
+<td>${responseData.inv_wofilter[i].NUM}</td>
+<td>${responseData.inv_wofilter[i].INVREF}</td>
+<td>${responseData.inv_wofilter[i].BPCORD}</td>
+<td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
+<td>${responseData.inv_wofilter[i].INVDAT}</td>
+<td>${responseData.inv_wofilter[i].DUDDAT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTNOT).toFixed(2)}</td>
+<td>${responseData.inv_wofilter[i].AMTNOT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
+</tr>
+`);
+    };
+    table_invoices();
+    $('#search-val').val(search)
+    $(`#SoldTo option[value="${val}"]`).attr("selected", true);
+  })
+
+  $('#search-val-date').change(async () => {
+    $("#wait_modal").modal("show");
+    let val = $('#SoldTo').val();
+    let search = moment($('#search-val-date').val()).format('YYYY-MM-DD');
+    let responseData = await fetch(`/searchCloseAPI/${val}/${search}`)
+      .then((response) => response.json())
+      .then((data) => {
+        $("#wait_modal").modal("hide");
+        return data;
+      });
+
+    $("#links").val(responseData.links);
+    $('.invoice-list-table').dataTable().fnDestroy();
+    $('.invoice-list-table').empty();
+    $('.invoice-list-table').html(`<thead>
+<tr>
+  <th></th>
+  <th>Invoice number</th>
+  <th>Ref</thF>
+  <th>Sold to</th>
+  <th>Company Name</th>
+  <th>Invoice Date</th>
+  <th>Due Date</th>
+  <th>Aged day</th>
+  <th>Open Amt</th>
+  <th>Tax</th>
+  <th>Total</th>
+  <th>Payment Status</th>
+</tr>
+</thead>
+<tbody class="table-white-space" id="invoices-table-body">
+</tbody>`);
+    for (let i = 0; i < responseData.inv_wofilter.length; i++) {
+      $('#invoices-table-body').append(`<tr>
+<td>${responseData.inv_wofilter[i].NUM}</td>
+<td>${responseData.inv_wofilter[i].NUM}</td>
+<td>${responseData.inv_wofilter[i].INVREF}</td>
+<td>${responseData.inv_wofilter[i].BPCORD}</td>
+<td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
+<td>${responseData.inv_wofilter[i].INVDAT}</td>
+<td>${responseData.inv_wofilter[i].DUDDAT}</td>
+<td>${responseData.inv_wofilter[i].INVDAT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2)}</td>
+<td>${responseData.inv_wofilter[i].AMTNOT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
+<td>${responseData.inv_wofilter[i].NUM}</td>
+</tr>
+`);
+    };
+    table_invoices();
+  })
+  $('#button-clear').click(async () => {
+    let val = "NUM"
+    let search = "-"
+    $("#wait_modal").modal("show");
+    let responseData = await fetch(`/searchOpenAPI/${val}/${search}`)
+      .then((response) => response.json())
+      .then((data) => {
+        $("#wait_modal").modal("hide");
+        return data;
+      });
+    $("#links").val(responseData.links);
+    /// $('#invoiceTable').DataTable().clear().draw();
+    $('.invoice-list-table').dataTable().fnDestroy();
+    $('.invoice-list-table').empty();
+    $('.invoice-list-table').html(`<thead>
+    <tr>
+        <th>Invoice number</th>
+        <th>Ref</th>
+        <th>Sold to</th>
+        <th>Company Name</th>
+        <th>Invoice Date</th>
+    <th>Due Date</th>
+        <th>Amt</th>
+        <th>Tax</th>
+        <th>Total</th>
+    </tr>
+</thead>
+<tbody class="table-white-space" id="invoices-table-body">
+</tbody>`);
+    for (let i = 0; i < responseData.inv_wofilter.length; i++) {
+      $('#invoices-table-body').append(`<tr>
+<td>${responseData.inv_wofilter[i].NUM}</td>
+<td>${responseData.inv_wofilter[i].INVREF}</td>
+<td>${responseData.inv_wofilter[i].BPCORD}</td>
+<td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
+<td>${responseData.inv_wofilter[i].INVDAT}</td>
+<td>${responseData.inv_wofilter[i].DUDDAT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTNOT).toFixed(2)}</td>
+<td>${responseData.inv_wofilter[i].AMTNOT}</td>
+<td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
+</tr>
+`);
+};
+    table_invoices();
+
+  })
 }
 
 $(function () {
   "use strict";
-// Charged DataTable
+  // Charged DataTable
   table_invoices();
   let counter = 0;
 });
 async function paymentsL0() {
-  console.log('responseData'); 
-  let responseData = await fetch( "/paymentsL" )
-     .then((response) => response.json())
-     .then((data) => {
-      console.log(data); 
-       return data;
-     });
-    console.log(responseData);     
-    $("#payments").val(responseData.paymentsL)
-    table_invoices();
- }
- async function nextPage() { 
   console.log('responseData');
-    /**Check out if exist "Link Next" for more that 100 result of query */
-    let link = $("#links").val();
-    let arrLink = JSON.parse(link);
-    if (arrLink["$next"]) {
-      //If exist next, create a button with link to next page
-      let data = arrLink["$next"]["$url"].split("&");
-      let responseData = await fetch( `/closed_invoices/p/${data[1]}` )
-     .then((response) => response.json())
-     .then((data) => {
-       return data;
-     });
-    console.log(responseData); 
+  let responseData = await fetch("/paymentsL")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+  console.log(responseData);
+  $("#payments").val(responseData.paymentsL)
+  table_invoices();
+}
+async function nextPage(data) {
+console.log(data)
+    let responseData = await fetch(`/closed_invoices/p/${data[1]}`)
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+      console.log(responseData)
+    $("#links").val(responseData.links)
     for (let i = 0; i < responseData.inv_wofilter.length; i++) {
       $('.invoice-list-table').DataTable().row.add([
-        responseData.inv_wofilter[i].NUM,
         responseData.inv_wofilter[i].NUM,
         responseData.inv_wofilter[i].INVREF,
         responseData.inv_wofilter[i].BPCORD,
         responseData.inv_wofilter[i].BPCORD_REF.$description,
         responseData.inv_wofilter[i].INVDAT,
-responseData.inv_wofilter[i].DUDDAT,
-responseData.inv_wofilter[i].INVDAT,
-responseData.inv_wofilter[i].CUR_REF.$symbol +""+Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2),
-responseData.inv_wofilter[i].AMTNOT,
-responseData.inv_wofilter[i].CUR_REF.$symbol +""+Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2),
-responseData.inv_wofilter[i].NUM
-    ] ).draw( false );
-    } 
-    $("#links").val(responseData.links)
-    
+        responseData.inv_wofilter[i].DUDDAT,
+        responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTNOT).toFixed(2),
+        responseData.inv_wofilter[i].AMTNOT,
+        responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)
+      ])//.draw(false);
     }
-     
-     
- }
+    $('.invoice-list-table').DataTable().draw(false)
+
+}

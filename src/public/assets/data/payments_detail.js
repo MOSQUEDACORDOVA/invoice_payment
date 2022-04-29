@@ -11,6 +11,7 @@ function paymentsTableDetails() {
   array_payments = JSON.parse($("#payments").val());
   array_inv = JSON.parse($("#invoices_details").val());
 console.log(array_payments)
+console.log(array_inv)
   /** VERIFY IS EXIST TABLE ID */
   if (dtPaymentT.length) {
     var dtInvoice = dtPaymentT.DataTable({
