@@ -17,6 +17,7 @@ var cybersourceRestApi = require("cybersource-rest-client");
 var configuration = require("./ConfigurationPayment");
 const { parse } = require("path");
 const WFCCtrl = require('./WFCtrl')
+require('dotenv').config()
 
 /**START FUNCTIONS FOR PAGES */
 
@@ -43,7 +44,7 @@ exports.dashboard = async (req, res) => {
   if (req.params.msg) {
     msg = req.params.msg;
   }
-
+ 
   const user = res.locals.user["$resources"][0];//User info
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//Pic Profile
 

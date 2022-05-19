@@ -11,7 +11,8 @@ const fileupload = require('express-fileupload');
 var Connection = require('tedious').Connection;  
 const db = require('./config/db')
 const dbSequelize = require('./config/dbSequelize')
-
+require('dotenv').config();
+///var envJSON = require('./config/.env.testing');
 // Conect and sync with sequelize database SQL
 dbSequelize.sync().then(() => {
  		console.log('Data Base SQL connected');
@@ -78,5 +79,7 @@ app.use('/', require('./routes'));
 
 // Start server
 app.listen(app.get('port'), () => {
+	
 	console.log(`Server in port ${app.get('port')}`);
+	console.log (process.env.CONSUMERSECRET)
 });
