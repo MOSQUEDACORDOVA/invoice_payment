@@ -2272,8 +2272,12 @@ exports.saveSetting = async (req, res) => {
 /**FUNCTION TO SAVE EDITED SETTINGS SYSTEM */
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
-
-  let saveSys = await DataBaseSq.saveEditSetting(sValue, sType, sStatus, sId);//SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+  let enValue
+  if (sType =='gatewayCompanyId' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {
+   enValue= encrypt(sValue)
+  }
+  console.log(enValue)
+  let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId);//SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable();// GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
   if (sType =='gatewayCompanyId' || sType =='Env' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {

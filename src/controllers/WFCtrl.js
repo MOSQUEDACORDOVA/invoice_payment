@@ -40,8 +40,8 @@ module.exports = {
               'Authorization': 'Bearer ' + apiKey,
               'Content-Type': 'application/json',
               'request-id': requestId,
-              'gateway-company-id': gateaway[0]['valueSett'],
-              'gateway-entity-id': gateaway[1]['valueSett'],
+              'gateway-company-id': decrypt(gateaway[0]['valueSett']),
+              'gateway-entity-id': decrypt(gateaway[1]['valueSett']),
               'Accept': '*/*', 
             }
           };
@@ -121,8 +121,8 @@ module.exports = {
     if (modeEnv.Status == 1) {
       console.log('production')
       let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
-      var CONSUMERKEY = gateaway[2]['valueSett']
-    var CONSUMERSECRET = gateaway[3]['valueSett']
+      var CONSUMERKEY = decrypt(gateaway[2]['valueSett'])
+    var CONSUMERSECRET = decrypt(gateaway[3]['valueSett'])
     var SCOPES = 'NA'
     
     //BUFFER AUTHORIZATION CODE
@@ -223,8 +223,8 @@ module.exports = {
               'Authorization': 'Bearer ' + apiKey,
               'Content-Type': 'application/json',
               'request-id': requestId,
-              'gateway-company-id': gateaway[0]['valueSett'],
-              'gateway-entity-id': gateaway[1]['valueSett'],
+              'gateway-company-id': decrypt(gateaway[0]['valueSett']),
+              'gateway-entity-id':decrypt( gateaway[1]['valueSett']),
               'Accept': '*/*', 
             }
           };

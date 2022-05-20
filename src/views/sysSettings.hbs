@@ -63,7 +63,7 @@
                                                 <div class="mb-1">
                                                     <label class="form-label" for="gatewayCompanyId">Gateway Company ID</label>
                                                     <div class="input-group input-group-merge ">
-                                                        <input type="text" id="gatewayCompanyId" data-id="{{gateaway.0.id}}" class="form-control" name="fname-icon" placeholder="Gateway Company ID. . ." value="{{gateaway.0.valueSett}}"/>
+                                                        <input type="text" id="gatewayCompanyId" data-id="{{gateaway.0.id}}" class="form-control" name="fname-icon" placeholder="Gateway Company ID. . ." value="{{#decryptData gateaway.0.valueSett}}{{/decryptData}}"/>
                                                     </div>
                                                     
                                                 </div>
@@ -72,7 +72,7 @@
                                                 <div class="">
                                                     <label class="form-label" for="gatewayEntity">Gateway Entity ID</label>
                                                     <div class="input-group input-group-merge ">
-                                                        <input type="text" id="gatewayEntity" data-id="{{gateaway.1.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.1.valueSett}}"/>
+                                                        <input type="text" id="gatewayEntity" data-id="{{gateaway.1.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.1.valueSett}}{{/decryptData}}"/>
                                                     </div>
                                                     
                                                 </div>
@@ -81,7 +81,7 @@
                                                 <div class="">
                                                     <label class="form-label" for="gatewayEntity">CONSUMERKEY</label>
                                                     <div class="input-group input-group-merge ">
-                                                        <input type="text" id="consumerKey" data-id="{{gateaway.2.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.2.valueSett}}"/>
+                                                        <input type="text" id="consumerKey" data-id="{{gateaway.2.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.2.valueSett}}{{/decryptData}}"/>
                                                     </div>
                                                     
                                                 </div>
@@ -90,7 +90,7 @@
                                                 <div class="">
                                                     <label class="form-label" for="gatewayEntity">CONSUMERSECRET</label>
                                                     <div class="input-group input-group-merge ">
-                                                        <input type="password" id="consumerSecret" data-id="{{gateaway.3.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.3.valueSett}}"/>
+                                                        <input type="password" id="consumerSecret" data-id="{{gateaway.3.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.3.valueSett}}{{/decryptData}}"/>
                                                     </div>
                                                     
                                                 </div>
