@@ -1,4 +1,9 @@
 var http = require('https');
+const fs = require("fs");
+let file_N = __dirname + "/../config/client.crt";
+let file_N2 = __dirname + "/../config/client.key";
+var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys with sequelize
+const { encrypt, decrypt } = require("./crypto");//Encrypt / decrypt
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const { v4: uuidv4 } = require('uuid');
   //API wells Fargo setting
@@ -9,7 +14,38 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
   /**THIS FUNCTION IS FOR SEND PAYMENT TO WELLS FARGO API */
    WF(totalAmountcard,apiKey,NamePayer_Bank,bank_id,bank_account_number,payment_id) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+    if (modeEnv.Status == 1) {
+      console.log('production')
+      let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+
+    let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
+      if (error) throw error;
+     return decrypt(data);
+    });
+    let crt =fs.readFileSync(file_N,'utf8', (error, data) => {
+      if (error) throw error;
+     return decrypt(data);
+    });
+          //SET HEADER
+          console.log(hostLink)
+          var options = {
+            method: 'POST',
+            hostname: 'api.wellsfargo.com',
+            path: '/ach/v1/payments',
+            key:keyA , 
+            cert:crt ,
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json',
+              'request-id': requestId,
+              'gateway-company-id': gateaway[0]['valueSett'],
+              'gateway-entity-id': gateaway[1]['valueSett'],
+              'Accept': '*/*', 
+            }
+          };
+    }else{
       //SET HEADER
     var options = {
       method: 'POST',
@@ -23,6 +59,8 @@ module.exports = {
         'Accept': '*/*'
       }
     };
+    }
+      
     var req2 = http.request(options, function (res2) {
       var chunks = [];
       res2.on('data', function (chunk) {    
@@ -75,9 +113,52 @@ module.exports = {
   })
   },
   /**THIS FUNCTION IS FOR GET DE APYKEY FROM WLLS FARGO API */
-  APYKeyGet(){
-    return new Promise((resolve, reject) => {
-    var CONSUMERKEY = 'vzpjBJ7h9xmhlz3QusKoTHlUoZT4PeLv'
+  APYKeyGet(hostLink){
+    return new Promise(async (resolve, reject) => {
+      
+    
+    let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+    if (modeEnv.Status == 1) {
+      console.log('production')
+      let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+      var CONSUMERKEY = gateaway[2]['valueSett']
+    var CONSUMERSECRET = gateaway[3]['valueSett']
+    var SCOPES = 'NA'
+    
+    //BUFFER AUTHORIZATION CODE
+    var buffer = new Buffer.from(CONSUMERKEY + ':' + CONSUMERSECRET);
+    var AUTHTOKEN = buffer.toString('base64');
+    // let key = decrypt();
+    // let ctr = decrypt();
+          //SET HEADER
+          let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
+            if (error) throw error;
+           return data;
+          });
+          let crt =fs.readFileSync(file_N,'utf8', (error, data) => {
+            if (error) throw error;
+           return data;
+          });
+          keyA=decrypt(keyA)
+        crt=decrypt(crt)
+        console.log(keyA)
+
+    var options = {
+      
+      method: 'POST',
+      hostname: hostLink,
+      path: '/token?grant_type=client_credentials&scope=' + escape(SCOPES),
+      key:keyA , 
+      cert: crt,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + AUTHTOKEN,       
+
+      }
+    };
+    }else{
+
+      var CONSUMERKEY = 'vzpjBJ7h9xmhlz3QusKoTHlUoZT4PeLv'
     var CONSUMERSECRET = 'KgZlBlyxslPSD7Cc'
     var SCOPES = 'ACH-Payments ACH-Payments-Status'
     
@@ -85,8 +166,7 @@ module.exports = {
     var buffer = new Buffer.from(CONSUMERKEY + ':' + CONSUMERSECRET);
     var AUTHTOKEN = buffer.toString('base64');
 
-    //SET HEADER
-    var options = {
+     var options = {
       method: 'POST',
       hostname: 'api-sandbox.wellsfargo.com',
       path: '/oauth2/v1/token?grant_type=client_credentials&scope=' + escape(SCOPES),
@@ -94,7 +174,8 @@ module.exports = {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic ' + AUTHTOKEN
       }
-    };
+    }; 
+    }
 
     var reqAPIKey = http.request(options, function (resAPIKey) {
       var chunks = [];    
@@ -110,6 +191,63 @@ module.exports = {
     });
     
     reqAPIKey.end();
+  })
+  },
+  validateAPI(apiKey,hostLink){
+    return new Promise(async (resolve, reject) => {      
+    
+    let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+    if (modeEnv.Status == 1) {
+      console.log('production')
+      let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+
+    let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
+      if (error) throw error;
+     return data;
+    });
+    let crt =fs.readFileSync(file_N,'utf8', (error, data) => {
+      if (error) throw error;
+     return data;
+    });
+    keyA=decrypt(keyA)
+    crt=decrypt(crt)
+          //SET HEADER
+          console.log(hostLink)
+          var options = {
+            method: 'GET',
+            hostname: hostLink,
+            path: '/utilities/v1/hello-wellsfargo',
+            key:keyA , 
+            cert:crt ,
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json',
+              'request-id': requestId,
+              'gateway-company-id': gateaway[0]['valueSett'],
+              'gateway-entity-id': gateaway[1]['valueSett'],
+              'Accept': '*/*', 
+            }
+          };
+          var reqAPIKey = http.request(options, function (resAPIKey) {
+            var chunks = [];    
+            resAPIKey.on('data', function (chunk) {
+              chunks.push(chunk);
+            });
+          
+            resAPIKey.on('end', function () {
+              var body = Buffer.concat(chunks);
+              var response = JSON.parse(body);
+              resolve (response)//Return the body from response
+            });
+          });
+          
+          reqAPIKey.end();
+    }else{
+
+     return resolve ('Development Mode')
+    }
+
+
   })
   }
 }

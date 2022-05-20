@@ -4,22 +4,41 @@ var dtsettingsTable = $('#settingsTable');
 function tableSettings(a) {
   let value = $('#jsonSettings').val()
   let arrSettings = ""
+  
   arrSettings = JSON.parse(value)//Parser to array settings list
+  //console.log(arrSettings)
   if (dtsettingsTable.length) {
     var settingsT = dtsettingsTable.DataTable({
       data: arrSettings, // Enter data in array
       columns: [//Put the data infor by column
-        { data: 'id' },
-        { data: 'typeSett' },
+        //{ data: 'id' },
+        //{ data: 'typeSett' },
         { data: 'valueSett' },
-        { data: 'Status' },
+        //{ data: 'Status' },
       ],
       columnDefs: [
-        {//Render Type setting column, and create link to edit setting info with Jquery
+        /*{//Render Type setting column, and create link to edit setting info with Jquery
           targets: 1,
           render: function (data, type, full, meta) {
             let link = `<span class="me-25 settingType" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit this setting" data-sid="${full['id']}" style="cursor:pointer">${data}</span>`
             return link;
+          }
+        },*/
+        {//Render Type setting column, and create link to edit setting info with Jquery
+          targets: 0,
+          render: function (data, type, full, meta) {
+            let active = full.Status == 1 ? 'checked' : ''
+            let info = `<div class="d-flex align-items-center justify-content-between w-100">
+              <div class="box">
+                <span>${full.valueSett}</span>
+              </div>
+              <div class="box">
+                <div class="form-check form-check-primary form-switch">
+                  <input type="checkbox" class="form-check-input changeStatusEmail" ${active} id="changeStatusEmail${full.id}" data-id="${full.id}" data-email="${full.valueSett}">
+                </div>
+              </div>
+            </div>`
+            return info;
           }
         },
         {//Render Status of Settings, Enable (color green), Disabled (color Red)
@@ -35,7 +54,7 @@ function tableSettings(a) {
           }
         }
       ],
-      order: [[2, 'desc']],//Order by Value setting DEsc
+      order: [[0, 'desc']],//Order by Value setting DEsc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +
@@ -47,7 +66,7 @@ function tableSettings(a) {
         '>',
       language: {
         sLengthMenu: 'Show _MENU_',
-        search: 'Search',
+        search: '',
         searchPlaceholder: 'Search setting',
         paginate: {
           // remove previous & next text from pagination
@@ -58,7 +77,7 @@ function tableSettings(a) {
       // Buttons
       buttons: [
         {
-          text: 'Add setting',
+          text: 'Add email',
           className: 'btn btn-primary btn-add-record ms-2',
           action: function (e, dt, button, config) {
             $('.acceptSetting').removeClass('editChange')
@@ -99,6 +118,7 @@ function tableSettings(a) {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
       }
     });
+    $('#settingsTable_filter label').addClass('m-0')
     $('#settingsTable_info').addClass('py-2')
     document.getElementById('settingsTable_info').parentElement.parentElement.classList.add('align-items-center')
   }
@@ -116,7 +136,6 @@ $(function () {
       type: 'POST',
       data: $('#formSettings').serialize(),
       success: function (data, textStatus, jqXHR) {
-        console.log(data)
         //After save, recharge the settings on input "jsonStting"
         $('#jsonSettings').val(data.settings)
         //Destroy and empty Table
@@ -157,7 +176,6 @@ $(function () {
       contentType: false,
       processData: false,
       success: function (data, textStatus, jqXHR) {
-        console.log(data)
         //If form have previous info, blank
         $('#idEdit').empty()
         //Append input with id for save by ID
@@ -177,13 +195,11 @@ $(function () {
 
   /**JQUERY FUNCTION TO SAVE SETTING EDITED */
   $('#editSetting').on('click', () => {
-    console.log('hereEdit')
     $.ajax({
       url: `/saveEditSetting`,
       type: 'POST',
       data: $('#editformSettings').serialize(),
       success: function (data, textStatus, jqXHR) {
-        console.log(data)
         //After save, recharge the settings on input "jsonStting"
         $('#jsonSettings').val(data.settings)
         //Destroy and empty Table
@@ -208,4 +224,221 @@ $(function () {
       }
     });
   })
+  $('#btnSaveCert').on('click', () => {
+    let data = new FormData();
+    data.append('clientctr',$('#clientCtr').val());
+    data.append('key',$('#keyClient').val())
+    $.ajax({
+      url: `/saveCert`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  })
+
+  $('#envTypeCheck').change(function(){
+    let productionON=0;
+    if ($('#envTypeCheck').is(':checked')) {
+      productionON =1;
+    }
+    console.log(productionON)
+    let data = new FormData();
+    data.append('sId',$('#envTypeCheck').val());
+    data.append('sValue','Production');
+    data.append('sType','Env')
+    data.append('sStatus',productionON)
+    
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+        console.log(data);
+        if (data == 'OK') {
+          swal.fire('Environment success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('.changeStatusEmail').change(function(e){
+    let id = e.currentTarget['dataset']['id'];
+    let email = e.currentTarget['dataset']['email'];
+    let value=0;
+    if ($('#changeStatusEmail'+id).is(':checked')) {
+      value =1;
+    }
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',email);
+    data.append('sType','email-Support')
+    data.append('sStatus',value)
+    
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+        //console.log(data);
+        if (data == 'OK') {
+          swal.fire('Email-status success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('#gatewayCompanyId').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','gatewayCompanyId')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+       // console.log(data)
+        if (data == 'OK') {
+          swal.fire('Gateway Company ID success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('#gatewayEntity').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','gatewayEntity')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+       // console.log(data)
+        if (data == 'OK') {
+          swal.fire('Gateway Company ID success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('#consumerKey').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','consumerKey')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+     //   console.log(data)
+        if (data == 'OK') {
+          swal.fire('ConsumerKey success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('#consumerSecret').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','consumerSecret')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+     //   console.log(data)
+        if (data == 'OK') {
+          swal.fire('consumerSecret success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+$('#btnValidate').on('click', function(e) {
+    let value = $('#hostLink').val()///e.target.value;
+    if (value==''){
+      return
+    }
+    let data = new FormData();
+    data.append('hostLink',value);
+    $.ajax({
+      url: `/testValidate`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+     //   console.log(data)
+        if (data.validate.response) {
+          swal.fire(data.validate.response);
+          return
+        }
+        if (data.validate.errors) {
+          swal.fire(data.validate.errors[0].description);
+          return
+        }
+        swal.fire(data.validate);
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
 });
+

@@ -25,14 +25,18 @@ require('dotenv').config()
 exports.contactUs = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; // Profile Pic
-
+  var admin = false;
+  if (user["ROLE"] == 4) {
+    //If User Role is 4 the Settings page is enabled
+    admin = true;
+  }
   res.render("contacts", {
     pageName: "Contact Us",
     dashboardPage: true,
     menu: true,
     contactUs: true,
     user,
-    pictureProfile,
+    pictureProfile,admin
   });
 };
 
@@ -125,7 +129,7 @@ exports.dashboard = async (req, res) => {
 /**FUNCTION TO RENDER OPEN INVOICES PAGE */
 exports.openInvMore = async (req, res) => {
   const user = res.locals.user["$resources"][0];//User info
-  console.log(user)
+  //console.log(user)
   const SessionKeyLog = req.session.SessionLog;// SessionKey from SQL Table
   var ip = req.connection.remoteAddress;
   let query_consulting = "&where=ID eq " + (user["ID"]).toString() + "";//Clause where with email
@@ -236,7 +240,7 @@ exports.openInvMore = async (req, res) => {
         response = JSON.parse(response);//PARSE RESPONSE
         //STORE IN ARRAY PAYMENTS
         for (let j = 0; j < response.length; j++) {
-          console.log(payments.length);
+          //console.log(payments.length);
           payments.push({
             pmtKey: response[j].pmtKey,
             CustID: response[j].CustID,
@@ -310,7 +314,7 @@ exports.paymentsL = async (req, res) => {
   //GET PAYMENTS FROM SQL TABLE
   let payments = [],
     getPayments = [];
-  console.log(bpcnum)
+  //console.log(bpcnum)
   for (let i = 0; i < bpcnum.length; i++) {
     await DataBaseSq.Get_tPayments(bpcnum[i]).then((response) => {
       response = JSON.parse(response);//PARSE RESPONSE
@@ -400,7 +404,7 @@ exports.next_pageIC2 = async (req, res) => {
     Status,
     Comment
   ); 
-  console.log(SystemLogL)
+ // console.log(SystemLogL)
   //Request for GET the next page from query consulting
   var data = req.params.data;
   request({
@@ -417,11 +421,11 @@ exports.next_pageIC2 = async (req, res) => {
     },
     json: true,
   }).then(async (inv_wofilter) => {
-    console.log(inv_wofilter)
+   // console.log(inv_wofilter)
     // GET INVOICES
     let links = JSON.stringify(inv_wofilter["$links"]);// Create JSON String with Links to use for "Next or Previous page" consulting
     inv_wofilter = inv_wofilter["$resources"];// Create JSON Array with the Open Invoices List
-    console.log('go go')
+   // console.log('go go')
     res.send({ inv_wofilter, links })
   }).catch((err)=>{
     console.log(err)
@@ -451,7 +455,7 @@ exports.searchOpenInvO = async (req, res) => {
     Status,
     Comment
   );
-  console.log(SystemLogL);
+ // console.log(SystemLogL);
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
   var search = req.params.search;
@@ -463,7 +467,7 @@ exports.searchOpenInvO = async (req, res) => {
   } else {
     query = `and ${filter} like '%25${search}%25'`;
   }
-  console.log(query);
+ // console.log(query);
   if (filter == "NUM" && search=="-" ) {
     query = ``;
   }
@@ -481,7 +485,7 @@ exports.searchOpenInvO = async (req, res) => {
     },
     json: true,
   }).then(async (inv_wofilter) => {
-    console.log(inv_wofilter);
+   /// console.log(inv_wofilter);
     // GET INVOICES
     let links = JSON.stringify(inv_wofilter["$links"]);// Create JSON String with Links to use for "Next or Previous page" consulting
     inv_wofilter = inv_wofilter["$resources"];// Create JSON Array with the Open Invoices List
@@ -519,7 +523,7 @@ exports.searchCloseInvC = async (req, res) => {
   } else {
     query = `and ${filter} like '%25${search}%25'`;
   }
-  console.log(query);
+  //console.log(query);
   if (filter == "NUM" && search=="-" ) {
     query = ``;
   }
@@ -842,7 +846,7 @@ exports.pay_methods = async (req, res) => {
 
     pay_methods = pay_methods["$resources"];//Pay Methods List
     let CCMethod = [], ACHMethod = []
-    console.log(pay_methods)
+   // console.log(pay_methods)
     for (let i = 0; i < pay_methods.length; i++) {
       switch (pay_methods[i]['PAYTYPE']) {
         case 'CC':
@@ -1156,7 +1160,7 @@ exports.edit_pay_methods = async (req, res) => {
     Comment
   );
   var typeMP = req.body.typeM
-  console.log(typeMP)
+  //console.log(typeMP)
   if (typeMP == "CC") {
     //GET INFO OF CC
     var {
@@ -1412,7 +1416,7 @@ exports.pay_invoices = async (req, res) => {
     })
   );
   let CCMethod = [], ACHMethod = []
-  console.log(list_methods_par)
+  //console.log(list_methods_par)
   for (let i = 0; i < list_methods_par.length; i++) {
     switch (list_methods_par[i]['PAYTYPE']) {
       case 'CC':
@@ -1964,7 +1968,7 @@ exports.process_payment = async (req, res) => {
             zipCode
           );
           paymenKey = JSON.parse(tPaymentSave).pmtKey;//GET THE PAYMENTKEY ID FROM SQL
-          console.log(tPaymentSave);
+        //  console.log(tPaymentSave);
           return res.send({ error, data, response, paymenKey });// RETURN RESPONSE TO AJAX
         }
       }
@@ -2071,7 +2075,7 @@ exports.printInvoice = async (req, res) => {
   //SAVE SQL SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  console.log(user);
+ // console.log(user);
   let inv_num = req.params.inv;
   let UserID = (user["ID"]).toString(),
     IPAddress = ip,
@@ -2182,7 +2186,7 @@ exports.payments = async (req, res) => {
       response = JSON.parse(response);//PARSE RESPONSE
       //STORE IN ARRAY PAYMENTS
       for (let j = 0; j < response.length; j++) {
-        console.log(payments.length);
+        //        console.log(payments.length);
         payments.push({
           pmtKey: response[j].pmtKey,
           CustID: response[j].CustID,
@@ -2223,6 +2227,23 @@ exports.settingsPreview = async (req, res) => {
   if (user["ROLE"] == 4) {
     admin = true;
   }
+  let file_N = __dirname + "/../config/client.crt";
+  let file_N2 = __dirname + "/../config/client.key";
+
+  let text0, text1;
+  text0 = fs.readFileSync(file_N, 'utf8', (error, data) => {
+    if (error) throw error;
+   return data;
+});
+text1 = fs.readFileSync(file_N2, 'utf8', (error, data) => {
+  if (error) throw error;
+ return data;
+});
+text1= decrypt(text1);
+text0=  decrypt(text0);
+let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());//GET SETTING FROM SQL TABLE
+let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+//console.log(gateaway)
   //RENDER SYSTEM SETTING PAGE
   res.render("sysSettings", {
     pageName: "System Settings",
@@ -2233,6 +2254,7 @@ exports.settingsPreview = async (req, res) => {
     pictureProfile,
     settings,
     admin,
+    text0,text1,modeEnv,gateaway
   });
 };
 
@@ -2254,8 +2276,11 @@ exports.saveEditSetting = async (req, res) => {
   let saveSys = await DataBaseSq.saveEditSetting(sValue, sType, sStatus, sId);//SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable();// GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
-
-  res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
+  if (sType =='gatewayCompanyId' || sType =='Env' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {
+    return res.sendStatus(200)
+  }
+  return res.sendStatus(200)
+ /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
 
 /**FUNCTION TO GET INFO OF SETTINGS SYS TO EDIT */
@@ -2589,10 +2614,20 @@ exports.process_payment_WF = async (req, res) => {
     Comment
   );
 
-  //FIRTS GET THE APIkey Token
-  let WF_APIKey = JSON.parse(await WFCCtrl.APYKeyGet().then((response) => {
-    return JSON.stringify(response)
-  }))
+  let apikey;
+  let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+  if (req.cookies.wf && modeEnv.Status == 1) {
+    apikey = req.cookies.wf
+  }else{
+    let hostLink = 'api-certification.wellsfargo.com';
+    let WF_APIKey = JSON.parse(await WFCCtrl.APYKeyGet(hostLink).then((response) => {
+      return JSON.stringify(response)
+    }));
+    apikey=WF_APIKey['access_token'];
+    if (modeEnv.Status == 1) {
+      res.cookie('wf' , WF_APIKey['access_token'], {maxAge : WF_APIKey['expires_in']});
+    }  
+  } 
 
   //START PROCCESS PAYMENT
   var {
@@ -2604,7 +2639,7 @@ exports.process_payment_WF = async (req, res) => {
     reasonLessAmta,
     userIDInv, NamePayer_Bank, payName
   } = req.body;
-  console.log(req.body)
+  //console.log(req.body)
   let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDWF())//GET Last PaymentID WF to create next 
   //CREATE THE NEXT PAYMENT ID
   let payment_id0 = consult_paymentID[0]['TransactionID']// GET TRANSACTIONID FOR CREATE NEXT NUM
@@ -2616,7 +2651,7 @@ exports.process_payment_WF = async (req, res) => {
     NamePayer_Bank = payName
   }
   //SEND PAYMENT TO WF API
-  let WF_TransactionID = JSON.parse(await WFCCtrl.WF(totalAmountcard, WF_APIKey['access_token'], NamePayer_Bank, bank_id, bank_account_number, prepare_idWF).then((response) => {
+  let WF_TransactionID = JSON.parse(await WFCCtrl.WF(totalAmountcard, apikey, NamePayer_Bank, bank_id, bank_account_number, prepare_idWF).then((response) => {
     return JSON.stringify(response)
   }))
 

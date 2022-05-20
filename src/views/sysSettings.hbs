@@ -7,25 +7,114 @@
 </style>
 
 <input type="text" value="{{settings}}" id="jsonSettings" hidden>{{!-- This hidden input contain the json string for dataTable --}}
+
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
-            <section class="invoice-list-wrapper">
-                <div class="card">
-                    <div class="table-responsive">
-                        <table class="table" id="settingsTable">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Type settings</th>
-                                    <th>Value</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                        </table>
+            <div class="row m-0">
+                <div class="col-lg-5 col-md-6 col-12">
+                            <div class="card card-developer-meetup">
+                                <div class="card-header align-items-start">
+                                    <h5>Certificate Autentication</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form class="form form-vertical">
+                                        <div class="row align-items-end">
+                                            <div class="col-12 mb-1">
+                                                <div class="d-inline-flex align-items-center">
+                                                    <label class="form-check-label" for="customSwitch1">Development </label>
+                                                    <div class="form-check form-switch ms-1 me-50">
+                                                        <input type="checkbox" class="form-check-input" id="envTypeCheck" value="{{modeEnv.id}}" {{#checkedSwitch modeEnv.Status}}{{/checkedSwitch}}>
+                                                    </div>
+                                                    <label class="form-check-label" for="customSwitch1" >Production</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-8 mb-1">
+                                                <div class="">
+                                                    <label class="form-label" for="hostLink">Well Fargo URL</label>
+                                                    <div class="input-group input-group-merge ">
+                                                        <span class="input-group-text"><i data-feather="link"></i></span>
+                                                        <input type="text" id="hostLink" class="form-control" name="fname-icon" placeholder="Well Fargo URL. . ."  value='api-certification.wellsfargo.com'/>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-4 mb-1"><button class="btn btn-primary w-100" type="button" id="btnValidate">Validate</button></div>
+                                            
+                                            <div class="col-12  mb-1">
+                                                <div class="">
+                                                    <label class="form-label" for="email-id-icon">Client Certificate</label>
+                                                    <div class="input-group input-group-merge">
+                                            <textarea class="form-control" id="clientCtr" placeholder="Client Certificate. . .">{{text0}}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12  mb-1">
+                                                <div class="">
+                                                    <label class="form-label" for="email-id-icon">Client Private Key</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <textarea class="form-control" id="keyClient" rows="3" placeholder="Client Private Key. . .">{{text1}}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 mb-1"><button class="btn btn-primary" type="button" id="btnSaveCert">Save Certificate/Key</button></div>
+                                            <div class="col-12">
+                                                <div class="mb-1">
+                                                    <label class="form-label" for="gatewayCompanyId">Gateway Company ID</label>
+                                                    <div class="input-group input-group-merge ">
+                                                        <input type="text" id="gatewayCompanyId" data-id="{{gateaway.0.id}}" class="form-control" name="fname-icon" placeholder="Gateway Company ID. . ." value="{{gateaway.0.valueSett}}"/>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="">
+                                                    <label class="form-label" for="gatewayEntity">Gateway Entity ID</label>
+                                                    <div class="input-group input-group-merge ">
+                                                        <input type="text" id="gatewayEntity" data-id="{{gateaway.1.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.1.valueSett}}"/>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="">
+                                                    <label class="form-label" for="gatewayEntity">CONSUMERKEY</label>
+                                                    <div class="input-group input-group-merge ">
+                                                        <input type="text" id="consumerKey" data-id="{{gateaway.2.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.2.valueSett}}"/>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="">
+                                                    <label class="form-label" for="gatewayEntity">CONSUMERSECRET</label>
+                                                    <div class="input-group input-group-merge ">
+                                                        <input type="password" id="consumerSecret" data-id="{{gateaway.3.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{gateaway.3.valueSett}}"/>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                </div>
+                <div class="col-md-6 col-lg-7">
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table" id="settingsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
+
 
         </div>
     </div>
@@ -44,13 +133,13 @@
                 <form id="formSettings">
                     <div class="col-12">
                         <label class="form-label" for="sValue">Value</label>
-                        <input type="text" id="sValue" name="sValue" class="form-control"
-                            placeholder="Value for setting" />
+                        <input type="email" id="sValue" name="sValue" class="form-control"
+                            placeholder="Email..." />
                     </div>
-                    <div class="col-12 mt-1">
+                    <div class="col-12 mt-1 d-none">
                         <label class="form-label" for="sType">Setting Type</label>
                         <select class="form-control" id="sType" name="sType">
-                            <option value="email-Support">Email-Support</option>
+                            <option value="email-Support" selected>Email-Support</option>
                         </select>
                     </div>
                     <div class="col-12 mt-1">

@@ -118,7 +118,33 @@ module.exports = {
   /**FUNCTIONS FOR SETTINGS TABLE */
   settingsTable(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
-      tSettings.findAll({})
+      tSettings.findAll({where:{typeSett:'email-Support'}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  settingsTableTypeEnvProduction(){
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
+      tSettings.findOne({where:{typeSett:'Env'}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  settingsgateway(){
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
+      tSettings.findAll({where:{[Op.or]: [
+        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'}
+      ] },order: [ [ 'id', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);

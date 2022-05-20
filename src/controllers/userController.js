@@ -5,13 +5,14 @@ var queryFolder = 'SAWTEST1' //Name the query folder X3
 var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
 var DataBasequerys = require('../models/data');// Functions for X3 querys
 const { encrypt, decrypt } = require('./crypto');
-
+const ecoSys = require('../../ecosystem.config')
 /** FUNCTION TO RENDER LOGGIN PAGE */
 exports.formLogin = async (req, res) => {
   let error = false
   if (req.session.errorLogin) {
     error = req.session.errorLogin;
   }
+  console.log(ecoSys.apps[0].env)
   res.render("login", {
     pageName: "Login",
     layout: "page-form",
@@ -50,7 +51,7 @@ exports.loginUser2 = async (req, res) => {
     if (!user) {
       
       req.flash("error", info.message)
-      req.session.errorLogin = req.flash()
+      req.session.errorLogin = req.flash();
       return res.redirect("/login");
     }
     req.logIn(user, async function (err) {

@@ -6,7 +6,7 @@ const dashboardController = require('../controllers/dashboardController');//PRIN
 const mailCtrl = require('../controllers/mailCtrl');//EMAIL FUNCTIONS (SEND EMAIL)
 const FileController = require('../models/upload');//FUNCTION TO UPLOAD FILES
 const fileController = new FileController();
-
+const certificateController = require('../controllers/certificateController')
 // Landing Page LOGGIN
 router.get('/', userController.formLogin);
 
@@ -83,9 +83,11 @@ router.post('/send_email_errorWF', authController.authenticatedUser, mailCtrl.er
 
 
 //sysSettings
-router.get('/sysSettings',authController.authenticatedUser, dashboardController.settingsPreview)
-router.post('/saveSetting',authController.authenticatedUser, dashboardController.saveSetting)
-router.post('/editSetting',authController.authenticatedUser, dashboardController.editSetting)
-router.post('/saveEditSetting',authController.authenticatedUser, dashboardController.saveEditSetting)
+router.get('/sysSettings',authController.authenticatedUser, dashboardController.settingsPreview);
+router.post('/saveSetting',authController.authenticatedUser, dashboardController.saveSetting);
+router.post('/editSetting',authController.authenticatedUser, dashboardController.editSetting);
+router.post('/saveEditSetting',authController.authenticatedUser, dashboardController.saveEditSetting);
+router.post('/saveCert', authController.authenticatedUser, certificateController.saveCert)
+router.post('/testValidate', authController.authenticatedUser, certificateController.testValidate)
 
 module.exports = router;

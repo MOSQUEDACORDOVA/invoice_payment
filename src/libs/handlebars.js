@@ -145,5 +145,16 @@ module.exports = {
 		} else {
 			return "";
 		}
+	},
+	alterQuill: (value)=> {
+		var text = value.replace(/(\r\n|\n|\r)/gm, '<br>');
+		return text;
+	},
+	checkedSwitch: (value)=> {
+		let checked;
+		if (value == 1) {
+			checked = 'checked'
+		}
+		return checked;
 	}
 }

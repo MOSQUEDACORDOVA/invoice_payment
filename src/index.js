@@ -12,6 +12,7 @@ var Connection = require('tedious').Connection;
 const db = require('./config/db')
 const dbSequelize = require('./config/dbSequelize')
 require('dotenv').config();
+const ecoSys = require('../ecosystem.config');
 ///var envJSON = require('./config/.env.testing');
 // Conect and sync with sequelize database SQL
 dbSequelize.sync().then(() => {
@@ -28,7 +29,6 @@ const app = express();
 // Body parser and file upload controller
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileupload());
-
 app.use('/api', router);
 // Settigns of expressnp: PORT
 app.set('port', process.env.PORT || 80);
@@ -78,8 +78,9 @@ app.use((req, res, next) => {
 app.use('/', require('./routes'));
 
 // Start server
-app.listen(app.get('port'), () => {
-	
-	console.log(`Server in port ${app.get('port')}`);
-	console.log (process.env.CONSUMERSECRET)
+app.listen(app.get('port'), () => {	
+	console.log(`Server in port ${app.get('port')}`);	
+	console.log (process.env.TESTING)
+	ecoSys.apps[0].env.CONSUMERKEY='21'
+	console.log (ecoSys.apps[0].env)
 });

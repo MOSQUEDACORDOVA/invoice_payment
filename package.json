@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src",
-    "dev": "nodemon -r dotenv/config src/index.js"
+    "dev": "nodemon -r dotenv/config src/index.js",
+    "pm2": "pm2 start config.js"
   },
   "author": "MOSQUEDA CORDOVA",
   "license": "ISC",
@@ -14,7 +15,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.5",
+    "cookie-parser": "^1.4.6",
     "countup.js": "^2.0.8",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
