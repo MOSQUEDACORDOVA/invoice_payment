@@ -2,7 +2,7 @@
 /** Use the algorithm AES 256-CBC */
 const crypto = require('crypto');
 var CryptoJS = require("crypto-js");
-const algorithm = 'aes-256-cbc';
+//const algorithm = 'aes-256-cbc';
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3';
 const iv =Buffer.from('ivString'); //crypto.randomBytes(16);
 

@@ -248,6 +248,12 @@ $(function () {
     let productionON=0;
     if ($('#envTypeCheck').is(':checked')) {
       productionON =1;
+      $('#certificatesContainer').removeClass('d-none')
+      $('#rowMain').toggleClass('match-height')
+    }
+    if (productionON == 0) {
+      $('#certificatesContainer').addClass('d-none')
+      $('#rowMain').toggleClass('match-height')
     }
     console.log(productionON)
     let data = new FormData();
@@ -440,5 +446,17 @@ $('#btnValidate').on('click', function(e) {
       }
     });
   });
-});
+  $('#btnCronTaskTime').on('click',async function(e) {
+
+console.log('here Cron')
+// await fetch("/changeCronServer")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log(data)
+//       return data.EjercisiosData;
+//     });
+   });
+ 
+
+/**END FUNCTION READY */});
 

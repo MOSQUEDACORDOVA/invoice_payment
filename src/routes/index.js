@@ -87,7 +87,9 @@ router.get('/sysSettings',authController.authenticatedUser, dashboardController.
 router.post('/saveSetting',authController.authenticatedUser, dashboardController.saveSetting);
 router.post('/editSetting',authController.authenticatedUser, dashboardController.editSetting);
 router.post('/saveEditSetting',authController.authenticatedUser, dashboardController.saveEditSetting);
-router.post('/saveCert', authController.authenticatedUser, certificateController.saveCert)
-router.post('/testValidate', authController.authenticatedUser, certificateController.testValidate)
+router.post('/saveCert', authController.authenticatedUser, certificateController.saveCert);
+router.post('/testValidate', authController.authenticatedUser, certificateController.testValidate);
+
+router.get('/changeCronServer',authController.authenticatedUser, dashboardController.changeCronServer);
 
 module.exports = router;

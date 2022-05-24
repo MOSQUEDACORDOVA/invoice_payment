@@ -44,7 +44,8 @@ exports.testValidate = async (req, res) => {
   console.log(req.body)
 const hostLink = req.body.hostLink;
 let apikey;
-let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
+await DataBaseSq.saveEditSetting(hostLink, 'hostLink', 1, 25);
 if (req.cookies.wf && modeEnv.Status == 1) {
   apikey = req.cookies.wf
 }else{

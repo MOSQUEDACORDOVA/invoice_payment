@@ -143,7 +143,7 @@ module.exports = {
   settingsgateway(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findAll({where:{[Op.or]: [
-        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'}
+        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'}
       ] },order: [ [ 'id', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);

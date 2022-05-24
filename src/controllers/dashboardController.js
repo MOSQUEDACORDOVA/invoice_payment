@@ -2287,6 +2287,7 @@ exports.saveEditSetting = async (req, res) => {
  /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
 
+
 /**FUNCTION TO GET INFO OF SETTINGS SYS TO EDIT */
 exports.editSetting = async (req, res) => {
   const { sId } = req.body;
@@ -2737,4 +2738,25 @@ exports.process_payment_WF = async (req, res) => {
       paymentKey,
     });//SEND RESPONSE TO AJAX REQUEST
   }
+};
+
+/**FUNCTION TO CHANGE CRON TASK SERVER (WF VERIFY) */
+exports.changeCronServer = async (req, res) => {
+  var child_process = require('child_process');
+  const { spawn } = require('node:child_process');
+  var terminal = require('child_process').exec('C:/Users/isaac/Documents/GitHub/invoice_payment/src/public/assets/data/pm2_restart.bat'); 
+  terminal.stdout.on('data', function (data) { console.log('stdout: ' + data); }); 
+  terminal.on('exit', function (code) { console.log('child process exited with code ' + code); }); 
+  setTimeout(function() { console.log('Sending stdin to terminal');
+   terminal.stdin.write('echo "Hello $USER. Your machine runs since:"\n'); 
+   terminal.stdin.write('uptime\n'); console.log('Ending terminal session'); 
+   terminal.stdin.end(); }, 1000);
+
+  // child_process.exec('C:/Users/isaac/Documents/GitHub/invoice_payment/src/public/assets/data/pm2_restart.bat', function(error, stdout, stderr) {
+  //     console.log(stdout);
+  // })
+
+  Fuente: https://www.iteramos.com/pregunta/83992/Como-ejecutar-comandos-a-traves-de-un-proceso-hijo-de-NodeJS
+  return res.sendStatus(200)
+ /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };

@@ -156,5 +156,12 @@ module.exports = {
 			checked = 'checked'
 		}
 		return checked;
+	},
+	envCert: (value)=> {
+		let checked;
+		if (value == 0) {
+			checked = `class="d-none"`
+		}
+		return checked;
 	}
 }

@@ -6,120 +6,214 @@
     }
 </style>
 
-<input type="text" value="{{settings}}" id="jsonSettings" hidden>{{!-- This hidden input contain the json string for dataTable --}}
+<input type="text" value="{{settings}}" id="jsonSettings" hidden>{{!-- This hidden input contain the json string for
+dataTable --}}
 
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
-            <div class="row m-0">
+            <div class="row m-0 match-height" id="rowMain">
                 <div class="col-lg-5 col-md-6 col-12">
-                            <div class="card card-developer-meetup">
-                                <div class="card-header align-items-start">
-                                    <h5>Certificate Autentication</h5>
-                                </div>
-                                <div class="card-body">
-                                    <form class="form form-vertical">
-                                        <div class="row align-items-end">
-                                            <div class="col-12 mb-1">
-                                                <div class="d-inline-flex align-items-center">
-                                                    <label class="form-check-label" for="customSwitch1">Development </label>
-                                                    <div class="form-check form-switch ms-1 me-50">
-                                                        <input type="checkbox" class="form-check-input" id="envTypeCheck" value="{{modeEnv.id}}" {{#checkedSwitch modeEnv.Status}}{{/checkedSwitch}}>
-                                                    </div>
-                                                    <label class="form-check-label" for="customSwitch1" >Production</label>
-                                                </div>
+                    <div class="card card-developer-meetup">
+                        <div class="card-header align-items-start">
+                            <h5 class="mb-md-0">Certificate Autentication</h5>
+                        </div>
+                        <div class="card-body">
+                            <form class="form form-vertical">
+                                <div class="row align-items-end">
+                                    <div class="col-12 mb-1">
+                                        <div class="d-inline-flex align-items-center flex-wrap">
+                                            <label class="form-check-label" for="customSwitch1">Development </label>
+                                            <div class="form-check form-switch ms-1 me-50">
+                                                <input type="checkbox" class="form-check-input" id="envTypeCheck"
+                                                    value="{{modeEnv.id}}" {{#checkedSwitch
+                                                    modeEnv.Status}}{{/checkedSwitch}}>
                                             </div>
-                                            <div class="col-8 mb-1">
-                                                <div class="">
-                                                    <label class="form-label" for="hostLink">Well Fargo URL</label>
-                                                    <div class="input-group input-group-merge ">
-                                                        <span class="input-group-text"><i data-feather="link"></i></span>
-                                                        <input type="text" id="hostLink" class="form-control" name="fname-icon" placeholder="Well Fargo URL. . ."  value='api-certification.wellsfargo.com'/>
-                                                    </div>
-                                                    
-                                                </div>
+                                            <label class="form-check-label me-1" for="customSwitch1">Production</label>
+                                            <button class="btn btn-primary" type="button" id="btnCronTaskTime"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalCalcDate">CronTaskTime</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-8 mb-1">
+                                        <div class="">
+                                            <label class="form-label" for="hostLink">Well Fargo URL</label>
+                                            <div class="input-group input-group-merge ">
+                                                <span class="input-group-text"><i data-feather="link"></i></span>
+                                                <input type="text" id="hostLink" class="form-control" name="fname-icon"
+                                                    placeholder="Well Fargo URL. . ."
+                                                    value='api-certification.wellsfargo.com' />
                                             </div>
-                                            
-                                            <div class="col-4 mb-1"><button class="btn btn-primary w-100" type="button" id="btnValidate">Validate</button></div>
-                                            
-                                            <div class="col-12  mb-1">
-                                                <div class="">
-                                                    <label class="form-label" for="email-id-icon">Client Certificate</label>
-                                                    <div class="input-group input-group-merge">
-                                            <textarea class="form-control" id="clientCtr" placeholder="Client Certificate. . .">{{text0}}</textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12  mb-1">
-                                                <div class="">
-                                                    <label class="form-label" for="email-id-icon">Client Private Key</label>
-                                                    <div class="input-group input-group-merge">
-                                                        <textarea class="form-control" id="keyClient" rows="3" placeholder="Client Private Key. . .">{{text1}}</textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 mb-1"><button class="btn btn-primary" type="button" id="btnSaveCert">Save Certificate/Key</button></div>
-                                            <div class="col-12">
-                                                <div class="mb-1">
-                                                    <label class="form-label" for="gatewayCompanyId">Gateway Company ID</label>
-                                                    <div class="input-group input-group-merge ">
-                                                        <input type="text" id="gatewayCompanyId" data-id="{{gateaway.0.id}}" class="form-control" name="fname-icon" placeholder="Gateway Company ID. . ." value="{{#decryptData gateaway.0.valueSett}}{{/decryptData}}"/>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="">
-                                                    <label class="form-label" for="gatewayEntity">Gateway Entity ID</label>
-                                                    <div class="input-group input-group-merge ">
-                                                        <input type="text" id="gatewayEntity" data-id="{{gateaway.1.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.1.valueSett}}{{/decryptData}}"/>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="">
-                                                    <label class="form-label" for="gatewayEntity">CONSUMERKEY</label>
-                                                    <div class="input-group input-group-merge ">
-                                                        <input type="text" id="consumerKey" data-id="{{gateaway.2.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.2.valueSett}}{{/decryptData}}"/>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="">
-                                                    <label class="form-label" for="gatewayEntity">CONSUMERSECRET</label>
-                                                    <div class="input-group input-group-merge ">
-                                                        <input type="password" id="consumerSecret" data-id="{{gateaway.3.id}}" class="form-control" name="fname-icon" placeholder="Gateway Entity ID. . ." value="{{#decryptData gateaway.3.valueSett}}{{/decryptData}}"/>
-                                                    </div>
-                                                    
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 mb-1"><button class="btn btn-primary w-100" type="button"
+                                            id="btnValidate">Validate</button></div>
+                                    <div id="certificatesContainer" {{#envCert modeEnv.Status}}{{/envCert}}>
+                                        <div class="col-12  mb-1">
+                                            <div class="">
+                                                <label class="form-label" for="email-id-icon">Client Certificate</label>
+                                                <div class="input-group input-group-merge">
+                                                    <textarea class="form-control" id="clientCtr" rows="6"
+                                                        placeholder="Client Certificate. . .">{{text0}}</textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
+                                        <div class="col-12  mb-1">
+                                            <div class="">
+                                                <label class="form-label" for="email-id-icon">Client Private Key</label>
+                                                <div class="input-group input-group-merge">
+                                                    <textarea class="form-control" id="keyClient" rows="6"
+                                                        placeholder="Client Private Key. . .">{{text1}}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12"><button class="btn btn-primary" type="button"
+                                                id="btnSaveCert">Save Certificate/Key</button></div>
+                                    </div>
+
+
                                 </div>
-                            </div>
-                </div>
-                <div class="col-md-6 col-lg-7">
-                    <div class="card">
-                        <div class="table-responsive">
-                            <table class="table" id="settingsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            </form>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6 col-lg-7">
+                    <div class="row m-0">
+                        <div class="col-12 p-0">
+                            <div class="card mb-50">
+                                <div class="table-responsive">
+                                    <table class="table" id="settingsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 p-0">
+                            <div class="card card-developer-meetup">
+                                <div class="card-body">
+                                    <div class="row m-0">
+
+                                        <div class="col-12 p-0">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="gatewayCompanyId">Gateway Company
+                                                    ID</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="gatewayCompanyId" data-id="{{gateaway.0.id}}"
+                                                        class="form-control" name="fname-icon"
+                                                        placeholder="Gateway Company ID. . ."
+                                                        value="{{#decryptData gateaway.0.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="gatewayEntity">Gateway Entity ID</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="gatewayEntity" data-id="{{gateaway.1.id}}"
+                                                        class="form-control" name="fname-icon"
+                                                        placeholder="Gateway Entity ID. . ."
+                                                        value="{{#decryptData gateaway.1.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <div class="mb-1">
+                                                <label class="form-label" for="gatewayEntity">CONSUMERKEY</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="consumerKey" data-id="{{gateaway.2.id}}"
+                                                        class="form-control" name="fname-icon"
+                                                        placeholder="Gateway Entity ID. . ."
+                                                        value="{{#decryptData gateaway.2.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">CONSUMERSECRET</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="password" id="consumerSecret"
+                                                        data-id="{{gateaway.3.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Gateway Entity ID. . ."
+                                                        value="{{#decryptData gateaway.3.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-
-
         </div>
     </div>
 </div>
 <!-- END: Content-->
+<div class="modal fade" id="modalCalcDate" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-transparent">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body mx-50 pb-5">
+                <h1 class="text-center mb-1" id="label1">“At every minute.”</h1>
+                <h5 class="text-center mb-1" id="label2">next at <span id="hourDetail">2022-05-07 19:42:00</span></h5>
+    <div id="nextTime">
+
+    </div>
+                <!-- form -->
+                <form id="" class="">
+                    <div class="row align-items-end m-0">
+                        <div class="col-4 col-xl-2 px-50">
+                            <label for="" class="form-label">Minute</label>
+                             <select class="form-control changecron minutes" id="minutes" name="state">
+                                                            <option value="*" >0 minute</option>
+                                                            <option value="1" >1 minute</option>
+                                                            <option value="5">5 minute</option>
+                                                            <option value="10">10 minute</option>
+                                                            <option value="15">15 minute</option> 
+                                                            <option value="30">30 minute</option>                                             
+                                                            <option value="45">45 minute</option>
+                                                            <option value="59">59 minute</option> 
+                                                    </select>
+                        </div>
+                        <div class="col-4 col-xl-2 px-50">
+                            <label for="" class="form-label">Hour</label>
+                             <select class="form-control changecron hours" id="hours" name="state">
+                                                            <option value="*" selected>*</option>
+                                                            <option value="1">1 hours</option>
+                                                            <option value="5">5 hours</option>
+                                                            <option value="10">10 hours</option>
+                                                            <option value="12">12 hours</option> 
+                                                            <option value="15">15 hours</option>                                             
+                                                            <option value="20">20 hours</option>
+                                                            <option value="24">24 hours</option> 
+                                                    </select>
+                        </div>
+                        
+                        <div class="col-4 col-xl-2 px-50">
+                            <button type="button" class="btn btn-primary" id="setCron">Set</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade text-start" id="setSetting" tabindex="-1" aria-labelledby="myModalLabel1" aria-hidden="true">
@@ -133,8 +227,7 @@
                 <form id="formSettings">
                     <div class="col-12">
                         <label class="form-label" for="sValue">Value</label>
-                        <input type="email" id="sValue" name="sValue" class="form-control"
-                            placeholder="Email..." />
+                        <input type="email" id="sValue" name="sValue" class="form-control" placeholder="Email..." />
                     </div>
                     <div class="col-12 mt-1 d-none">
                         <label class="form-label" for="sType">Setting Type</label>
@@ -195,4 +288,86 @@
         </div>
     </div>
 </div>
+<script>
+    $('.changecron').on('change', async function (e) {
+$('#nextTime').empty();
+        if ($(this).hasClass('minutes')) {
+            console.log('here minutes');
+            let minute;
+            if ($('#hours').val() == '*') {
+                minute = moment().add($(this).val(), 'm').format('MM/DD/YYYY H:mm:00');
+                    $('#hourDetail').text(minute);
+                for (let i=2; i< 4; i++){
+                    minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($(this).val(), 'm').format('MM/DD/YYYY H:mm:00');
+                $('#nextTime').append(`<h5 class="text-center mb-1" id="label2">next at ${minute}</h5>`)
+                }
+                if ($(this).val() == 1){
+                    $('#label1').text('At every minute.');
+                }else{
+                        $('#label1').text('At minute ' + $(this).val());
+                }
+                } else {                 
+                  minute = moment().add($(this).val(), 'm').format('MM/DD/YYYY H:mm:00');
+                 minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($('#hours').val(), 'h').format('MM/DD/YYYY H:mm:00');
+                    $('#hourDetail').text(minute);
+                for (let i=2; i< 4; i++){
+                     minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($('#hours').val(), 'h').format('MM/DD/YYYY H:mm:00');
+                $('#nextTime').append(`<h5 class="text-center mb-1" id="label2">next at ${minute}</h5>`)
+                }                
+                        $('#label1').text('At '+$('#hours').val()+ 'hour(s) with minute ' + $(this).val());            
+                }
+            return
+        }
+        else{
+          console.log('here hour');
+          let minute;
+            if ($('#minutes').val() == '*') {
+                minute = moment().add($(this).val(), 'h').format('MM/DD/YYYY H:mm:00');
+                    $('#hourDetail').text(minute);
+                for (let i=2; i< 4; i++){
+                    minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($(this).val(), 'h').format('MM/DD/YYYY H:mm:00');
+                $('#nextTime').append(`<h5 class="text-center mb-1" id="label2">next at ${minute}</h5>`)
+                }
+                    $('#label1').text('At every hour(s).');
+                } else {                 
+                  minute = moment().add($(this).val(), 'h').format('MM/DD/YYYY H:mm:00');
+                 minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($('#minutes').val(), 'm').format('MM/DD/YYYY H:mm:00');
+                    $('#hourDetail').text(minute);
+                for (let i=2; i< 4; i++){
+                     minute = moment(minute, 'MM/DD/YYYY H:mm:00').add($(this).val(), 'h').format('MM/DD/YYYY H:mm:00');
+                $('#nextTime').append(`<h5 class="text-center mb-1" id="label2">next at ${minute}</h5>`)
+                }                
+                        $('#label1').text('At '+$('#hours').val()+ 'hour(s) with minute ' + $(this).val());            
+                }            
+            return  
+        }
+    }); 
+$('.setCron').on('change', async function (e) {
+ let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','gatewayCompanyId')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+       // console.log(data)
+        if (data == 'OK') {
+          swal.fire('Gateway Company ID success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+       
+    }); 
+</script>
 <!-- Modal -->

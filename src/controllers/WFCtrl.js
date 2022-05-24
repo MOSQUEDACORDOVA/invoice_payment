@@ -15,11 +15,11 @@ module.exports = {
   /**THIS FUNCTION IS FOR SEND PAYMENT TO WELLS FARGO API */
    WF(totalAmountcard,apiKey,NamePayer_Bank,bank_id,bank_account_number,payment_id) {
     return new Promise(async (resolve, reject) => {
-      let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
+      let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
+      let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+      let hostLink = gateaway[4]['valueSett'];
     if (modeEnv.Status == 1) {
-      console.log('production')
-      let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
-
+      console.log('production');
     let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
       if (error) throw error;
      return decrypt(data);
@@ -32,7 +32,7 @@ module.exports = {
           console.log(hostLink)
           var options = {
             method: 'POST',
-            hostname: 'api.wellsfargo.com',
+            hostname: hostLink,
             path: '/ach/v1/payments',
             key:keyA , 
             cert:crt ,
@@ -115,12 +115,12 @@ module.exports = {
   /**THIS FUNCTION IS FOR GET DE APYKEY FROM WLLS FARGO API */
   APYKeyGet(hostLink){
     return new Promise(async (resolve, reject) => {
-      
+      let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+      let hostLink = gateaway[4]['valueSett'];
     
     let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction())
     if (modeEnv.Status == 1) {
-      console.log('production')
-      let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+      console.log('production');      
       var CONSUMERKEY = decrypt(gateaway[2]['valueSett'])
     var CONSUMERSECRET = decrypt(gateaway[3]['valueSett'])
     var SCOPES = 'NA'
