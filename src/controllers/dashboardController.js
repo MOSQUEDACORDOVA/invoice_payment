@@ -2,7 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const request = require("request-promise");
 var queryFolder = 'SAWTEST1' //Name the query folder X3
-var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
+///var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
+var URLHost = `https://sawoffice.technolify.com:8443/api1/x3/erp/`; //URI query link 
 var moment = require("moment-timezone");
 var DataBasequerys = require("../models/data");// Functions for SQL querys
 var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys with sequelize
@@ -88,10 +89,11 @@ exports.dashboard = async (req, res) => {
     count = 100;
     where_filter_inv = "&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
+let URL0 = URLHost + req.session.queryFolder+"/";
   //GET Open Invoices List to X3 by where clause EMAIL 
   request({
     uri:
-      URI +
+    URL0+
       "YPORTALINV?representation=YPORTALINVO.$query&count=" +
       count +
       "&OrderBy=ID,NUM" +
@@ -166,11 +168,11 @@ exports.openInvMore = async (req, res) => {
     (Status = 1),
     (Comment = "Function: openInvMore- Line 278");
   SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-
+  let URL0 = URLHost + req.session.queryFolder+"/";
   //GET Open Invoices List to X3 by where clause EMAIL 
   request({
     uri:
-      URI +
+      URL0 +
       "YPORTALINV?representation=YPORTALINVO.$query&count=" +
       count +
       " " +
@@ -209,7 +211,7 @@ exports.openInvMore = async (req, res) => {
     const maping_login = JSON.parse(
       await request({
         uri:
-          URI +
+          URL0 +
           "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
           query_consulting,
         method: "GET",
@@ -285,10 +287,11 @@ exports.paymentsL = async (req, res) => {
   var paymentsL
   //FIRTS MAPPING LOG FOR GET BPCNUM'S
   let query_consulting = "&where=ID eq " + user["ID"] + "";
+  let URL0 = URLHost + req.session.queryFolder+"/";
   const maping_login = JSON.parse(
     await request({
       uri:
-        URI +
+        URL0 +
         "YPORTALBPS?representation=YPORTALBPS.$query&count=1000" +
         query_consulting,
       method: "GET",
@@ -362,9 +365,10 @@ exports.next_pageIO2 = async (req, res) => {
   );
   //Request for GET the next page from query consulting
   var data = req.params.data;
+  let URL0 = URLHost + req.session.queryFolder+"/";
   request({
     uri:
-      URI +
+      URL0 +
       `YPORTALINV?representation=YPORTALINVO.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
     method: "GET",
     insecure: true,
@@ -407,9 +411,10 @@ exports.next_pageIC2 = async (req, res) => {
  // console.log(SystemLogL)
   //Request for GET the next page from query consulting
   var data = req.params.data;
+  let URL0 = URLHost + req.session.queryFolder+"/";
   request({
     uri:
-      URI +
+      URL0 +
       `YPORTALINV?representation=YPORTALINVC.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
     method: "GET",
     insecure: true,
@@ -471,9 +476,10 @@ exports.searchOpenInvO = async (req, res) => {
   if (filter == "NUM" && search=="-" ) {
     query = ``;
   }
+  let URI0 = URLHost + req.session.queryFolder+"/";
   request({
     uri:
-      URI +
+      URI0 +
       `YPORTALINV?representation=YPORTALINVO.$query&count=100&orderBy=ID,NUM&where=ID eq ${user.ID} ${query}`,
     method: "GET",
     insecure: true,
@@ -527,9 +533,10 @@ exports.searchCloseInvC = async (req, res) => {
   if (filter == "NUM" && search=="-" ) {
     query = ``;
   }
+  let URI0 = URLHost + req.session.queryFolder+"/";
   request({
     uri:
-      URI +
+      URI0 +
       `YPORTALINV?representation=YPORTALINVC.$query&count=100&orderBy=ID,NUM&where=ID eq ${user.ID} ${query} `,
     method: "GET",
     insecure: true,
@@ -583,11 +590,11 @@ exports.close_invoices = async (req, res) => {
     Status,
     Comment
   );
-
+  let URI0 = URLHost + req.session.queryFolder+"/";
   //GET closed invoices from X3
   request({
     uri:
-      URI +
+      URI0 +
       "YPORTALINV?representation=YPORTALINVC.$query&count=" +
       count +
       "" +
@@ -664,10 +671,10 @@ exports.inoviceO_detail = async (req, res) => {
     Status,
     Comment
   );
-
+  let URI0 = URLHost + req.session.queryFolder+"/";
   //Get Inv details from X3
   request({
-    uri: URI + `YPORTALINVD('${inv_num}')?representation=YPORTALINVD.$details`,
+    uri: URI0 + `YPORTALINVD('${inv_num}')?representation=YPORTALINVD.$details`,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -737,10 +744,10 @@ exports.inoviceC_detail = async (req, res) => {
     Status,
     Comment
   );
-
+  let URI0 = URLHost + req.session.queryFolder+"/";
   //Get invoice colse detail from x3
   request({
-    uri: URI + `YPORTALINVD('${inv_num}')?representation=YPORTALINVD.$details`,
+    uri: URI0 + `YPORTALINVD('${inv_num}')?representation=YPORTALINVD.$details`,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -782,6 +789,7 @@ exports.inoviceC_detail = async (req, res) => {
 
 /**FUNCTION TO RENDER PAY METHOD PAGE */
 exports.pay_methods = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//User info
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//Pic profile
   const SessionKeyLog = req.session.SessionLog;
@@ -874,6 +882,7 @@ exports.pay_methods = async (req, res) => {
 
 /**FUNCTION TO SAVE PAYMENTS METHODS TO X3  */
 exports.add_pay_methods = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//User info
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
@@ -1138,6 +1147,7 @@ exports.add_pay_methods = async (req, res) => {
 
 /**FUNCTION TO SAVE EDITED PAYMENTS METHODS TO X3 */
 exports.edit_pay_methods = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];
 
   //SAVE SQL LOGSYSTEM
@@ -1300,6 +1310,7 @@ exports.edit_pay_methods = async (req, res) => {
 
 /**FUNCTION TO DELETE PAYMENT METHOD */
 exports.delete_pay_methods = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];
 
   //SAVE SQL LOGSYSTEM
@@ -1358,6 +1369,7 @@ exports.delete_pay_methods = async (req, res) => {
 
 /**FUNCTION TO RENDER PAY INVOICES PAGE */
 exports.pay_invoices = async (req, res) => {
+ let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//PROFILE PICTURE
 
@@ -1567,6 +1579,7 @@ exports.pay_invoices = async (req, res) => {
 
 /**FUNCTION TO PROCESS PAYMENT */
 exports.process_payment = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//User info
 
   //Save SQL SYSTEMLOG
@@ -1980,6 +1993,7 @@ exports.process_payment = async (req, res) => {
 
 /** FUNCTION TO SAVE APPLIED AMOUNT IN SQL TABLE */
 exports.applied_amount = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
 
   // SAVE SQL SYSTEMLOG
@@ -2028,6 +2042,7 @@ exports.applied_amount = async (req, res) => {
 
 /**FUNCTION TO SAVE PROFILE PICTURE */
 exports.save_PicProfile = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
 
   //SAVE IN SQL LOGSYSTEM
@@ -2070,6 +2085,7 @@ exports.save_PicProfile = async (req, res) => {
 
 /**FUNCTION TO PRINT INVOICE */
 exports.printInvoice = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
 
   //SAVE SQL SYSTEMLOG
@@ -2121,6 +2137,7 @@ exports.printInvoice = async (req, res) => {
 
 /** FUNCTION TO RENDER PAYMENTS PAGE */
 exports.payments = async (req, res) => {
+ let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//PIC PROFILE
 
@@ -2218,6 +2235,7 @@ exports.payments = async (req, res) => {
 
 /**FUNCTION TO RENDER SETTINGS SYSTEM PAGE*/
 exports.settingsPreview = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//PIC PROFILE
 
@@ -2242,7 +2260,8 @@ text1 = fs.readFileSync(file_N2, 'utf8', (error, data) => {
 text1= decrypt(text1);
 text0=  decrypt(text0);
 let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());//GET SETTING FROM SQL TABLE
-let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
+let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+let sagex3Folder = req.session.queryFolder;
 //console.log(gateaway)
   //RENDER SYSTEM SETTING PAGE
   res.render("sysSettings", {
@@ -2254,7 +2273,7 @@ let gateaway = JSON.parse(await DataBaseSq.settingsgateway())
     pictureProfile,
     settings,
     admin,
-    text0,text1,modeEnv,gateaway
+    text0,text1,modeEnv,gateaway,sagex3Folder
   });
 };
 
@@ -2272,7 +2291,7 @@ exports.saveSetting = async (req, res) => {
 /**FUNCTION TO SAVE EDITED SETTINGS SYSTEM */
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
-  let enValue
+  let enValue =sValue;
   if (sType =='gatewayCompanyId' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {
    enValue= encrypt(sValue)
   }
@@ -2282,6 +2301,9 @@ exports.saveEditSetting = async (req, res) => {
   let settings = await DataBaseSq.settingsTable();// GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
   if (sType =='gatewayCompanyId' || sType =='Env' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {
     return res.sendStatus(200)
+  }
+  if (sType =='queryFolder') {
+    req.session.queryFolder = sValue;
   }
   return res.sendStatus(200)
  /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
@@ -2298,6 +2320,7 @@ exports.editSetting = async (req, res) => {
 
 /**FUNCTION TO PAYMENTS DETAIL PAGE */
 exports.payments_detail = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   const user = res.locals.user["$resources"][0];//USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//PIC PROFILE
   var admin = false;
@@ -2447,6 +2470,8 @@ exports.payments_detail = async (req, res) => {
 
 /**FUNCTION TO PRINT  PAYMENTS DETAIL PAGE */
 exports.Print_payments_detail = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
+
   const user = res.locals.user["$resources"][0];//USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"];//PIC PROFILE
   var admin = false;
@@ -2597,6 +2622,7 @@ exports.Print_payments_detail = async (req, res) => {
 
 /**FUNCTION TO PROCESS PAYMENT WITH WELLS FARGO */
 exports.process_payment_WF = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
 
   const user = res.locals.user["$resources"][0];//User info
   //Save SQL SYSTEMLOG

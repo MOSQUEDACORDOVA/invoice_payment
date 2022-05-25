@@ -2,7 +2,7 @@ const passport = require("passport");//THIS MODULE USE FOR AUTHENTICATE SESSION
 const crypto = require("crypto");//THIS MODULE USE TO ENCRYPT OR DECRYPT
 const request = require("request-promise");
 var queryFolder = 'SAWTEST1' //Name the query folder X3
-var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
+var URLHost = `https://sawoffice.technolify.com:8443/api1/x3/erp/`; //URI query link 
 var DataBasequerys = require('../models/data');// Functions for X3 querys
 const { encrypt, decrypt } = require('./crypto');
 const ecoSys = require('../../ecosystem.config')
@@ -43,6 +43,7 @@ exports.resetPassFine = async (req, res) => {
 };
 /**FUNCTION TO LOGGIN USER */
 exports.loginUser2 = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   //USE PASSPORT TO AUTHENTICATE
   passport.authenticate("local", function (err, user, info) {
     if (err) {
@@ -100,6 +101,7 @@ exports.formSearchAccount = (req, res) => {
 
 /**FUNCTION SEND TOKEN BY EMAIL IF USER INFOR IS OK */
 exports.sendToken = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   // CHECK OUT IF USER EXIST
   const { email } = req.body;
 
@@ -157,6 +159,7 @@ exports.sendToken = async (req, res) => {
 
 /**FUNCTION TO RENDER RESET PASS PAGE- CHECK OUT TOKEN */
 exports.resetPasswordForm = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
   let token = req.params.token
   //Check out if token is validate in X3 Loggin query
   const usuario = await request({
@@ -188,7 +191,7 @@ exports.resetPasswordForm = async (req, res) => {
 
 /**FUNCTION TO SAVE NEW PASSWORD */
 exports.updatePassword = async (req, res) => {
-
+  let URI = URLHost + req.session.queryFolder+"/";
   let password_new, email, token, query_consulting
 
   password_new = encrypt(req.body.password);// Encrypt password
@@ -227,6 +230,8 @@ exports.closeSesion = (req, res) => {
 
 /** FUNCTION TO UPDATER USER INFO */
 exports.UpdateUser = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder+"/";
+  
   const user = res.locals.user['$resources'][0]
   email = user.EMAIL
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`

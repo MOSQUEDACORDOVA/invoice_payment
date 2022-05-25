@@ -154,6 +154,18 @@ module.exports = {
         });
     });
   },
+  settingsqueryFolder(){
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
+      tSettings.findOne({attributes:['valueSett'],where:{typeSett:'queryFolder'} })
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
   saveSetting(sValue, sType, sTatus){//INSERT SETTING IN THE SETTING TABLE
     return new Promise((resolve, reject) => {
       tSettings.create({valueSett:sValue,

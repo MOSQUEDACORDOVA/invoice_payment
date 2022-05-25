@@ -13,6 +13,7 @@ const db = require('./config/db')
 const dbSequelize = require('./config/dbSequelize')
 require('dotenv').config();
 const ecoSys = require('../ecosystem.config');
+var DataBaseSq = require("./models/dataSequelize"); // Functions for SQL querys with sequelize
 ///var envJSON = require('./config/.env.testing');
 // Conect and sync with sequelize database SQL
 dbSequelize.sync().then(() => {
@@ -68,9 +69,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //User session
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
 	res.locals.messages = req.flash();
-	res.locals.user = {...req.user} || null;	
+
+	res.locals.user = {...req.user} || null;
+	if (!req.session.queryFolder) {
+		req.session.queryFolder = (JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
+	}	
 	next();
 });
 
@@ -83,4 +88,5 @@ app.listen(app.get('port'), () => {
 	console.log (process.env.TESTING)
 	ecoSys.apps[0].env.CONSUMERKEY='21'
 	console.log (ecoSys.apps[0].env)
+	
 });

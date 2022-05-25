@@ -38,6 +38,21 @@ dataTable --}}
 
                                     <div class="col-8 mb-1">
                                         <div class="">
+                                            <label class="form-label" for="">SageX3Folder</label>
+                                            <div class="input-group input-group-merge ">
+                                                <span class="input-group-text"><i data-feather="link"></i></span>
+                                                <input type="text" id="sageX3Folder" class="form-control" name="fname-icon"
+                                                    placeholder=""
+                                                    value='{{sagex3Folder}}' />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 mb-1"><button class="btn btn-primary w-100" type="button"
+                                            id="savex3Folderbtn">Save</button></div>
+
+                                    <div class="col-8 mb-1">
+                                        <div class="">
                                             <label class="form-label" for="hostLink">Well Fargo URL</label>
                                             <div class="input-group input-group-merge ">
                                                 <span class="input-group-text"><i data-feather="link"></i></span>
@@ -45,7 +60,6 @@ dataTable --}}
                                                     placeholder="Well Fargo URL. . ."
                                                     value='api-certification.wellsfargo.com' />
                                             </div>
-
                                         </div>
                                     </div>
 
@@ -369,5 +383,7 @@ $('.setCron').on('change', async function (e) {
     });
        
     }); 
+
+   
 </script>
 <!-- Modal -->

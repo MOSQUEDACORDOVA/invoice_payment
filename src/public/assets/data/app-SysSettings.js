@@ -457,6 +457,33 @@ console.log('here Cron')
 //     });
    });
  
+   $('#savex3Folderbtn').on('click', async function (e) {
+    let id = 28;
+    let value = $('#sageX3Folder').val();
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','queryFolder')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+       // console.log(data)
+        if (data == 'OK') {
+          swal.fire('X3Folder success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+       
+    }); 
 
 /**END FUNCTION READY */});
 

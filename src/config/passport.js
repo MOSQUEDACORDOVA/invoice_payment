@@ -4,7 +4,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const request = require("request-promise");
 var queryFolder = 'SAWTEST1' //Name the query folder X3
-var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link 
+///var URI = `https://sawoffice.technolify.com:8443/api1/x3/erp/${queryFolder}/`; //URI query link
+var URLHost = `https://sawoffice.technolify.com:8443/api1/x3/erp/`; //URI query link  
+var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys with sequelize
 const { encrypt, decrypt } = require('../controllers/crypto');
 
 // Local strategy -
@@ -16,7 +18,9 @@ passport.use(
 			passReqToCallback : true
 		},
 		async (req,email, password, done) => {
-			let query_consulting= "&where=EMAIL eq '"+email+"'"
+			let query_consulting= "&where=EMAIL eq '"+email+"'";
+			req.session.queryFolder = (JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
+			let URI = URLHost + req.session.queryFolder+"/";
 			try {				
 				const user = await request({
 					uri: URI + 'YPORTALUSR?representation=YPORTALUSR.$query&count=10000'+ query_consulting,
