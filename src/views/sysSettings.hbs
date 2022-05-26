@@ -195,7 +195,6 @@ dataTable --}}
                         <div class="col-4 col-xl-2 px-50">
                             <label for="" class="form-label">Minute</label>
                              <select class="form-control changecron minutes" id="minutes" name="state">
-                                                            <option value="*" >0 minute</option>
                                                             <option value="1" >1 minute</option>
                                                             <option value="5">5 minute</option>
                                                             <option value="10">10 minute</option>
@@ -211,10 +210,8 @@ dataTable --}}
                                                             <option value="*" selected>*</option>
                                                             <option value="1">1 hours</option>
                                                             <option value="5">5 hours</option>
-                                                            <option value="10">10 hours</option>
-                                                            <option value="12">12 hours</option> 
-                                                            <option value="15">15 hours</option>                                             
-                                                            <option value="20">20 hours</option>
+                                                            <option value="12">12 hours</option>
+                                                            <option value="20">20 hours</option> 
                                                             <option value="24">24 hours</option> 
                                                     </select>
                         </div>
@@ -335,7 +332,7 @@ $('#nextTime').empty();
         else{
           console.log('here hour');
           let minute;
-            if ($('#minutes').val() == '*') {
+            if ($('#minutes').val() == '1') {
                 minute = moment().add($(this).val(), 'h').format('MM/DD/YYYY H:mm:00');
                     $('#hourDetail').text(minute);
                 for (let i=2; i< 4; i++){
@@ -372,8 +369,13 @@ $('#setCron').on('click', async function (e) {
       cache: false,
         contentType: false,
         processData: false,
-      success: function (data, textStatus, jqXHR) {
-       // console.log(data)
+      success: async function (data, textStatus, jqXHR) {
+       console.log(data)
+await fetch("/changeCronServer")
+         .then((response) => response.json())
+         .then((data) => {
+           console.log(data)
+         });
         if (data == 'OK') {
           swal.fire('CronTask time success update')
         }

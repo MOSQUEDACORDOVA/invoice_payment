@@ -991,7 +991,7 @@ exports.add_pay_methods = async (req, res) => {
           return;
         }
         req.flash("error", "Card Number exist, try another");
-        return res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
+        return res.redirect("/payments_methods");//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
       }
     }
 
@@ -1045,7 +1045,7 @@ exports.add_pay_methods = async (req, res) => {
         return;
       }
       req.flash("success", "Card added");
-      res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message Card added
+      res.redirect("/payments_methods" );//If the request comes from the PayMethods Page, redirect with a message Card added
     });
   } else {
     var {
@@ -1082,7 +1082,7 @@ exports.add_pay_methods = async (req, res) => {
           return;
         }
         req.flash("error", "Bank Account exist, try another");
-        return res.redirect("/payments_methods/" + user.EMAIL);//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
+        return res.redirect("/payments_methods");//If the request comes from the PayMethods Page, redirect with a message of Card Number exist, try another
       }
     }
 
@@ -1139,7 +1139,7 @@ exports.add_pay_methods = async (req, res) => {
         return;
       }
       req.flash("success", "ACH added");
-      res.redirect("/payments_methods/" + user.ID);//If the request comes from the PayMethods Page, redirect with a message Card added
+      res.redirect("/payments_methods" );//If the request comes from the PayMethods Page, redirect with a message Card added
     });
   }
 
@@ -1238,7 +1238,7 @@ exports.edit_pay_methods = async (req, res) => {
         Comment
       );
       req.flash("success", "Card edited");
-      res.redirect("/payments_methods/" + user.EMAIL);//Redirect with msg success Card Edited
+      res.redirect("/payments_methods" );//Redirect with msg success Card Edited
     });
   } else {
     //GET INFO OF ACH
@@ -1301,7 +1301,7 @@ exports.edit_pay_methods = async (req, res) => {
         Comment
       );
       req.flash("success", "ACH Edited");
-      res.redirect("/payments_methods/" + user.EMAIL);//Redirect with msg success Card Edited
+      res.redirect("/payments_methods" );//Redirect with msg success Card Edited
     });
   }
 
@@ -1363,7 +1363,7 @@ exports.delete_pay_methods = async (req, res) => {
       Comment
     );
     req.flash("success", "Card deleted");
-    res.redirect("/payments_methods/" + user.ID);//Redirect to payment Methods page with success card deleted message
+    res.redirect("/payments_methods" );//Redirect to payment Methods page with success card deleted message
   });
 };
 
@@ -2768,21 +2768,21 @@ exports.process_payment_WF = async (req, res) => {
 
 /**FUNCTION TO CHANGE CRON TASK SERVER (WF VERIFY) */
 exports.changeCronServer = async (req, res) => {
-  var child_process = require('child_process');
-  const { spawn } = require('node:child_process');
-  var terminal = require('child_process').exec('C:/Users/isaac/Documents/GitHub/invoice_payment/src/public/assets/data/pm2_restart.bat'); 
-  terminal.stdout.on('data', function (data) { console.log('stdout: ' + data); }); 
-  terminal.on('exit', function (code) { console.log('child process exited with code ' + code); }); 
-  setTimeout(function() { console.log('Sending stdin to terminal');
-   terminal.stdin.write('echo "Hello $USER. Your machine runs since:"\n'); 
-   terminal.stdin.write('uptime\n'); console.log('Ending terminal session'); 
-   terminal.stdin.end(); }, 1000);
-
-  // child_process.exec('C:/Users/isaac/Documents/GitHub/invoice_payment/src/public/assets/data/pm2_restart.bat', function(error, stdout, stderr) {
-  //     console.log(stdout);
-  // })
-
-  Fuente: https://www.iteramos.com/pregunta/83992/Como-ejecutar-comandos-a-traves-de-un-proceso-hijo-de-NodeJS
-  return res.sendStatus(200)
- /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
+  // var process = require('child_process');
+  // process.exec('pm2 stop 1',function (error, stdout, stderr) {
+  //   if (error !== null) {
+  //       console.log('exec error: ' + error);
+  //   }
+    var exec = require('child_process').exec,
+    child;
+///C:/Users/isaac/Documents/init_checkWF.bat
+child = exec('pm2 restart 1',
+  function (error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    console.log('stderr: ' + stderr);
+    if (error !== null) {
+      console.log('exec error: ' + error);
+    }
+});
+    return res.sendStatus(200)
 };
