@@ -2295,7 +2295,6 @@ exports.saveEditSetting = async (req, res) => {
   if (sType =='gatewayCompanyId' || sType =='gatewayEntity' || sType =='consumerKey'|| sType =='consumerSecret') {
    enValue= encrypt(sValue)
   }
-  console.log(enValue)
   let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId);//SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable();// GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
@@ -2650,7 +2649,8 @@ exports.process_payment_WF = async (req, res) => {
   if (req.cookies.wf && modeEnv.Status == 1) {
     apikey = req.cookies.wf
   }else{
-    let hostLink = 'api-certification.wellsfargo.com';
+    let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+      let hostLink = gateaway[4]['valueSett'];
     let WF_APIKey = JSON.parse(await WFCCtrl.APYKeyGet(hostLink).then((response) => {
       return JSON.stringify(response)
     }));

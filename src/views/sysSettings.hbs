@@ -356,13 +356,14 @@ $('#nextTime').empty();
             return  
         }
     }); 
-$('.setCron').on('change', async function (e) {
- let id = e.currentTarget['dataset']['id'];
-    let value = e.target.value;
+$('#setCron').on('click', async function (e) {
+    let id = 26;
+    let value = $('#minutes').val() + ','+$('#hours').val();
     let data = new FormData();
+    console.log(value)
     data.append('sId',id);
     data.append('sValue',value);
-    data.append('sType','gatewayCompanyId')
+    data.append('sType','cronTime')
     data.append('sStatus','1')
     $.ajax({
       url: `/saveEditSetting`,
@@ -374,7 +375,7 @@ $('.setCron').on('change', async function (e) {
       success: function (data, textStatus, jqXHR) {
        // console.log(data)
         if (data == 'OK') {
-          swal.fire('Gateway Company ID success update')
+          swal.fire('CronTask time success update')
         }
       },
       error: function (jqXHR, textStatus) {
