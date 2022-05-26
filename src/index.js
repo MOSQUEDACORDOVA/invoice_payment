@@ -84,9 +84,6 @@ app.use('/', require('./routes'));
 
 // Start server
 app.listen(app.get('port'), () => {	
-	console.log(`Server in port ${app.get('port')}`);	
-	console.log (process.env.TESTING)
-	ecoSys.apps[0].env.CONSUMERKEY='21'
-	console.log (ecoSys.apps[0].env)
+	console.log(`Server in port ${app.get('port')}`);
 	
 });
