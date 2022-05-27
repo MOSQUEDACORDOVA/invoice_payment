@@ -699,6 +699,40 @@ exports.inoviceO_detail = async (req, res) => {
       Comment
     );
 
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri:
+        URI0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+
+        return JSON.stringify(map_loggin);
+      })
+    );
+     // BPCNUM FORM MAPPINGLOGGING
+     console.log(inv_detail['BPCINV'])
+     let msg = false;
+   for (let i = 0; i < maping_login["$resources"].length; i++) {
+     console.log(maping_login["$resources"])
+     console.log(maping_login["$resources"][i]["BPCNUM"])
+     if (maping_login["$resources"][i]["BPCNUM"] !== inv_detail['BPCINV'] ) {
+     console.log('msg');
+     inv_detail = '';
+     msg = "Unable to load invoice. This invoice is not available to your user account."
+     }
+   }
+
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -709,7 +743,7 @@ exports.inoviceO_detail = async (req, res) => {
       user,
       inv_detail,
       pictureProfile,
-      admin,
+      admin,msg
 
     });
   });
@@ -771,7 +805,39 @@ exports.inoviceC_detail = async (req, res) => {
       Status,
       Comment
     );
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri:
+        URI0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
 
+        return JSON.stringify(map_loggin);
+      })
+    );
+    // BPCNUM FORM MAPPINGLOGGING
+    console.log(inv_detail['BPCINV'])
+      let msg = false;
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      console.log(maping_login["$resources"])
+      console.log(maping_login["$resources"][i]["BPCNUM"])
+      if (maping_login["$resources"][i]["BPCNUM"] !== inv_detail['BPCINV'] ) {
+      console.log('msg');
+      inv_detail = '';
+      msg = "Unable to load invoice. This invoice is not available to your user account."
+      }
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -782,7 +848,7 @@ exports.inoviceC_detail = async (req, res) => {
       user,
       inv_detail,
       pictureProfile,
-      admin,
+      admin,msg
     });
   });
 };
@@ -2244,6 +2310,8 @@ exports.settingsPreview = async (req, res) => {
   let admin = false;
   if (user["ROLE"] == 4) {
     admin = true;
+  }else{
+    return res.redirect('/dashboard')
   }
   let file_N = __dirname + "/../config/client.crt";
   let file_N2 = __dirname + "/../config/client.key";

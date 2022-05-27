@@ -236,7 +236,10 @@ $(function () {
         contentType: false,
         processData: false,
       success: function (data, textStatus, jqXHR) {
-        console.log(data)
+        console.log(data);
+        if (data == 'OK') {
+          swal.fire('Certificate and Key success update')
+        }
       },
       error: function (jqXHR, textStatus) {
         console.log('error:' + jqXHR)

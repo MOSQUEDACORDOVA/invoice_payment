@@ -4,7 +4,9 @@
         grid-template-columns: 2fr 2fr 2fr;
     }
 </style>
-
+{{#if msg}}
+<label id="msgs" hidden>{{msg}}</label>
+{{/if}}
 
 <!-- BEGIN: Content-->
 <div class="app-content content ">
@@ -17,10 +19,10 @@
             <section class="invoice-preview-wrapper">
                 <div class="row invoice-preview">
                     <!-- Invoice Actions -->
-                    <div class="col-xl-5 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
+               {{#if inv_detail}}     <div class="col-xl-5 col-md-4 col-12 invoice-actions mt-md-0 mt-2">
                         <div class="card">
                             <div class="card-body invoices-details-colums">
-                                <a class="btn btn-outline-secondary" href="/print-invoice/{{inv_detail.NUM}}"
+                                <a class="btn btn-outline-secondary" href="{{#if inv_detail}}/print-invoice/{{inv_detail.NUM}}{{/if}}"
                                     target="_blank" style="margin-right: 1rem"> Print </a>
                                     {{!-- ONLY SHOW THIS BUTTON IF OPEN INVOICE DETAIL --}}
                                 {{#if closed_inv}}{{else}} <form action="/pay_invoices" method="post"
@@ -31,7 +33,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div>{{/if}}
                     <div class="col-12"></div>
                     <!-- /Invoice Actions -->
                     <!-- Invoice -->
