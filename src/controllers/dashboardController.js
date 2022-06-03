@@ -722,17 +722,21 @@ exports.inoviceO_detail = async (req, res) => {
     );
      // BPCNUM FORM MAPPINGLOGGING
      console.log(inv_detail['BPCINV'])
-     let msg = false;
+     let msg = false, find = 0;
    for (let i = 0; i < maping_login["$resources"].length; i++) {
      console.log(maping_login["$resources"])
      console.log(maping_login["$resources"][i]["BPCNUM"])
-     if (maping_login["$resources"][i]["BPCNUM"] !== inv_detail['BPCINV'] ) {
+     if (maping_login["$resources"][i]["BPCNUM"] == inv_detail['BPCINV'] ) {
      console.log('msg');
-     inv_detail = '';
-     msg = "Unable to load invoice. This invoice is not available to your user account."
+     find++
+     
      }
    }
-
+   console.log(find)
+if (find == 0) {
+  inv_detail ='';
+  msg = "Unable to load invoice. This invoice is not available to your user account."
+}
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -744,7 +748,6 @@ exports.inoviceO_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,msg
-
     });
   });
 };
@@ -828,16 +831,21 @@ exports.inoviceC_detail = async (req, res) => {
     );
     // BPCNUM FORM MAPPINGLOGGING
     console.log(inv_detail['BPCINV'])
-      let msg = false;
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      console.log(maping_login["$resources"])
-      console.log(maping_login["$resources"][i]["BPCNUM"])
-      if (maping_login["$resources"][i]["BPCNUM"] !== inv_detail['BPCINV'] ) {
-      console.log('msg');
-      inv_detail = '';
-      msg = "Unable to load invoice. This invoice is not available to your user account."
-      }
+    let msg = false, find = 0;
+  for (let i = 0; i < maping_login["$resources"].length; i++) {
+    console.log(maping_login["$resources"])
+    console.log(maping_login["$resources"][i]["BPCNUM"])
+    if (maping_login["$resources"][i]["BPCNUM"] == inv_detail['BPCINV'] ) {
+    console.log('msg');
+    find++
+    
     }
+  }
+  console.log(find)
+if (find == 0) {
+ inv_detail ='';
+ msg = "Unable to load invoice. This invoice is not available to your user account."
+}
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -1117,13 +1125,13 @@ exports.add_pay_methods = async (req, res) => {
     var {
       payName,
       bank_id,
-      bank_account_number,
+      bank_account_number,legalNameAccount
     } = req.body; //This variables contain  info about ACH for save in x3
     /**ENCRYPT INFO ACH BEFORE SEND TO X3 */
     bank_account_number = encrypt(bank_account_number);
     bank_id = encrypt(bank_id);
     payName = encrypt(payName);
-
+    legalNameAccount= encrypt(legalNameAccount);
     // Check out if ACH is duplicate
     let IDPay = 0;
     for (let i = 0; i < payIDs["$resources"].length; i++) {
@@ -1175,7 +1183,7 @@ exports.add_pay_methods = async (req, res) => {
         CARDNO: "",
         CVC: "",
         EXPDAT: "",
-        NAME: "",
+        NAME: legalNameAccount,
         ADDLIG1: "",
         ADDLIG2: "",
         ADDLIG3: "",
@@ -1311,14 +1319,14 @@ exports.edit_pay_methods = async (req, res) => {
     var {
       payName,
       bank_id,
-      bank_account_number, payID,
+      bank_account_number, payID,legalNameAccount
     } = req.body;
 
     //ENCRYPT INFO ABOUT ACH
     bank_account_number = encrypt(bank_account_number);
     bank_id = encrypt(bank_id);
     payName = encrypt(payName);
-
+    legalNameAccount = encrypt(legalNameAccount);
     //SAVE ACH EDITED INFO
     request({
       uri:
@@ -1342,7 +1350,7 @@ exports.edit_pay_methods = async (req, res) => {
         CARDNO: "",
         CVC: "",
         EXPDAT: "",
-        NAME: "",
+        NAME: legalNameAccount,
         ADDLIG1: "",
         ADDLIG2: "",
         ADDLIG3: "",
@@ -2736,21 +2744,31 @@ exports.process_payment_WF = async (req, res) => {
     inv,
     appliedAmount,
     reasonLessAmta,
-    userIDInv, NamePayer_Bank, payName
+    userIDInv, NamePayer_Bank, Payname,legalNameAccount
   } = req.body;
   //console.log(req.body)
   let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDWF())//GET Last PaymentID WF to create next 
-  //CREATE THE NEXT PAYMENT ID
-  let payment_id0 = consult_paymentID[0]['TransactionID']// GET TRANSACTIONID FOR CREATE NEXT NUM
-  let prepare_idWF = payment_id0.replace('POR', '')//
+  console.log(consult_paymentID)
+  let prepare_idWF
+  if (consult_paymentID.length == 0) {
+    prepare_idWF = 'POR000000000001'
+  } else {
+    let payment_id0 = consult_paymentID[0]['TransactionID']// GET TRANSACTIONID FOR CREATE NEXT NUM
+  prepare_idWF = payment_id0.replace('POR', '')//
   prepare_idWF = parseInt(consult_paymentID[0]['pmtKey']) + 1
   let complete_seq = prepare_idWF.toString().padStart(12, "0");
   prepare_idWF = 'POR' + complete_seq
-  if (NamePayer_Bank == "") {
-    NamePayer_Bank = payName
   }
+  //CREATE THE NEXT PAYMENT ID
+  
+  if (NamePayer_Bank == "" || NamePayer_Bank == null) {
+    NamePayer_Bank = decrypt(Payname);
+    console.log('NamePayer_Bank');  
+  }
+  console.log(NamePayer_Bank)
+  
   //SEND PAYMENT TO WF API
-  let WF_TransactionID = JSON.parse(await WFCCtrl.WF(totalAmountcard, apikey, NamePayer_Bank, bank_id, bank_account_number, prepare_idWF).then((response) => {
+  let WF_TransactionID = JSON.parse(await WFCCtrl.WF(totalAmountcard, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF).then((response) => {
     return JSON.stringify(response)
   }))
 

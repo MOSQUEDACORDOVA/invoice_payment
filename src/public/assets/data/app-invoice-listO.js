@@ -475,6 +475,9 @@ async function loadmore() {
 }
 async function paymentsL0() {
   $("#wait_modal").modal("show");
+  setTimeout(function(){
+    $('#wait_modal').modal('hide')
+  }, 2000);
   let responseData = await fetch("/paymentsL")
     .then((response) => response.json())
     .then((data) => {

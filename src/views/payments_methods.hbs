@@ -228,6 +228,13 @@
                                             action="/add_method_pay">
                                             <input type="text" name="typeM" id="typeM" value="ACH" hidden>
                                             <div class="col-6 mt-0">
+                                                <label class="form-label" for="legalNameAccount">Legal Name on Account</label>
+                                                <input id="legalNameAccount" name="legalNameAccount"
+                                                    class="form-control add-credit-card-mask" type="text"
+                                                    placeholder="Legal Name on Account" aria-describedby="addCard2"
+                                                    data-msg="Please enter your Legal Name on Account" required  />
+                                            </div>
+                                            <div class="col-6 mt-0">
                                                 <label class="form-label" for="addCardNumber">Nick Name</label>
                                                 <input id="payName" name="payName"
                                                     class="form-control add-credit-card-mask" type="text"
@@ -281,6 +288,7 @@
                                                                 data-bankacct="{{#decryptData BANKACCT}}{{/decryptData}}"
                                                                 data-bankrout="{{#decryptData BANKROUT}}{{/decryptData}}"
                                                                 data-name="{{#decryptData PAYNAME}}{{/decryptData}}"
+                                                                data-legalname="{{#decryptData NAME}}{{/decryptData}}"
                                                                 data-id="{{PAYID}}">
                                                                 Edit
                                                             </button>
@@ -382,9 +390,11 @@ $('#addcardNickName').val(cardname)
         let bankacct = e.currentTarget.dataset['bankacct'],
             bankrout = e.currentTarget.dataset['bankrout'],
             name = e.currentTarget.dataset['name'],
+            legalname = e.currentTarget.dataset['legalname'],
             id = e.currentTarget.dataset['id'];
 
         $('#payName').val(name)
+        $('#legalNameAccount').val(legalname)
         $('#bank_id').val(bankrout)
         $('#bank_account_number').val(bankacct)
 

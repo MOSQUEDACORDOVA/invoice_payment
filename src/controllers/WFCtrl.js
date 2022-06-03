@@ -22,13 +22,15 @@ module.exports = {
       console.log('production');
     let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
       if (error) throw error;
-     return decrypt(data);
+     return data;
     });
     let crt =fs.readFileSync(file_N,'utf8', (error, data) => {
       if (error) throw error;
-     return decrypt(data);
+     return data;
     });
           //SET HEADER
+          keyA=decrypt(keyA)
+          crt=decrypt(crt)
           console.log(hostLink)
           var options = {
             method: 'POST',
