@@ -105,9 +105,18 @@ module.exports = {
 		let tax = parseFloat(mountWT) - parseFloat(mountWOT)
 		return tax.toFixed(2);
 	},
-	primary_payment: (id) => {
+	virifiedACH: (id) => {
 		if (id == 1) {
-			return `<span class="badge badge-light-primary ms-50">Primary</span>`
+			return `<span class="badge badge-light-success ms-50">Verified</span>`
+		}else{
+			return `<span class="badge badge-light-warning ms-50">No verified</span>`
+		}
+	},
+	virifiedACHBtn: (id,payID) => {
+		if (id == 1) {
+			return `<a class="btn btn-outline-success verified">Verify</a> `
+		}else{
+			return `<a class="btn btn-outline-info" href="/verify_PM/${payID}">Verify</a> `
 		}
 	},
 	decimals: (mount) => {	

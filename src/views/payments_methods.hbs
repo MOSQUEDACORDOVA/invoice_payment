@@ -3,6 +3,9 @@
         display: :none !important;
     }
 </style>
+{{#if msg}}
+<label id="msgs" hidden>{{msg}}</label>
+{{/if}}
 <!-- BEGIN: Content-->
 <div class="app-content content ">
     <div class="content-overlay"></div>
@@ -247,7 +250,7 @@
                                                     class="form-control add-credit-card-mask" type="text"
                                                     placeholder="ABA routing number" aria-describedby="addCard2"
                                                     data-msg="Please enter your ABA routing number" required
-                                                    maxlength="9" value="" />
+                                                    minlength="9" value="" />
                                             </div>
                                             <div class="col-6 mt-0">
                                                 <label class="form-label" for="addCardNumber">Bank Account
@@ -276,7 +279,7 @@
                                                             alt="Mastercard" /> --}}
                                                         <div class="d-flex align-items-center mb-50">
                                                             <h6 class="mb-0">{{#decryptData PAYNAME}}{{/decryptData}}</h6>
-                                                            {{#primary_payment PAYID}}{{/primary_payment}}
+                                                            {{#virifiedACH verify}}{{/virifiedACH}}
                                                         </div>
                                                         <span class="card-number">{{#cardHide
                                                             BANKACCT}}{{/cardHide}}</span>
@@ -292,8 +295,10 @@
                                                                 data-id="{{PAYID}}">
                                                                 Edit
                                                             </button>
-                                                            <a class="btn btn-outline-secondary"
-                                                                href="/delete_payM/{{PAYID}}">Delete</a>
+                                                            <a class="btn btn-outline-secondary me-75" onclick="deleteACH('{{PAYID}}')"
+                                                                href="#">Delete</a>
+                                                                {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}}
+                                                             
                                                         </div>
                                                     </div>
                                                 </div>
@@ -317,6 +322,7 @@
     </div>
 </div>
 <!-- END: Content-->
+    <script src="../../../app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script> 
 <script>
 
     $('#ACHBankCheck').on('change', (e) => {
@@ -411,4 +417,66 @@ $('#addcardNickName').val(cardname)
         $('#formBankOptions').append(IDPay)
     })
 
+$('.verified').on('click', (e) => {
+        //GETT VALUES FROM DATASET
+swal.fire('Warning', 'Your account was previously verified', 'warning')
+    })
+
+
+if ($('#formBankOptions').length) {
+  $('#formBankOptions').validate({
+    errorClass: 'error',
+    rules: {
+      'legalNameAccount': {
+        required: true
+      },
+      'payName': {
+        required: true
+      },
+      'bank_id': {
+        required: true,
+        minlength: 9,
+        maxlength: 9
+
+      },
+      'bank_account_number': {
+        required: true
+      }
+    },
+  messages: {
+    'bank_id': {
+      minlength: jQuery.validator.format("At least {0} characters required!")
+    }
+  }
+  });
+
+  $('#formBankOptions').on('submit', function (e) {
+    var isValid = $('#formBankOptions').valid();   
+     
+    e.preventDefault();
+if (isValid) {
+
+    this.submit()
+      
+    }
+    
+  });
+}
+
+
+function deleteACH(PAYID){
+    Swal.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, delete it!'
+}).then((result) => {
+  if (result.isConfirmed) {
+    window.location.href = `/delete_payM/${PAYID}`
+  }
+})
+}
 </script>

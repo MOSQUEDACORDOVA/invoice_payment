@@ -201,7 +201,7 @@
                                             </div>
                                         </div>
                                         <div id="ACHOptions" class="">
-                                            {{#each ACHMethod as |pay_met i|}}
+                                            {{#each activeACH as |pay_met i|}}
                                             <h6 class="card-holder-name my-75">{{#decryptData PAYNAME}}{{/decryptData}}
                                             </h6>
                                             <div class="form-check">
@@ -425,7 +425,7 @@
                                                     value="{{user.FNAME}} {{user.LNAME}}" hidden>
                                                 <input class="userIDInv" name="userIDInv" hidden>
                                                 <input type="text" name="typeM" id="typeM" value="ACH" hidden>
-                                                
+
                                                 <div class="col-6 mt-0">
                                                 <label class="form-label" for="legalNameAccount">Legal Name on Account</label>
                                                 <input id="legalNameAccount" name="legalNameAccount"

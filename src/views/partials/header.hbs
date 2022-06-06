@@ -74,8 +74,10 @@
 
     <!-- PER MODULES -->
     {{#if invoice}}
-    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css">
-    
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-list.css">    
+    {{/if}}
+        {{#if pay_methods}}
+<link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css">  
     {{/if}}
     {{#if print_inv}}    
     <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-invoice-print.css" media="print">

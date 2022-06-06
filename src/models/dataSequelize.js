@@ -5,6 +5,7 @@ const { Op, where, Sequelize } = require("sequelize");
 const tPayment = require("../models/tPayment");//tPayment Model, represent the Table tPayment in SQL
 const tPaymentApplication = require("../models/tPaymentApplication");//tPaymentApplication Model, represent the Table tPaymentApplication in SQL
 const tSettings = require("../models/tSettings");//tSettings Model, represent the Table tSettings in SQL
+const tPaymentFraudProtection = require("../models/tPaymentFraudProtection");//tSettings Model, represent the Table tSettings in SQL
 
 module.exports = {
   /**FUNCTIONS FOR PAYMENTS TABLE*/
@@ -215,6 +216,74 @@ module.exports = {
         })
         .catch((err) => {
           console.log(err);
+        });
+    });
+  },
+
+  /**FUNCTIONS FOR FRAUD PROTECTION */
+
+  tPaymentFraudProtectionSave(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,PaymentMethodID) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.create(
+        {
+          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID,TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, PaymentMethodID:PaymentMethodID})
+        .then((data) => {
+          let data_set = JSON.stringify(data);
+          resolve(data_set);
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(err)
+        });
+    });
+  },
+  GetLastPaymenTIDFraudP(){// SELECT PAYMENTID LAST, WF
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.findAll({attributes:['TransactionID','pmtKey'],limit: 1, where: {TransactionID:{[Op.like]: '%FP%'} },order: [ [ 'createdAt', 'DESC' ]]})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }, 
+  verifyPaymentMethodID(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.findAll({where: {PaymentMethodID:PaymentMethodID, UserID: UserID},order: [ [ 'createdAt', 'DESC' ]]})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  verifyPaymentMethodIDProcess(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.findOne({where: {PaymentMethodID:PaymentMethodID, UserID: UserID,ProcessorStatus: 'PROCESSED'},order: [ [ 'createdAt', 'DESC' ]]})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  saveFraudProtectionSave(ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,paymentKey) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.update(
+        { ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc},{where:{pmtKey:paymentKey}})
+        .then((data) => {
+          let data_set = JSON.stringify(data);
+          resolve(data_set);
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(err)
         });
     });
   },
