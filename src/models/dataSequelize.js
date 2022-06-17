@@ -251,7 +251,7 @@ module.exports = {
   }, 
   verifyPaymentMethodID(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
     return new Promise((resolve, reject) => {
-      tPaymentFraudProtection.findAll({where: {PaymentMethodID:PaymentMethodID, UserID: UserID},order: [ [ 'createdAt', 'DESC' ]]})
+      tPaymentFraudProtection.findAll({where: {PaymentMethodID:PaymentMethodID, UserID: UserID,PaymentStatus:1},order: [ [ 'createdAt', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
@@ -263,7 +263,7 @@ module.exports = {
   },
   verifyPaymentMethodIDProcess(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
     return new Promise((resolve, reject) => {
-      tPaymentFraudProtection.findOne({where: {PaymentMethodID:PaymentMethodID, UserID: UserID,ProcessorStatus: 'PROCESSED'},order: [ [ 'createdAt', 'DESC' ]]})
+      tPaymentFraudProtection.findOne({where: {PaymentStatus:1,PaymentMethodID:PaymentMethodID, UserID: UserID,ProcessorStatus: 'PENDING'},order: [ [ 'createdAt', 'DESC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
@@ -277,6 +277,19 @@ module.exports = {
     return new Promise((resolve, reject) => {
       tPaymentFraudProtection.update(
         { ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc},{where:{pmtKey:paymentKey}})
+        .then((data) => {
+          let data_set = JSON.stringify(data);
+          resolve(data_set);
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(err)
+        });
+    });
+  },
+  deletePaymentMethod(PaymentMethodID,UserID) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.update({ PaymentStatus: 0},{where:{PaymentMethodID:PaymentMethodID,UserID:UserID,PaymentStatus:1}})
         .then((data) => {
           let data_set = JSON.stringify(data);
           resolve(data_set);

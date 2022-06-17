@@ -21,9 +21,7 @@ const {
 //Payment process configuration
 var cybersourceRestApi = require("cybersource-rest-client");
 var configuration = require("./ConfigurationPayment");
-const {
-  parse
-} = require("path");
+const { parse} = require("path");
 const WFCCtrl = require("./WFCtrl");
 require("dotenv").config();
 
@@ -70,7 +68,7 @@ exports.dashboard = async (req, res) => {
     admin = true;
   }
   //Declare and send log to SystemLo
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 65-";
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   if (user["ROLE"] > 1) {
@@ -171,15 +169,7 @@ exports.openInvMore = async (req, res) => {
     (Description = "Open Invoices list success to X3"),
       (Status = 1),
       (Comment = "Function: openInvMore-line 307");
-    SystemLogL = await DataBasequerys.tSystemLog(
-      UserID,
-      IPAddress,
-      LogTypeKey,
-      SessionKey,
-      Description,
-      Status,
-      Comment
-    );
+    SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment    );
 
     var paymentsL;
     //FIRTS MAPPING LOG FOR GET BPCNUM'S
@@ -434,22 +424,8 @@ exports.searchCloseInvC = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
-  let UserID = user["ID"].toString(),
-    IPAddress = ip,
-    LogTypeKey = 5,
-    SessionKey = SessionKeyLog,
-    Description = "FUNCTION:searchCloseInvC ",
-    Status = 1,
-    Comment = "Starting- line 440-";
-  var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
-    IPAddress,
-    LogTypeKey,
-    SessionKey,
-    Description,
-    Status,
-    Comment
-  );
+  let UserID = user["ID"].toString(),IPAddress = ip,LogTypeKey = 5,SessionKey = SessionKeyLog,Description = "FUNCTION:searchCloseInvC ",Status = 1,Comment = "Starting- line 440-";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
   var search = req.params.search;
@@ -781,11 +757,12 @@ exports.pay_methods = async (req, res) => {
           break;
       }
     }
-    let search
+    let search =[]
     for (let i = 0; i < ACHMethod.length; i++) {
-      search = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
+      search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
       ACHMethod[i].verify = 0;
-      if (search) {
+      console.log(search[0])
+      if (search[0] == null) {
         ACHMethod[i].verify = 1;
       }
     }
@@ -1035,6 +1012,7 @@ exports.add_pay_methods = async (req, res) => {
       console.log()
       //SEND PAYMENT TO WF API
       for (let i = 0; i < 2; i++) {
+        FirstAmount= Math.random().toFixed(2)
         let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDFraudP())//GET Last PaymentID WF to create next
         console.log(consult_paymentID);
         let prepare_idWF;
@@ -1104,8 +1082,7 @@ exports.add_pay_methods = async (req, res) => {
           // });//SEND RESPONSE TO AJAX REQUEST
         }
       }
-      req.flash("success", "ACH added, $0.050 has been credited, for fraud protection please check your account added to use");
-      res.cookie('success', "ACH added, $0.050 has been credited, for fraud protection please check your account added to use", { maxAge: 3600 });
+      res.cookie('success', "ACH Bank Account added, please check your bank account for two deposits under $1 and verify the amounts. You have 14 days to verify the account, otherwise the deposits will be transferred and the bank account verification process will need to be restarted.", { maxAge: 3600 });
       res.redirect("/payments_methods"); //If the request comes from the PayMethods Page, redirect with a message Card added
     });
   }
@@ -1121,6 +1098,8 @@ exports.verify_PM = async (req, res) => {
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(PaymentMethodID, UserID));
   console.log(search);
+
+
   let status
   let apikey;
   let modeEnv = JSON.parse(
@@ -1143,20 +1122,40 @@ exports.verify_PM = async (req, res) => {
       });
     }
   }
+  const amount1 = req.params.amount1,amount2 = req.params.amount2
   let accountVerified = 0;
   for (let i = 0; i < search.length; i++) {
+    console.log('amount2:' + amount2)
+    console.log('i:' + i)
+    console.log(search[i]['TranAmount'])
+    if (i== 0 && search[i]['TranAmount'] != parseFloat(amount1) ) {    
+      res.cookie('errorLogC', "The amount 1 does not correspond to the one sent to the account", { maxAge: 3600 });
+      accountVerified = -1;
+      break
+    }
+    if (i== 1 && search[i]['TranAmount'] != parseFloat(amount2) ) {
+      res.cookie('success', "The amount 2 does not correspond to the one sent to the account", { maxAge: 3600 });
+      accountVerified = -1;
+      break     
+    }
+
     status = JSON.parse(await WFCCtrl.GetStatus(apikey, search[i]['TransactionID']).then((response) => {
       return JSON.stringify(response);
     }))
     console.log(status);
-    if (status['payment_status'] == 'PROCESSED') {
+    if (status['payment_status'] == 'PROCESSED') {     
+
       let saveFraudPr = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']));
-      accountVerified++;      
+      accountVerified++;
+            
     }
   }
   console.log(accountVerified)
+
   //console.log(search[0]['PaymentMethodID'])
+  
   if (accountVerified > 1) {
+    
     const payIDs = JSON.parse(await request({
       uri: URI +
         `YPORTALPAY?representation=YPORTALPAY.$query&where=PAYID eq ${search[0]['PaymentMethodID']}` ,
@@ -1233,7 +1232,10 @@ exports.verify_PM = async (req, res) => {
     res.cookie('success', "Your account was verified. Now is available to use.", { maxAge: 3600 });
     res.redirect("/payments_methods");
   } else {
-    res.cookie('errorLogC', "Your account could not be verified, please verify your account details.", { maxAge: 3600 });
+    if (accountVerified == -1) {
+     return res.redirect("/payments_methods");
+    }
+    res.cookie('errorLogC', "Your account could not be verified, please reach out to support.", { maxAge: 3600 });
     res.redirect("/payments_methods");
   }
 
@@ -1443,15 +1445,8 @@ exports.delete_pay_methods = async (req, res) => {
     (Description = "Success Delete payments methods module to X3"),
       (Status = 1),
       (Comment = "Function: delete_pay_methods- line 928");
-    SystemLogL = await DataBasequerys.tSystemLog(
-      UserID,
-      IPAddress,
-      LogTypeKey,
-      SessionKey,
-      Description,
-      Status,
-      Comment
-    );
+    SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
+    let disabledPaymentMIDSQL = JSON.parse(await DataBaseSq.deletePaymentMethod(payID,UserID ))
     req.flash("success", "Card deleted");
     res.redirect("/payments_methods"); //Redirect to payment Methods page with success card deleted message
   });
@@ -1530,14 +1525,16 @@ exports.pay_invoices = async (req, res) => {
     }
   }
   let activeACH = [];
-   let search
+  let search =[]
     for (let i = 0; i < ACHMethod.length; i++) {
-      search = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
+      search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
       ACHMethod[i].verify = 0;
-      if (search) {
+      if (search[0] == null) {
         activeACH.push(ACHMethod[i]);
       }
     }
+    
+
   //GET INVOICES INFO BY SELECTED IN THE OPEN INV TABLE
   let count = 100;
   const {

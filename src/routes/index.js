@@ -55,7 +55,7 @@ router.get('/payments_methods', authController.authenticatedUser, dashboardContr
 router.post('/add_method_pay', authController.authenticatedUser, dashboardController.add_pay_methods);
 router.post('/edit_apy_method', authController.authenticatedUser, dashboardController.edit_pay_methods);
 router.get('/delete_payM/:IDPay', authController.authenticatedUser, dashboardController.delete_pay_methods);
-router.get('/verify_PM/:IDPay', authController.authenticatedUser, dashboardController.verify_PM);
+router.get('/verify_PM/:IDPay/:amount1/:amount2', authController.authenticatedUser, dashboardController.verify_PM);
 
 //PAY INVOICES
 router.post('/pay_invoices', authController.authenticatedUser, dashboardController.pay_invoices);

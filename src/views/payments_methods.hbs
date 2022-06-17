@@ -479,4 +479,47 @@ function deleteACH(PAYID){
   }
 })
 }
+function verifyPM(payID){
+    console.log(payID);
+        Swal.fire({
+      title: "Aditional info",
+      html: `
+      <div class="mb-1">
+      <label class="form-label" for="itemquantity"> </label>      
+      
+  <div class="mb-1">
+        <label class="form-label" for="itemquantity">Amount 1</label>
+        <input type="number" class="form-control" id="amount01" value="">
+      </div>
+<div class="mb-1">
+        <label class="form-label" for="itemquantity">Amount 2</label>
+        <input type="number" class="form-control" id="amount02" value="">
+      </div>
+    </div>
+
+  `,
+      confirmButtonText: "Next",
+      focusConfirm: false,
+      preConfirm: () => {
+        const amount1 =Swal.getPopup().querySelector("#amount01").value;
+        const amount2 = Swal.getPopup().querySelector("#amount02").value;  
+        if (!amount1 || !amount2) {
+          Swal.showValidationMessage(
+            `Both fields are required`
+          );
+        }
+        return {
+          amount1: amount1,
+          amount2: amount2,
+        };
+      },
+    }).then((result) => {
+        console.log(result)
+        if (result.isConfirmed){
+        window.location.href = `/verify_PM/${payID}/${result.value.amount1}/${result.value.amount2}`
+        }
+     
+    });
+
+}
 </script>

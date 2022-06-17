@@ -116,7 +116,7 @@ module.exports = {
 		if (id == 1) {
 			return `<a class="btn btn-outline-success verified">Verify</a> `
 		}else{
-			return `<a class="btn btn-outline-info" href="/verify_PM/${payID}">Verify</a> `
+			return `<a class="btn btn-outline-info" onclick ="verifyPM('${payID}')" >Verify</a> `
 		}
 	},
 	decimals: (mount) => {	
