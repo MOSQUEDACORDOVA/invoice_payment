@@ -300,4 +300,20 @@ module.exports = {
         });
     });
   },
+
+    /**FUNCTION TO UPDATE PAYMENTSAPPLICATION TABLE*/
+    UpdPaymentApplication(inv, pmtKey,status,SystemLogL) {// THIS FUNCTION INSERT THE NEW PAYMENT IN tPaymentApplication TABLE
+      return new Promise((resolve, reject) => {
+        tPaymentApplication.update(
+          {Status: status,tlogKey:SystemLogL}, {where:{INVOICENUM:inv,tPaymentPmtKey: pmtKey}})
+          .then((data) => {
+            let data_set = JSON.stringify(data);
+            resolve(data_set);
+          })
+          .catch((err) => {
+            console.log(err)
+            reject(err)
+          });
+      });
+    },
 };

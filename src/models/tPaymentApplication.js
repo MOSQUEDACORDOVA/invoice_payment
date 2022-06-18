@@ -27,5 +27,9 @@ const tPaymentApplication = db.define('tPaymentApplication', {
 		type: DataTypes.STRING(50),
 		allowNull: true,
 	},
+	tlogKey: {
+		type: DataTypes.INTEGER(),
+		allowNull: true,
+	},
 });
 module.exports = tPaymentApplication;

@@ -89,6 +89,9 @@ function table_invoices(a) {
                     case "1":
                       status = "AUTHORIZED";
                       break;
+                      case "2":
+                      status = "CANCELED";
+                      break;
                     case "PENDING":
                       status = "PENDING";
                       break;
@@ -109,6 +112,7 @@ function table_invoices(a) {
                 class: "badge-light-success",
               },
               DECLINED: { title: "DECLINED", class: "badge-light-danger" },
+              CANCELED: { title: "CANCELED", class: "badge-light-danger" },
               "NOT PAYMENT": { title: "UNPAID", class: "badge-light-info" },
               "PENDING": { title: "PENDING", class: "badge-light-info" },
             };
@@ -151,6 +155,8 @@ function table_invoices(a) {
                 arrPayments[i]["tPaymentApplication"][j]["Status"] ==
                 "NOT PAYMENT" ||
                 arrPayments[i]["tPaymentApplication"][j]["Status"] == "1"
+                ||
+                arrPayments[i]["tPaymentApplication"][j]["Status"] == "2"
                 // || arrPayments[i]["tPaymentApplication"][j]["Status"] == "PENDING"
               ) {
               } else {

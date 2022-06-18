@@ -48,8 +48,7 @@
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow menu-collapsed" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row box-logo">
-            <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard"><span
-                        class="brand-logo">
+            <li class="nav-item me-auto"><a class="navbar-brand" href="/dashboard"><span class="brand-logo">
                         <img src="../../../app-assets/images/logo/saw_logo.jpg" class="round" alt="" width="150"
                             height="auto"></span>
                     {{!-- --}}
@@ -68,16 +67,16 @@
             <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Menu</span><i
                     data-feather="more-horizontal"></i>
             </li>
-            <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/dashboard"><i data-feather='bar-chart-2'></i><span
-                        class="menu-title text-truncate" data-i18n="Email">Open Invoices</span></a>
+            <li class="{{#if invoiceO}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/dashboard"><i
+                        data-feather='bar-chart-2'></i><span class="menu-title text-truncate" data-i18n="Email">Open
+                        Invoices</span></a>
             </li>
             <li class="{{#if invoiceC}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/close_invoices"><i data-feather='archive'></i><span
-                        class="menu-title text-truncate" data-i18n="Email">Closed Invoices</span></a>
+                    href="/close_invoices"><i data-feather='archive'></i><span class="menu-title text-truncate"
+                        data-i18n="Email">Closed Invoices</span></a>
             </li>
-            <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center"
-                    href="/payments"><i data-feather='layers'></i><span class="menu-title text-truncate"
+            <li class="{{#if payments}}active{{/if}} nav-item"><a class="d-flex align-items-center" href="/payments"><i
+                        data-feather='layers'></i><span class="menu-title text-truncate"
                         data-i18n="Email">Payments</span></a>
             </li>
             <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods"><i
@@ -138,9 +137,75 @@
                         <button tabindex="26" rippleeffect=""
                             class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"
                             id="btn_edit_profile">Save</button>
-                        <a tabindex="26" rippleeffect=""
+                        <a tabindex="26" id="btnChangePassword"
+                            class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button">Change
+                            Password</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="changePassword" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+    style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalScrollableTitle">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form class="needs-validation" method="post" id="changePassword_form">  
+                    <div class="" id="client-info">
+                                <label class="form-label" for="currentpassword">Current Password</label>
+
+                        <div class="input-group input-group-merge form-password-toggle">
+                            <input type="password" class="form-control form-control-merge" id="currentpassword"
+                                name="currentpassword" tabindex="2"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                aria-describedby="login-password" required />
+                            <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                        </div>
+                                <label class="form-label mt-1" for="password">New Password</label>
+
+                        <div class="input-group input-group-merge form-password-toggle">
+                            <input type="password" class="form-control form-control-merge" id="password" name="password"
+                                tabindex="2"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                aria-describedby="login-password" required />
+                            <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                        </div>
+                        <div id="pswd_info">
+                            <ul>
+                                <li id="letter">It should have at least<strong>one letter</strong></li>
+                                <li id="capital">Should have at least <strong>one uppercase letter</strong>
+                                </li>
+                                <li id="number">Should have at least <strong>a number</strong></li>
+                                <li id="length">Should have at least <strong>8 characters</strong> minimun
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between mt-1">
+                                <label class="form-label" for="repeat-password">Confirm Password</label>
+                            </div>
+                            <div class="input-group input-group-merge form-password-toggle">
+                                <input type="password" class="form-control form-control-merge" id="repeat-password"
+                                    name="confirmpassword" tabindex="2"
+                                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                    aria-describedby="login-password" required />
+                                <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button tabindex="26" rippleeffect=""
                             class="btn btn-primary btn-block waves-effect waves-float waves-light" type="button"
-                            href="/resetpassform/{{user.EMAIL}}">Change Password</a>
+                            id="btn_sub" disabled>Save</button>
                     </div>
 
                 </form>
@@ -157,7 +222,36 @@
     $('#btn_edit_profile').on('click', () => {
         updateProfile()
     })
-
+    /**JQUERY TO EDIT PROFILE */
+    $('#btnChangePassword').on('click', () => {
+        $('#edit_profile').modal('hide');
+        $('#changePassword').modal('show')
+    })
+    $('#btn_sub').click((e) => {
+        if ($('#password').val() != $('#repeat-password').val()) {
+            swal.fire('Passwords did not match')
+            return
+        }
+        $.ajax({
+            url: `/new-pass-save`,
+            type: 'POST',
+            data: $('#changePassword_form').serialize(),
+            success: async function (data, textStatus, jqXHR) {
+                console.log(data);
+                if (data.status == 0) {
+                    Swal.fire('Fail', data.message, 'warning');
+                } else {
+                    Swal.fire('Success', data.message, 'success').then(() => {
+                        location.href = '/close-session'
+                    });
+                    // 
+                }
+            },
+            error: function (jqXHR, textStatus) {
+                console.log('error:' + jqXHR)
+            }
+        });
+    })
     /**FUNCTION TO UPLOAD PIC PROFILE WITH AJAX */
     const uploadPic = (event) => {
         const files = event.target.files;//Get file
@@ -187,7 +281,7 @@
             success: function (data, textStatus, jqXHR) {
                 console.log(data)
                 //When file is upload in Server, save picture name (file name) on SQL TABLE
-                savePic(files[0].name)
+                savePic(data.fileName)
                 $(`#subtext-progress`).text('Image uploaded successfully - 100%');
             },
             error: function (jqXHR, textStatus) {
@@ -242,4 +336,99 @@
             }
         });
     };
+    const btna = document.getElementById('btn_sub');
+    $('#password').keyup(function () {
+        // set password variable
+        var pswd = $(this).val();
+        //validate the length
+        if (pswd.length < 8) {
+            $('#length').removeClass('valid').addClass('invalid');
+        } else {
+            $('#length').removeClass('invalid').addClass('valid');
+        }
+
+        //validate letter
+        if (pswd.match(/[A-z]/)) {
+            $('#letter').removeClass('invalid').addClass('valid');
+        } else {
+            $('#letter').removeClass('valid').addClass('invalid');
+        }
+
+        //validate capital letter
+        if (pswd.match(/[A-Z]/)) {
+            $('#capital').removeClass('invalid').addClass('valid');
+        } else {
+            $('#capital').removeClass('valid').addClass('invalid');
+        }
+
+        //validate number
+        if (pswd.match(/\d/)) {
+            $('#number').removeClass('invalid').addClass('valid');
+        } else {
+            $('#number').removeClass('valid').addClass('invalid');
+        }
+
+        if (pswd.length >= 8 && pswd.match(/[A-z]/) && pswd.match(/[A-Z]/) && pswd.match(/\d/)) {
+            $('#btn_sub').removeAttr('disabled')
+        } else {
+            btna.setAttribute('disabled', true);
+            console.log("holamundo")
+        }
+    }).focus(function () {
+        $('#pswd_info').show();
+    }).blur(function () {
+        $('#pswd_info').hide();
+    });
 </script>
+<style>
+    #pswd_info {
+        position: sticky;
+        bottom: -75px;
+        bottom: -115px\9;
+        /* IE Specific */
+        right: 55px;
+        width: 100%;
+        padding: 15px;
+        background: #fefefe;
+        font-size: .875em;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px #ccc;
+        border: 1px solid #ddd;
+    }
+
+    #pswd_info h4 {
+        margin: 0 0 10px 0;
+        padding: 0;
+        font-weight: normal;
+    }
+
+    #pswd_info::before {
+        content: "\25B2";
+        position: absolute;
+        top: -12px;
+        left: 45%;
+        font-size: 14px;
+        line-height: 14px;
+        color: #ddd;
+        text-shadow: none;
+        display: block;
+    }
+
+    .invalid {
+        background: url(../images/invalid.png) no-repeat 0 50%;
+        padding-left: 22px;
+        line-height: 24px;
+        color: #ec3f41;
+    }
+
+    .valid {
+        background: url(../images/valid.png) no-repeat 0 50%;
+        padding-left: 22px;
+        line-height: 24px;
+        color: #3a7d34;
+    }
+
+    #pswd_info {
+        display: none;
+    }
+</style>

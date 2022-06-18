@@ -193,9 +193,34 @@ exports.resetPasswordForm = async (req, res) => {
 exports.updatePassword = async (req, res) => {
   let URI = URLHost + req.session.queryFolder+"/";
   let password_new, email, token, query_consulting
-
+if (req.body.currentpassword) {
+  let currentpassword = req.body.currentpassword
+  let user = res.locals.user["$resources"][0];
+  const getuser = await request({
+    uri: URI + "YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=EMAIL eq '"+user.EMAIL+"'",
+    method:'GET',
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      },
+    json: true,
+    })
+    let decryptPass = decrypt(getuser['$resources'][0]['PASS'])
+    if (currentpassword !== decryptPass) {
+    return res.send({status:0,message: 'Current Password wrong'}); 
+    }
+}
   password_new = encrypt(req.body.password);// Encrypt password
-  email = req.body.email
+  if (req.body.currentpassword) {
+    let user = res.locals.user["$resources"][0];
+email = user.EMAIL
+  }else{
+    email = req.body.email
+  }
+  
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
   // Save new password
   let save_pass = JSON.parse(await request({
@@ -217,8 +242,13 @@ exports.updatePassword = async (req, res) => {
     return JSON.stringify(saved)
   }))
   console.log(save_pass)
-  req.session.errorLogin = req.flash("error", "Your password changed successfully");
-  return res.redirect("/reset-pass-fine");
+  if (req.body.currentpassword) {
+    return res.send({status:1,message: 'Current Password was changed, please loggin again with the new password'});
+      }else{
+        req.session.errorLogin = req.flash("error", "Your password changed successfully");
+        return res.redirect("/reset-pass-fine");
+      }
+ 
 };
 
 /**FUNCTION TO CLOSE SESSION */

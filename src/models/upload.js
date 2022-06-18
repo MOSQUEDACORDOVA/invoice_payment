@@ -17,7 +17,14 @@ class FileController
       });
   
     }
-    const fileName = file.name;
+    var fileName0 = file.name;
+    console.log('fileName')
+    console.log(fileName0)
+    var split = fileName0.split('.')
+    var timestamp =  new Date().toISOString().replace(/[-:.]/g,"");
+    console.log(timestamp);
+    var fileName = timestamp +'.'+ split[1];
+    console.log(fileName);
     const path = __dirname + '/../public/assets/uploads/' + fileName;// DIR WHERE UPLOAD FILE
 
     try {
@@ -31,7 +38,7 @@ class FileController
           res.end(JSON.stringify({ status: 'error', message: error }));
             return;
           }
-            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName });// RETURN SUCCESS AND UBICATION DIR FILE
+            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName, fileName: fileName });// RETURN SUCCESS AND UBICATION DIR FILE
           
        });
      } catch (e) {

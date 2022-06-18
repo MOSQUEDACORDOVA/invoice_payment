@@ -89,6 +89,9 @@ console.log(array_inv)
               case status == "PENDING":
                 span = `<span class="badge rounded-pill badge-light-success" > PENDING</span>`;
                 break;
+                case status != "PENDING":
+                  span = `<span class="badge rounded-pill badge-light-success" > ${status}</span>`;
+                  break;
               case openAmount == amouintLOC:
                 span = `<span class="badge rounded-pill badge-light-warning" > AUTHORIZED WITH ERROR</span>`;
                 break;

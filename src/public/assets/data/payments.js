@@ -36,12 +36,16 @@ function paymentsTable(a){
         {//Render button with pmtKey to view payments details
           targets:7,
           render: function(data, type, full, meta){
-            
-            return (
-             `<span class="" style="cursor:pointer;" >
-             <button type="button" class="btn btn-outline-primary waves-effect btnview" data-id="${full['pmtKey']}">View</button>
-             </span>`
-            );
+            let buttons= `<span class="" style="cursor:pointer;" >
+            <button type="button" class="btn btn-outline-secondary waves-effect btnview" data-id="${full['pmtKey']}">Detail</button>
+            </span>`;
+            if ($('#admin').length) {
+              buttons= `<span class="" style="cursor:pointer;" >
+            <button type="button" class="btn btn-outline-secondary waves-effect btnview" data-id="${full['pmtKey']}">Detail</button>
+            <button type="button" class="btn btn-outline-success waves-effect btnStatus" data-id="${full['pmtKey']}">Status</button>
+            </span>`
+            }
+            return buttons;
           }
         },
       ],
@@ -104,6 +108,12 @@ function paymentsTable(a){
     //console.log(e.currentTarget.dataset['id'])
     location.href = "/payment_view/"+e.currentTarget.dataset['id']
   })
+    //Button to view status paymente details
+    dtInvoice.$(`.btnStatus`).click((e)=>{
+    //console.log(e.currentTarget.dataset['id'])
+    location.href = "/status_payment_view/"+e.currentTarget.dataset['id']
+  })
+
 }
 
 $(function () {

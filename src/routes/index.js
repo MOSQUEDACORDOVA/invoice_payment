@@ -76,6 +76,10 @@ router.get('/print-paymentDetail/:id', authController.authenticatedUser, dashboa
 //payments
 router.get('/payments', authController.authenticatedUser, dashboardController.payments);
 router.get('/payment_view/:id', authController.authenticatedUser, dashboardController.payments_detail);
+router.get('/status_payment_view/:id', authController.authenticatedUser, dashboardController.status_payments_detail);
+router.post('/resendX3', authController.authenticatedUser, dashboardController.resendX3);
+router.post('/finalizePayment', authController.authenticatedUser, dashboardController.finalizePayment);
+router.post('/cancelPayment', authController.authenticatedUser, dashboardController.cancelPayment);
 
 //Mails
 router.get('/testmail', authController.authenticatedUser, mailCtrl.testSend);

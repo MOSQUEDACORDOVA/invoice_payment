@@ -80,6 +80,82 @@ module.exports = {
       connection.connect();
     });
   },
+    //SELECT GetLogError
+    GetLogError(tlogKey) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT TOP (1000) [tlogKey]
+          ,[LogDate]
+          ,[UserID]
+          ,[IPAddress]
+          ,[LogTypeKey]
+          ,[SessionKey]
+          ,[Description]
+          ,[Status]
+          ,[Comment]
+      FROM tSystemLog WHERE tlogKey = @tlogKey`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          request.addParameter('tlogKey', TYPES.Int, tlogKey);
+          request.on('row', function (columns) {
+            columns.forEach(function (column) {
+              if (column.value === null) {
+                console.log('NULL');
+              } else {
+                KeyLog = column.value
+  
+              }
+            });
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(KeyLog)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
+    Get_YPORTALINAO(bpcnum) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = 1 AND OPENLOC_0 <>  0 AND STA_0=3`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          request.addParameter('BPCINV_0', TYPES.NVarChar, bpcnum);
+          request.on('row', function (columns) {
+            columns.forEach(function (column) {
+              if (column.value === null) {
+                console.log('NULL');
+              } else {
+                KeyLog = column.value
+  
+              }
+            });
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(KeyLog)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
   //INSERT OR UPDATE PIC PROFILE 
   uploadPicProfile(email, picture, type) {
     return new Promise((resolve, reject) => {

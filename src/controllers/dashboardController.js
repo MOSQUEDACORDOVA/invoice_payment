@@ -70,24 +70,25 @@ exports.dashboard = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-
-  if (user["ROLE"] > 1) {
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
-    where_filter_inv = "&where=ID eq " + user["ID"] + " ";
-  } else {
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAO'
+    where_filter_inv = "&OrderBy=NUM";
+  } else if (user["ROLE"] == 1 || user["ROLE"] == 2){
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
+  if (user["ROLE"] != 3) {
   //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-      "YPORTALINV?representation=YPORTALINVO.$query&count=" +
-      count +
-      "&OrderBy=ID,NUM" +
-      where_filter_inv,
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -101,7 +102,6 @@ exports.dashboard = async (req, res) => {
     let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
     let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
     inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
       pageName: "Open Invoices",
@@ -117,6 +117,65 @@ exports.dashboard = async (req, res) => {
       links,
     });
   });
+  }else{
+    let query_consulting = " " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+    }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [],
+      getPayments;
+      console.log(bpcnum)
+    for (let i = 0; i < bpcnum.length; i++) {
+      await DataBasequerys.Get_YPORTALINAO(bpcnum[i]).then((response) => {
+        response = JSON.parse(response); //PARSE RESPONSE
+console.log(response)
+      });
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+    //HERE RENDER PAGE AND INTRO INFO
+    res.render("open_invoices", {
+      pageName: "Open Invoices",
+      dashboardPage: true,
+      menu: true,
+      invoiceO: true,
+      user,
+      msg,
+      inv_wofilter,
+      inv_filtering,
+      pictureProfile,
+      admin,
+      links,
+    });
+  }
+  
+
+
+
 };
 /**FUNCTION TO RENDER OPEN INVOICES PAGE */
 exports.openInvMore = async (req, res) => {
@@ -130,28 +189,24 @@ exports.openInvMore = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: openInvMore list", Status = 1, Comment = "Starting- line 139-";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  if (user["ROLE"] > 1) {
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
-    where_filter_inv = "&where=ID eq " + user["ID"] + " ";
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAO'
+    where_filter_inv = "&OrderBy=NUM";
   } else {
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
-  // Save Log: Init GET open Invoices List
-  (Description = "Request Open invoices list from X3"),
-    (Status = 1),
-    (Comment = "Function: openInvMore- Line 278");
-  SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-      "YPORTALINV?representation=YPORTALINVO.$query&count=" +
-      count +
-      " " +
-      where_filter_inv,
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -307,9 +362,23 @@ exports.next_pageIO2 = async (req, res) => {
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAO'
+    where_filter_inv = "&OrderBy=NUM";
+  } else {
+    //Else consulting Loggin Map
+    count = 100;
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
+  }
+  //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-      `YPORTALINV?representation=YPORTALINVO.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
+    Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -341,10 +410,23 @@ exports.next_pageIC2 = async (req, res) => {
   // console.log(SystemLogL)
   //Request for GET the next page from query consulting
   var data = req.params.data;
-  let URL0 = URLHost + req.session.queryFolder + "/";
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAC'
+    where_filter_inv = "&OrderBy=NUM";
+  } else {
+    //Else consulting Loggin Map
+    count = 100;
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
+  }
+  //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-      `YPORTALINV?representation=YPORTALINVC.$query&${data}&orderBy=ID,NUM&where=ID eq ${user["ID"]}`,
+    Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -387,17 +469,38 @@ exports.searchOpenInvO = async (req, res) => {
 
   if (filter == "INVDAT" || filter == "DUDDAT") {
     query = `and ${filter} eq @${search}@`;
+    if (user["ROLE"] == 4) {
+      query = `${filter} eq @${search}@`;
+    }
+    
   } else {
     query = `and ${filter} like '%25${search}%25'`;
+    if (user["ROLE"] == 4) {
+      query = `${filter} like '%25${search}%25'`;
+    }
   }
   // console.log(query);
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let URI0 = URLHost + req.session.queryFolder + "/";
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAO'
+    where_filter_inv = "&OrderBy=NUM&where="+query;
+  } else {
+    //Else consulting Loggin Map
+    count = 100;
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
+  }
+  let URL0 = URLHost + req.session.queryFolder + "/";
+  //GET Open Invoices List to X3 by where clause EMAIL
   request({
-    uri: URI0 +
-      `YPORTALINV?representation=YPORTALINVO.$query&count=100&orderBy=ID,NUM&where=ID eq ${user.ID} ${query}`,
+    uri: URL0 +
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -432,17 +535,38 @@ exports.searchCloseInvC = async (req, res) => {
   var query = "";
   if (filter == "INVDAT" || filter == "DUDDAT") {
     query = `and ${filter} eq @${search}@`;
+    if (user["ROLE"] == 4) {
+      query = `${filter} eq @${search}@`;
+    }
+    
   } else {
     query = `and ${filter} like '%25${search}%25'`;
+    if (user["ROLE"] == 4) {
+      query = `${filter} like '%25${search}%25'`;
+    }
   }
-  //console.log(query);
+  // console.log(query);
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let URI0 = URLHost + req.session.queryFolder + "/";
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAC'
+    where_filter_inv = "&OrderBy=NUM&where="+query;
+  } else {
+    //Else consulting Loggin Map
+    count = 100;
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
+  }
+  let URL0 = URLHost + req.session.queryFolder + "/";
+  //GET Open Invoices List to X3 by where clause EMAIL
   request({
-    uri: URI0 +
-      `YPORTALINV?representation=YPORTALINVC.$query&count=100&orderBy=ID,NUM&where=ID eq ${user.ID} ${query} `,
+    uri: URL0 +
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -475,23 +599,27 @@ exports.close_invoices = async (req, res) => {
   let query_consulting = "&where=ID eq " + user["ID"].toString() + "";
   let where_filter_inv = "",
     count = 0;
-  if (user["ROLE"] == 3 || user["ROLE"] == 4) {
-    count = 100;
-  } else {
-    count = 100;
-    where_filter_inv = "&where=ID eq " + user["ID"] + ""; //Where clause eq EMAIL
-  }
   //Save LogSystem SQL init Request Closed invoices from X3
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Function: close_invoices- Line 559";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let URI0 = URLHost + req.session.queryFolder + "/";
-  //GET closed invoices from X3
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAC'
+    where_filter_inv = "&OrderBy=NUM";
+  } else {
+    //Else consulting Loggin Map
+    count = 100;
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
+  }
+  let URL0 = URLHost + req.session.queryFolder + "/";
+  //GET Open Invoices List to X3 by where clause EMAIL
   request({
-    uri: URI0 +
-      "YPORTALINV?representation=YPORTALINVC.$query&count=" +
-      count +
-      "" +
-      where_filter_inv,
+    uri: URL0 +
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
@@ -2476,6 +2604,75 @@ exports.payments_detail = async (req, res) => {
   });
 };
 
+/**FUNCTION TO STATUS PAYMENTS DETAIL PAGE */
+exports.status_payments_detail = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder + "/";
+  const user = res.locals.user["$resources"][0]; //USER INFO
+  const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PIC PROFILE
+  var admin = false;
+  if (user["ROLE"] == 4) {
+    admin = true;
+  }
+
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let count = 1000;
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init consulting payments details", Status = 1, Comment = "FUNCTION: payments_detail-line 1864";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+  //FIRTS GET PAYMENTS FROM SQL TABLE BY "PMTKEY"
+  let pmtKey = req.params.id;
+  let payments_dt = []; //USE THIS ARRAY TO STORE PAYMENTS
+  await DataBaseSq.Get_tPaymentsBypmtKey(pmtKey).then((response) => {
+    response = JSON.parse(response);
+    //PUSH IN ARRAY PAYMENTS INFO
+    payments_dt.push({
+      pmtKey: response.pmtKey,
+      CustID: response.CustID,
+      TransactionID: response.TransactionID,
+      TranAmount: response.TranAmount,
+      ProcessorStatus: response.ProcessorStatus,
+      ProcessorStatusDesc: response.ProcessorStatusDesc,
+      DateProcessesed: response.DateProcessesed,
+      tPaymentApplication: response.tPaymentApplication,
+    });
+  });
+
+  let where_filter_inv;
+  var inv_wofilter = []; //USE THIS ARRAY TO STORE INVOICES INFO
+  //GET FROM X3, INVOICE IN PAYMENTS ARRAY INFO ONE BY ONE
+  for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
+    console.log('searchLog')
+    //THIS IS FOR GET INFO OF CLOSED INVOICES WITH STATUS SOAP 1
+    let searchLog = await DataBasequerys.GetLogError(payments_dt[0].tPaymentApplication[i]['tlogKey']);
+    console.log(searchLog)
+    if (!searchLog) {
+      payments_dt[0].tPaymentApplication[i].errorLog = 'N/A'
+    }else {
+     payments_dt[0].tPaymentApplication[i].errorLog = searchLog 
+    }
+    
+  }
+
+  let payments_st = JSON.stringify(payments_dt); //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
+
+  //RENDER PAGE
+  res.render("statusPayment", {
+    pageName: "Status Payments Details",
+    dashboardPage: true,
+    menu: true,
+    status_payment_detail: true,
+    user,
+    pictureProfile,
+    payments_dt,
+    admin,
+    inv_wofilter,
+    payments_st,
+  });
+};
+
+
 /**FUNCTION TO PRINT  PAYMENTS DETAIL PAGE */
 exports.Print_payments_detail = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
@@ -2781,4 +2978,221 @@ exports.changeCronServer = async (req, res) => {
     }
   });
   return res.sendStatus(200);
+};
+
+/**FUNCTION TO STATUS PAYMENTS DETAIL PAGE */
+exports.resendX3 = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder + "/";
+  const user = res.locals.user["$resources"][0]; //USER INFO
+
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let count = 1000;
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init resendX3", Status = 1, Comment = "FUNCTION: resendX3-line ";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM,   AppliedAmount,  ShortDescription} = req.body
+    var i_file = "",inv_detail,amountPayment;
+  let today = moment().format("YYYYMMDD");//FORMAY DATE: 20220101
+  var statusSOAP = [];//ALMACENATE IN ARRAY SOAP STATUS RESPONSE
+  const parser = new xml2js.Parser({
+    explicitArray: true,
+  });//THIS FUNCTION IS FOR PARSER XML 
+  
+  var msgErroSOAP = [],inVError = [];
+
+    statusSOAP.pop()
+    console.log('reSendX3')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+    // FIRTS GET INVOICE DETAIL FROM X3
+    inv_detail = JSON.parse(
+      await request({
+        uri:
+          URI +
+          `YPORTALINVD('${INVOICENUM}')?representation=YPORTALINVD.$details`,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (invD) => {
+        return JSON.stringify(invD);
+      })
+    );
+    //GET AMOUNT APPLIED FOR INVOICE
+    amountPayment = Number.parseFloat(AppliedAmount).toFixed(2);
+    let bankAccount = decrypt(Payment['bank_account_number']);//DECRYPT
+    let Lastfour = bankAccount.slice(-4);// GET LAST FOR NUMBER 
+    let reasonLeast = ShortDescription;
+  
+  
+    i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${Payment['ProcessorTranID']};${Payment['TransactionID']};ACH${Lastfour};10204|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLeast.toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;000;BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`; //I_FILE
+  
+    console.log(i_file);//CHECK I_FILE
+  
+    //PREPARE THE XML FOR SAVE IN SOAP X3, ENTER THE I_FILE VARIABLE
+    let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
+  <soapenv:Header/>
+  <soapenv:Body>
+  <wss:run soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+  <callContext xsi:type="wss:CAdxCallContext">
+  <codeLang xsi:type="xsd:string">ENG</codeLang>
+  <poolAlias xsi:type="xsd:string">${req.session.queryFolder}</poolAlias>
+  <poolId xsi:type="xsd:string"></poolId>
+  <requestConfig xsi:type="xsd:string">
+   <![CDATA[adxwss.optreturn=JSON&adxwss.beautify=true&adxwss.trace.on=off]]>
+  </requestConfig>
+  </callContext>
+  <publicName xsi:type="xsd:string">AOWSIMPORT</publicName>
+  <inputXml xsi:type="xsd:string">
+  <![CDATA[{
+   "GRP1": {
+     "I_MODIMP": "YPORTALPAY",
+     "I_AOWSTA": "NO",
+     "I_EXEC": "REALTIME",
+     "I_RECORDSEP": "|",
+     "I_FILE":"${i_file}"
+   }
+  }]]>
+  </inputXml>
+  </wss:run>
+  </soapenv:Body>
+  </soapenv:Envelope>`;
+  
+    //SEND TO SOAP X3 THE XML WIHT THE PAYMENT INFO, AND GET RESPONSE
+    var SOAPP = JSON.parse(
+      await request({
+        uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
+        method: "POST",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          soapaction: "*",
+        },
+        body: xmlB,
+      }).then(async (SOAP) => {
+        return JSON.stringify(SOAP);
+      })
+    );
+  var newSystemLog
+    //PARSE XML RESPONSE FROM SOAP X3
+    parser.parseString(SOAPP, async function (err, result) {
+      if (result["soapenv:Envelope"]["soapenv:Body"][0]["wss:runResponse"][0]["runReturn"][0]["status"][0]["_"] == "1") {
+        //IF STATUS RESPONSE IS 1, PUSH IN ARRAY STATUS FOR THAT INVOICE
+        statusSOAP.push({
+          status:
+            result["soapenv:Envelope"]["soapenv:Body"][0][
+            "wss:runResponse"
+            ][0]["runReturn"][0]["status"][0]["_"],
+          error: msgErroSOAP,
+        });
+        console.log('Line 145')
+        console.log(statusSOAP)
+        return statusSOAP;
+      } else {
+        //IF STATUS RESPONSE IS 0, CHECK OUT THE MESSAGE RES FROM SOAP AND STORE IN ARRAY "msgErroSOAP"
+        for (let i = 0; i < result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"].length; i++) {
+  
+          msgErroSOAP.push(
+            result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"][
+            i
+            ]["message"][0]
+          );
+        }
+  
+        inVError.push(inv_detail.NUM);//STORE THE INVOICE IS IN ERROR
+        statusSOAP.push({
+          status:
+            result["soapenv:Envelope"]["soapenv:Body"][0][
+            "wss:runResponse"
+            ][0]["runReturn"][0]["status"][0]["_"],
+          error: msgErroSOAP,
+          invError: inVError,
+        });//STORE IN ARRAY: STATUS SOAP, MSG ERROR FROM X3, INVOICE NUM WITH ERROR
+        
+            console.log(newSystemLog)
+            statusSOAP.push({newSystemLog : newSystemLog});
+      }
+
+      return statusSOAP;
+    });
+    console.log("ss : " + JSON.stringify(statusSOAP));// IN CONSOLE CHECKOUT PAYMENT X3 SOAP STATUS RESPONSE
+    console.log('--------------------')
+  console.log(statusSOAP[0]['status'])
+  
+  let extraida = JSON.stringify(statusSOAP[0]['error']).substring(0, 70);
+        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+       Description = "Resend SOAP ",
+          Status = 1,
+          Comment =extraida + "-Inv: " + INVOICENUM;
+            newSystemLog = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            console.log(newSystemLog)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'],newSystemLog));
+    console.log(paymentAplication)
+
+  res.send({statusx3: statusSOAP[0]['status'], error:statusSOAP[0]['error']})
+};
+/**FUNCTION TO cancelPayment PAYMENTS DETAIL PAGE */
+exports.cancelPayment = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder + "/";
+  const user = res.locals.user["$resources"][0]; //USER INFO
+
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let count = 1000;
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init cancelPayment", Status = 1, Comment = "FUNCTION: cancelPayment-line ";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM} = req.body
+    console.log('finalizePayment')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 2));
+    console.log(paymentAplication)
+
+  res.send({paymentAplication})
+};
+/**FUNCTION TO finalizePayment PAYMENTS DETAIL PAGE */
+exports.finalizePayment = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder + "/";
+  const user = res.locals.user["$resources"][0]; //USER INFO
+
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let count = 1000;
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init finalizePayment", Status = 1, Comment = "FUNCTION: finalizePayment-line ";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM} = req.body
+    console.log('finalizePayment')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+  var newSystemLog  
+        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+       Description = "finalizePayment",
+          Status = 1,
+          Comment = "finalizePayment-Inv: " + INVOICENUM;
+            newSystemLog = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            console.log(newSystemLog)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1,newSystemLog));
+    console.log(paymentAplication)
+
+  res.send({paymentAplication})
 };
