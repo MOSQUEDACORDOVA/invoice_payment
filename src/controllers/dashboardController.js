@@ -101,7 +101,8 @@ exports.dashboard = async (req, res) => {
   }).then(async (inv_wofilter) => {
     let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
     let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
+    console.log(links)
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
       pageName: "Open Invoices",
@@ -118,7 +119,8 @@ exports.dashboard = async (req, res) => {
     });
   });
   }else{
-    let query_consulting = " " + user["ID"] + "";
+    console.log('test')
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
     const maping_login = JSON.parse(
       await request({
         uri: URL0 +
@@ -144,19 +146,19 @@ exports.dashboard = async (req, res) => {
     }
 
     //GET PAYMENTS FROM SQL TABLE
-    let payments = [],
+    let payments = [],inv_wofilter = [],
       getPayments;
-      console.log(bpcnum)
     for (let i = 0; i < bpcnum.length; i++) {
-      await DataBasequerys.Get_YPORTALINAO(bpcnum[i]).then((response) => {
-        response = JSON.parse(response); //PARSE RESPONSE
-console.log(response)
-      });
+     let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+     if (response[0]) {
+       inv_wofilter.push(response[0]) 
+     }
+     
     }
 
-    let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(inv_wofilter)
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
       pageName: "Open Invoices",
@@ -375,28 +377,71 @@ exports.next_pageIO2 = async (req, res) => {
     where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   //GET Open Invoices List to X3 by where clause EMAIL
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  }).then(async (inv_wofilter) => {
-    // GET INVOICES
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-    res.send({
-      inv_wofilter,
-      links
+  console.log(data)
+  if (user["ROLE"] != 3) {
+    request({
+      uri: URL0 +
+      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
+      // GET INVOICES
+      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+      res.send({inv_wofilter,links});
     });
-  });
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+            count + where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+      }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+     res.send({inv_wofilter,links});
+    }
+  
 };
 /**FUNCTION TO RENDER NEXT_PAGE  PAGE REQUEST FOR CLOSED INVOICES*/
 exports.next_pageIC2 = async (req, res) => {
@@ -410,7 +455,8 @@ exports.next_pageIC2 = async (req, res) => {
   // console.log(SystemLogL)
   //Request for GET the next page from query consulting
   var data = req.params.data;
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  let URL0 = URLHost + req.session.queryFolder + "/";
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -422,35 +468,69 @@ exports.next_pageIC2 = async (req, res) => {
     count = 100;
     where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
-  //GET Open Invoices List to X3 by where clause EMAIL
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  })
-    .then(async (inv_wofilter) => {
-      // console.log(inv_wofilter)
+  if (user["ROLE"] != 3) {
+    request({
+      uri: URL0 +
+      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
       // GET INVOICES
       let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
       inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-      // console.log('go go')
-      res.send({
-        inv_wofilter,
-        links
-      });
-    })
-    .catch((err) => {
-      console.log(err);
+      res.send({inv_wofilter,links});
     });
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+            count + where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+      }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+     res.send({inv_wofilter,links});
+    }
 };
 
 /** FUNCTION TO SEARCH IN OPENINVOICE WHIT THE API */
@@ -497,29 +577,98 @@ exports.searchOpenInvO = async (req, res) => {
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  }).then(async (inv_wofilter) => {
-    /// console.log(inv_wofilter);
-    // GET INVOICES
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-    return res.send({
-      inv_wofilter,
-      links
+ 
+
+  if (user["ROLE"] != 3) {
+    request({
+      uri: URL0 +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
+      /// console.log(inv_wofilter);
+      // GET INVOICES
+      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+      return res.send({
+        inv_wofilter,
+        links
+      });
     });
-  });
+    }else{      
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        })
+      );
+
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+      }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments, filter0;
+        console.log(bpcnum)
+        switch (filter) {
+          case 'NUM':
+            filter0 ='NUM_0'; 
+            break;
+          case 'INVREF':
+            filter0 = 'INVREF_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'INVDAT':
+            filter0 = 'INVDAT_0';
+            break;
+          case 'DUDDAT':
+            filter0 = 'DUDDAT_0';
+            break;
+        
+          default:
+            break;
+        }
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAOs(bpcnum[i],filter0,search)
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(inv_wofilter)
+     res.send({inv_wofilter,links});
+    }
 };
 /** FUNCTION TO SEARCH IN TABLE CLOSEINVOICE WHIT THE API */
 exports.searchCloseInvC = async (req, res) => {
@@ -563,28 +712,97 @@ exports.searchCloseInvC = async (req, res) => {
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  }).then(async (inv_wofilter) => {
-    // GET INVOICES
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-    res.send({
-      inv_wofilter,
-      links
+ 
+  if (user["ROLE"] != 3) {
+    request({
+      uri: URL0 +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
+      /// console.log(inv_wofilter);
+      // GET INVOICES
+      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+      return res.send({
+        inv_wofilter,
+        links
+      });
     });
-  });
+    }else{      
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        })
+      );
+
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+      }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments, filter0;
+        console.log(bpcnum)
+        switch (filter) {
+          case 'NUM':
+            filter0 ='NUM_0'; 
+            break;
+          case 'INVREF':
+            filter0 = 'INVREF_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'INVDAT':
+            filter0 = 'INVDAT_0';
+            break;
+          case 'DUDDAT':
+            filter0 = 'DUDDAT_0';
+            break;
+        
+          default:
+            break;
+        }
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINACs(bpcnum[i],filter0,search)
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(inv_wofilter)
+     res.send({inv_wofilter,links});
+    }
 };
 /**FUNCTION TO RENDER CLOSED INVOICES PAGE */
 exports.close_invoices = async (req, res) => {
@@ -615,44 +833,100 @@ exports.close_invoices = async (req, res) => {
     where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
-  //GET Open Invoices List to X3 by where clause EMAIL
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  }).then(async (inv_wofilter) => {
-    // GET INVOICES
-    let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Close Invoices List for dataTable
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-    //Save LogSystem SQL
-    (Description = "Closed invoices list success from X3"),
-      (Status = 1),
-      (Comment = "Function: close_invoices- Line 557");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-    //HERE RENDER PAGE AND INTRO INFO
-    res.render("close_invoices", {
-      pageName: "Closed Invoices",
-      dashboardPage: true,
-      menu: true,
-      invoiceC: true,
-      user,
-      inv_wofilter,
-      inv_filtering,
-      pictureProfile,
-      admin,
-      links,
+  if (user["ROLE"] != 3) {
+    request({
+      uri: URL0 +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
+      // GET INVOICES
+      let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Close Invoices List for dataTable
+      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
+      //Save LogSystem SQL
+      (Description = "Closed invoices list success from X3"),
+        (Status = 1),
+        (Comment = "Function: close_invoices- Line 557");
+      SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      //HERE RENDER PAGE AND INTRO INFO
+      res.render("close_invoices", {
+        pageName: "Closed Invoices",
+        dashboardPage: true,
+        menu: true,
+        invoiceC: true,
+        user,
+        inv_wofilter,
+        inv_filtering,
+        pictureProfile,
+        admin,
+        links,
+      });
     });
-  });
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+      }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }
+       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+   //HERE RENDER PAGE AND INTRO INFO
+   res.render("close_invoices", {
+     pageName: "Closed Invoices",
+     dashboardPage: true,
+     menu: true,
+     invoiceC: true,
+     user,
+     inv_wofilter,
+     inv_filtering,
+     pictureProfile,
+     admin,
+     links,
+   });
+    }
 };
 
 /**FUNCTION TO RENDER INVOICE OPEN DETAILS PAGE */

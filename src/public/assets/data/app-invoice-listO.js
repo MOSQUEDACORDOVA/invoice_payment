@@ -11,6 +11,7 @@ function table_invoices(a) {
   let value = $("#payments").val();
   let arrPayments = "";
   arrPayments = JSON.parse(value); //Parse to array payments
+  
   if (dtInvoiceTable.length) {
     var dtInvoice = dtInvoiceTable.DataTable({
       //Convert Table in dataTable
@@ -227,7 +228,7 @@ function table_invoices(a) {
         var info = dtInvoiceTable.DataTable().page.info();
         var currentP = parseInt(info.page)+1
         var LastP = parseInt(info.pages)
-        /**Check out if exist "Link Next"  */        
+        /**Check out if exist "Link Next"  */       
         if (link == "") {
           return
         }
@@ -315,7 +316,23 @@ function table_invoices(a) {
 <tbody class="table-white-space" id="invoices-table-body">
  </tbody>`);
     for (let i = 0; i < responseData.inv_wofilter.length; i++) {
-      $('#invoices-table-body').append(`<tr>
+      if (responseData.inv_wofilter[i].NUM_0) {
+ $('#invoices-table-body').append(`<tr>
+     <td>${responseData.inv_wofilter[i].NUM_0}</td>
+     <td>${responseData.inv_wofilter[i].NUM_0}</td>
+     <td>${responseData.inv_wofilter[i].INVREF_0}</td>
+     <td>${responseData.inv_wofilter[i].BPCORD}</td>
+     <td>${responseData.inv_wofilter[i].BPCORD_0}</td>
+     <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+     <td>${responseData.inv_wofilter[i].DUDDAT_0}</td>
+     <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+     <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].OPENLOC_0).toFixed(2)}</td>
+     <td>${responseData.inv_wofilter[i].AMTNOT_0}</td>
+     <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].AMTATI_0).toFixed(2)}</td>
+     <td>${responseData.inv_wofilter[i].NUM_0}</td>
+     </tr>`);
+      }else{
+         $('#invoices-table-body').append(`<tr>
      <td>${responseData.inv_wofilter[i].NUM}</td>
      <td>${responseData.inv_wofilter[i].NUM}</td>
      <td>${responseData.inv_wofilter[i].INVREF}</td>
@@ -328,8 +345,9 @@ function table_invoices(a) {
      <td>${responseData.inv_wofilter[i].AMTNOT}</td>
      <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
      <td>${responseData.inv_wofilter[i].NUM}</td>
-     </tr>
- `);
+     </tr>`);
+      }
+     
     };
     table_invoices();
     $('#search-val').val(search)
@@ -368,21 +386,37 @@ function table_invoices(a) {
 <tbody class="table-white-space" id="invoices-table-body">
  </tbody>`);
     for (let i = 0; i < responseData.inv_wofilter.length; i++) {
-      $('#invoices-table-body').append(`<tr>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     <td>${responseData.inv_wofilter[i].INVREF}</td>
-     <td>${responseData.inv_wofilter[i].BPCORD}</td>
-     <td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
-     <td>${responseData.inv_wofilter[i].INVDAT}</td>
-     <td>${responseData.inv_wofilter[i].DUDDAT}</td>
-     <td>${responseData.inv_wofilter[i].INVDAT}</td>
-     <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2)}</td>
-     <td>${responseData.inv_wofilter[i].AMTNOT}</td>
-     <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     </tr>
- `);
+      if (responseData.inv_wofilter[i].NUM_0) {
+        $('#invoices-table-body').append(`<tr>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            <td>${responseData.inv_wofilter[i].INVREF_0}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD_0}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+            <td>${responseData.inv_wofilter[i].DUDDAT_0}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+            <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].OPENLOC_0).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].AMTNOT_0}</td>
+            <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].AMTATI_0).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            </tr>`);
+             }else{
+                $('#invoices-table-body').append(`<tr>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            <td>${responseData.inv_wofilter[i].INVREF}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT}</td>
+            <td>${responseData.inv_wofilter[i].DUDDAT}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT}</td>
+            <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].AMTNOT}</td>
+            <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            </tr>`);
+             }
     };
     table_invoices();
 
@@ -423,21 +457,37 @@ function table_invoices(a) {
 <tbody class="table-white-space" id="invoices-table-body">
  </tbody>`);
     for (let i = 0; i < responseData.inv_wofilter.length; i++) {
-      $('#invoices-table-body').append(`<tr>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     <td>${responseData.inv_wofilter[i].INVREF}</td>
-     <td>${responseData.inv_wofilter[i].BPCORD}</td>
-     <td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
-     <td>${responseData.inv_wofilter[i].INVDAT}</td>
-     <td>${responseData.inv_wofilter[i].DUDDAT}</td>
-     <td>${responseData.inv_wofilter[i].INVDAT}</td>
-     <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2)}</td>
-     <td>${responseData.inv_wofilter[i].AMTNOT}</td>
-     <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
-     <td>${responseData.inv_wofilter[i].NUM}</td>
-     </tr>
- `);
+      if (responseData.inv_wofilter[i].NUM_0) {
+        $('#invoices-table-body').append(`<tr>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            <td>${responseData.inv_wofilter[i].INVREF_0}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD_0}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+            <td>${responseData.inv_wofilter[i].DUDDAT_0}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT_0}</td>
+            <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].OPENLOC_0).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].AMTNOT_0}</td>
+            <td>$ ${Number.parseFloat(responseData.inv_wofilter[i].AMTATI_0).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].NUM_0}</td>
+            </tr>`);
+             }else{
+                $('#invoices-table-body').append(`<tr>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            <td>${responseData.inv_wofilter[i].INVREF}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD}</td>
+            <td>${responseData.inv_wofilter[i].BPCORD_REF.$description}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT}</td>
+            <td>${responseData.inv_wofilter[i].DUDDAT}</td>
+            <td>${responseData.inv_wofilter[i].INVDAT}</td>
+            <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].AMTNOT}</td>
+            <td>${responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2)}</td>
+            <td>${responseData.inv_wofilter[i].NUM}</td>
+            </tr>`);
+             }
     };
     table_invoices();
   })
@@ -507,8 +557,23 @@ async function nextPage(data,currentP) {
       });   
        $("#links").val(responseData.links)
     for (let i = 0; i < responseData.inv_wofilter.length ; i++) {
-
-      $('#invoiceTable').DataTable().row.add([
+      if (responseData.inv_wofilter[i].NUM_0) {
+        $('#invoiceTable').DataTable().row.add([
+          responseData.inv_wofilter[i].NUM_0,
+          responseData.inv_wofilter[i].NUM_0,
+          responseData.inv_wofilter[i].INVREF_0,
+          responseData.inv_wofilter[i].BPCORD_0,
+          responseData.inv_wofilter[i].BPCORD_0,
+          responseData.inv_wofilter[i].INVDAT_,
+          responseData.inv_wofilter[i].DUDDAT_,
+          responseData.inv_wofilter[i].INVDAT_,
+          "$" + Number.parseFloat(responseData.inv_wofilter[i].OPENLOC_0).toFixed(2),
+          0,//responseData.inv_wofilter[i].AMTNOT_0,
+          "$" +0,//responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2),
+          responseData.inv_wofilter[i].NUM_0
+        ])
+      }else{
+              $('#invoiceTable').DataTable().row.add([
         responseData.inv_wofilter[i].NUM,
         responseData.inv_wofilter[i].NUM,
         responseData.inv_wofilter[i].INVREF,
@@ -522,6 +587,8 @@ async function nextPage(data,currentP) {
         responseData.inv_wofilter[i].CUR_REF.$symbol + "" + Number.parseFloat(responseData.inv_wofilter[i].AMTATI).toFixed(2),
         responseData.inv_wofilter[i].NUM
       ])
+      }
+
     }    
      count=0;
 $('#invoiceTable').DataTable().draw(false)

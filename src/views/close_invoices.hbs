@@ -50,15 +50,24 @@
                                 <tbody class="table-white-space" id="invoices-table-body">
                                     {{#each inv_wofilter as |invoces i|}}
                                     <tr>
-                                        <td>{{NUM}}</td>
-                                        <td>{{INVREF}}</td>
-                                        <td>{{BPCORD}}</td>
-                                        <td>{{BPCORD_REF.$description}}</td>
-                                        <td>{{INVDAT}}</td>
-                                        <td>{{DUDDAT}}</td>
-                                        <td>{{CUR_REF.$symbol}}{{#decimals AMTNOT}}{{/decimals}}</td>
-                                        <td>{{AMTNOT}}</td>
-                                        <td>{{CUR_REF.$symbol}}{{#decimals AMTATI}}{{/decimals}}</td>
+                                        <td>{{#if NUM_0}}{{NUM_0}}{{else}}{{NUM}}{{/if}}</td>
+
+                                   <td>{{#if INVREF_0}}{{INVREF_0}}{{else}}{{INVREF}}{{/if}}</td>
+
+                                   <td>{{#if BPCORD_0}}{{BPCORD_0}}{{else}}{{BPCORD}}{{/if}}</td>
+
+                                   <td>{{#if BPCORD_REF.$description}}{{BPCORD_REF.$description}}{{else}}{{BPCORD_0}}{{/if}}</td>
+                                    
+                                    <td>{{#if INVDAT_0}}{{INVDAT_0}}{{else}}{{INVDAT}}{{/if}}</td>
+
+                                    <td>{{#if DUDDAT_0}}{{DUDDAT_0}}{{else}}{{DUDDAT}}{{/if}}</td>
+
+                                    <td>${{#if AMTNOT_0}}{{#decimals AMTNOT_0}}{{/decimals}}{{else}}{{#decimals AMTNOT}}{{/decimals}}{{/if}}</td>
+
+                                    <td>{{#if AMTNOT_0}}{{AMTNOT_0}}{{else}}{{AMTNOT}}{{/if}} </td>
+
+                                    <td>${{#if AMTATI_0}}{{#decimals AMTATI_0}}{{/decimals}}{{else}}{{#decimals AMTATI}}{{/decimals}}{{/if}} </td>
+
                                         {{!-- <td></td> --}}
                                     </tr>
                                     {{/each}}

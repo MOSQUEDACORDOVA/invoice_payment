@@ -123,32 +123,36 @@ module.exports = {
         connection.connect();
       });
     },
-    Get_YPORTALINAO(bpcnum) {
+    Get_YPORTALINAOs(bpcnum,filter,search) {
 
       return new Promise((resolve, reject) => {
         var connection = new Connection(db);
         connection.on('connect', function (err) {
           // If no error, then good to proceed.
           var KeyLog
-          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = 1 AND OPENLOC_0 <>  0 AND STA_0=3`, function (err, response) {
+          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = @INVTYP_0 AND OPENLOC_0 <>  @OPENLOC_0 AND INVSTA_0=@INVSTA_0 AND ${filter} like '%${search}%'`, function (err, response) {
             if (err) {
               console.log(err);
             }
           });
+          var result = [];
           request.addParameter('BPCINV_0', TYPES.NVarChar, bpcnum);
+          request.addParameter('INVTYP_0', TYPES.NVarChar, '1');
+          request.addParameter('OPENLOC_0', TYPES.NVarChar, '0');
+          request.addParameter('INVSTA_0', TYPES.NVarChar, '3');
+          request.addParameter(`${filter}`, TYPES.NVarChar, search);
           request.on('row', function (columns) {
+            var rowObject = {};
             columns.forEach(function (column) {
-              if (column.value === null) {
-                console.log('NULL');
-              } else {
-                KeyLog = column.value
-  
-              }
+              rowObject[column.metadata.colName] = column.value;
             });
+            result.push(rowObject);
+          });
+          request.on('done', function (rowCount, more) {
           });
           // Close the connection after the final event emitted by the request, after the callback passes
           request.on("requestCompleted", function (rowCount, more) {
-            resolve(KeyLog)
+            resolve(result)
             connection.close();
           });
           connection.execSql(request);
@@ -156,6 +160,116 @@ module.exports = {
         connection.connect();
       });
     },
+    Get_YPORTALINAO(bpcnum) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = @INVTYP_0 AND OPENLOC_0 <>  @OPENLOC_0 AND INVSTA_0=@INVSTA_0`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          var result = [];
+          request.addParameter('BPCINV_0', TYPES.NVarChar, bpcnum);
+          request.addParameter('INVTYP_0', TYPES.NVarChar, '1');
+          request.addParameter('OPENLOC_0', TYPES.NVarChar, '0');
+          request.addParameter('INVSTA_0', TYPES.NVarChar, '3');
+          request.on('row', function (columns) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            result.push(rowObject);
+          });
+          request.on('done', function (rowCount, more) {
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(result)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
+    Get_YPORTALINACs(bpcnum,filter,search) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = @INVTYP_0 AND OPENLOC_0 =  @OPENLOC_0 AND INVSTA_0=@INVSTA_0 AND ${filter} like '%${search}%'`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          var result = [];
+          request.addParameter('BPCINV_0', TYPES.NVarChar, bpcnum);
+          request.addParameter('INVTYP_0', TYPES.NVarChar, '1');
+          request.addParameter('OPENLOC_0', TYPES.NVarChar, '0');
+          request.addParameter('INVSTA_0', TYPES.NVarChar, '3');
+          request.addParameter(`${filter}`, TYPES.NVarChar, search);
+          request.on('row', function (columns) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            result.push(rowObject);
+          });
+          request.on('done', function (rowCount, more) {
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(result)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
+    Get_YPORTALINAC(bpcnum) {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT * FROM YPORTALINA WHERE BPCINV_0 = @BPCINV_0 AND INVTYP_0 = @INVTYP_0 AND OPENLOC_0 =  @OPENLOC_0 AND INVSTA_0=@INVSTA_0`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          var result = [];
+          request.addParameter('BPCINV_0', TYPES.NVarChar, bpcnum);
+          request.addParameter('INVTYP_0', TYPES.NVarChar, '1');
+          request.addParameter('OPENLOC_0', TYPES.NVarChar, '0');
+          request.addParameter('INVSTA_0', TYPES.NVarChar, '3');
+          request.on('row', function (columns) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            result.push(rowObject);
+          });
+          request.on('done', function (rowCount, more) {
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(result)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
+
   //INSERT OR UPDATE PIC PROFILE 
   uploadPicProfile(email, picture, type) {
     return new Promise((resolve, reject) => {
@@ -205,7 +319,7 @@ module.exports = {
       var id
       connection.on('connect', function (err) {
         // If no error, then good to proceed.
-        var request = new Request(`SELECT [picture] FROM [X3Connect].[dbo].[tPicProfile] WHERE email = '${email}'`, function (err, response) {
+        var request = new Request(`SELECT [picture] FROM tPicProfile WHERE email = '${email}'`, function (err, response) {
           if (err) {
             console.log(err);
           }

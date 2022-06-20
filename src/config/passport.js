@@ -19,7 +19,7 @@ passport.use(
 		},
 		async (req,email, password, done) => {
 			let query_consulting= "&where=EMAIL eq '"+email+"'";
-			req.session.queryFolder = (JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
+			req.session.queryFolder = 'SAW'//(JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
 			let URI = URLHost + req.session.queryFolder+"/";
 			try {				
 				const user = await request({
