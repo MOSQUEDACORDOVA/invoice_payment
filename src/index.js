@@ -74,7 +74,7 @@ app.use(async (req, res, next) => {
 
 	res.locals.user = {...req.user} || null;
 	if (!req.session.queryFolder) {
-		req.session.queryFolder ='SAW' //(JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
+		req.session.queryFolder =(JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
 	}	
 	next();
 });

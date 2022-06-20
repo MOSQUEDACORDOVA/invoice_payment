@@ -57,12 +57,7 @@ console.log(array_inv)
         {
           /** RENDER COLUMN 3 (AMOUNT) */ targets: 3,
           render: function (data, type, full, meta) {
-            let value; // IN THIS VAR ALMACENATED THE AMTLOC
-            for (let i = 0; i < array_inv.length; i++) {
-              if (data == array_inv[i]["NUM"]) {
-                value = array_inv[i]["AMTLOC"];
-              }
-            }
+
             return "$" + Number.parseFloat(data).toFixed(2); // RETURN WITH 2 DECIMALS
           },
         },

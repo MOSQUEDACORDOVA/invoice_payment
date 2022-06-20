@@ -26,6 +26,16 @@ function paymentsTable(a){
            return '$'+Number.parseFloat(data).toFixed(2);
           }
         },
+                {//TranAmount render whit two decimals
+                  targets:4,
+                  render: function(data, type, full, meta){
+                    let status = 1;
+                    if (data=='PENDING') {
+                      status = 0;
+                    }
+                   return `<span class="d-none">${status}</span>`+data;
+                  }
+                },
         {// Format date MM/DD/YYYY
           targets:6,
           render: function(data, type, full, meta){
@@ -49,7 +59,7 @@ function paymentsTable(a){
           }
         },
       ],
-      order: [[0, 'desc']],//Order by pmtKey desc
+      order: [[4, 'asc']],//Order by pmtKey desc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +

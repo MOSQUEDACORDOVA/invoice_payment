@@ -987,20 +987,22 @@ exports.inoviceO_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      if (user["ROLE"] !== 4) {
+           for (let i = 0; i < maping_login["$resources"].length; i++) {
       console.log(maping_login["$resources"]);
       console.log(maping_login["$resources"][i]["BPCNUM"]);
       if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
         console.log("msg");
         find++;
       }
-    }
+    }     
+
     console.log(find);
     if (find == 0) {
       inv_detail = "";
-      msg =
-        "Unable to load invoice. This invoice is not available to your user account.";
+      msg = "Unable to load invoice. This invoice is not available to your user account.";
     }
+  }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -1072,19 +1074,21 @@ exports.inoviceC_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      console.log(maping_login["$resources"]);
-      console.log(maping_login["$resources"][i]["BPCNUM"]);
-      if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
-        console.log("msg");
-        find++;
-      }
-    }
+      if (user["ROLE"] !== 4) {
+        for (let i = 0; i < maping_login["$resources"].length; i++) {
+   console.log(maping_login["$resources"]);
+   console.log(maping_login["$resources"][i]["BPCNUM"]);
+   if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
+     console.log("msg");
+     find++;
+   }
+ } 
+   
     console.log(find);
     if (find == 0) {
       inv_detail = "";
-      msg =
-        "Unable to load invoice. This invoice is not available to your user account.";
+      msg = "Unable to load invoice. This invoice is not available to your user account.";
+    }
     }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
@@ -2783,12 +2787,8 @@ exports.payments_detail = async (req, res) => {
   var inv_wofilter = []; //USE THIS ARRAY TO STORE INVOICES INFO
   //GET FROM X3, INVOICE IN PAYMENTS ARRAY INFO ONE BY ONE
   for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
-    //THIS IS FOR GET INFO OF CLOSED INVOICES WITH STATUS SOAP 1
-    if (
-      payments_dt[0].tPaymentApplication[i]["OpenAmount"] ==
-      payments_dt[0].tPaymentApplication[i]["AppliedAmount"] &&
-      payments_dt[0].tPaymentApplication[i]["Status"] == "1"
-    ) {
+    //THIS IS FOR GET INFO 
+      console.log('search ayment invoice details')
       where_filter_inv =
         "&where=NUM eq '" +
         payments_dt[0].tPaymentApplication[i].INVOICENUM +
@@ -2797,10 +2797,7 @@ exports.payments_detail = async (req, res) => {
       inv_wofilter.push(
         await request({
           uri: URI +
-            "YPORTALINV?representation=YPORTALINVC.$query&count=" +
-            count +
-            " " +
-            where_filter_inv,
+            `YPORTALINVD('${payments_dt[0].tPaymentApplication[i].INVOICENUM}')?representation=YPORTALINVD.$details`,
           method: "GET",
           insecure: true,
           rejectUnauthorized: false,
@@ -2811,8 +2808,9 @@ exports.payments_detail = async (req, res) => {
           },
           json: true,
         }).then(async (inv_wofilter2) => {
+          console.log('inv_wofilter2')
           // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
-          if (inv_wofilter2["$resources"].length == 0) {
+          if (inv_wofilter2.length == 0) {
             (Description = "Error get invoice for pay"),
               (Status = 1),
               (Comment =
@@ -2820,45 +2818,10 @@ exports.payments_detail = async (req, res) => {
             SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
             return false;
           }
-          return inv_wofilter2["$resources"][0]; //RETURN INFO INVOICE IN ARRAY
+          return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
         })
       );
-    } else {
-      //GET INFO OPEN INVOICES OR WITH STATUS SOAP 0
-      where_filter_inv =
-        "&where=NUM eq '" +
-        payments_dt[0].tPaymentApplication[i].INVOICENUM +
-        "' "; //WHERE CLAUSE FOR X3
-      //STORE INFO INVOICE IN ARRAY
-      inv_wofilter.push(
-        await request({
-          uri: URI +
-            "YPORTALINV?representation=YPORTALINVO.$query&count=" +
-            count +
-            " " +
-            where_filter_inv,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (inv_wofilter2) => {
-          // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
-          if (inv_wofilter2["$resources"].length == 0) {
-            (Description = "Error get invoice for pay"), (Status = 1), (Comment = "Invoice query response blank or closed inv trying to pay. - Line 1957");
-            SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-            return false;
-          }
-          return inv_wofilter2["$resources"][0]; //RETURN INFO INVOICES TO ARRAY
-        })
-      );
-    }
   }
-
   let payments_st = JSON.stringify(payments_dt), //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
     inv_wofilter_st = JSON.stringify(inv_wofilter); //CONVERT ARRAY INVOICES INFO IN STRING FOR DATATABLE
 
