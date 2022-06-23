@@ -1,56 +1,70 @@
 /** On this JS render and use the functions for Open Invoices Table */
 var dtPaymentT = $('#paymentsTable');
-function paymentsTable(a){
-  let array_inv =[]
+function paymentsTable(a) {
+  let array_inv = []
   array_inv.push(JSON.parse($('#payments').val()))//Parsed to array payments JSON STring
-  
+  console.log(array_inv[0])
   if (dtPaymentT.length) {
     var dtInvoice = dtPaymentT.DataTable({
       data: array_inv[0], // add data to dataTable
-     columns: [
-      { data: 'pmtKey' },
-      { data: 'CustID' },
-      { data: 'TransactionID' },
-      { data: 'TranAmount' },
-      { data: 'ProcessorStatus'},
-      { data: 'ProcessorStatusDesc' },
-      { data: 'DateProcessesed' },
-      { data: 'pmtKey'},
-      
-      ], 
+      columns: [
+        { data: 'pmtKey' },
+        { data: 'CustID' },
+        { data: 'TransactionID' },
+        { data: 'TranAmount' },
+        { data: 'ProcessorStatus' },
+        { data: 'ProcessorStatusDesc' },
+        { data: 'DateProcessesed' },
+        { data: 'pmtKey' },
+        { data: 'pmtKey' },
+
+      ],
       columnDefs: [
         {//TranAmount render whit two decimals
-          targets:3,
-          render: function(data, type, full, meta){
-       
-           return '$'+Number.parseFloat(data).toFixed(2);
+          targets: 3,
+          render: function (data, type, full, meta) {
+
+            return '$' + Number.parseFloat(data).toFixed(2);
           }
         },
-                {//TranAmount render whit two decimals
-                  targets:4,
-                  render: function(data, type, full, meta){
-                    let status = 1;
-                    if (data=='PENDING') {
-                      status = 0;
-                    }
-                   return `<span class="d-none">${status}</span>`+data;
-                  }
-                },
+        {//TranAmount render whit two decimals
+          targets: 4,
+          render: function (data, type, full, meta) {
+            let status = 1;
+            if (data == 'PENDING') {
+              status = 0;
+            }
+            return `<span class="d-none">${status}</span>` + data;
+          }
+        },
         {// Format date MM/DD/YYYY
-          targets:6,
+          targets: 6,
+          render: function (data, type, full, meta) {
+
+            return moment(data).format('MM/DD/YYYY');
+          }
+        },
+        {//TranAmount render whit two decimals
+          targets:7,
           render: function(data, type, full, meta){
-       
-           return moment(data).format('MM/DD/YYYY');
+            let status = 1, descStatus=`<span class="badge rounded-pill badge-light-success" > SUCCESS</span>`;
+            for (let i = 0; i < full['tPaymentApplication'].length; i++) {
+              if (full['tPaymentApplication'][i]['Status']==0) {
+                status = 0;
+                descStatus=`<span class="badge rounded-pill badge-light-danger" > FAILED</span>`
+              }              
+            }
+           return `<span class="d-none">${status}</span>`+descStatus;
           }
         },
         {//Render button with pmtKey to view payments details
-          targets:7,
-          render: function(data, type, full, meta){
-            let buttons= `<span class="" style="cursor:pointer;" >
+          targets: -1,
+          render: function (data, type, full, meta) {
+            let buttons = `<span class="" style="cursor:pointer;" >
             <button type="button" class="btn btn-outline-secondary waves-effect btnview" data-id="${full['pmtKey']}">Detail</button>
             </span>`;
             if ($('#admin').length) {
-              buttons= `<span class="" style="cursor:pointer;" >
+              buttons = `<span class="" style="cursor:pointer;" >
             <button type="button" class="btn btn-outline-secondary waves-effect btnview" data-id="${full['pmtKey']}">Detail</button>
             <button type="button" class="btn btn-outline-success waves-effect btnStatus" data-id="${full['pmtKey']}">Status</button>
             </span>`
@@ -59,7 +73,7 @@ function paymentsTable(a){
           }
         },
       ],
-      order: [[4, 'asc']],//Order by pmtKey desc
+      order: [[4, 'asc'], [7,'asc']],//Order by pmtKey desc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +
@@ -80,8 +94,8 @@ function paymentsTable(a){
         }
       },
       // Buttons blank
-      buttons: [        
-          
+      buttons: [
+
       ],
       initComplete: function () {
         $(document).find('[data-bs-toggle="tooltip"]').tooltip();
@@ -113,15 +127,15 @@ function paymentsTable(a){
       }
     });
   }
-    //Button to view paymente details
-    dtInvoice.$(`.btnview`).click((e)=>{
+  //Button to view paymente details
+  dtInvoice.$(`.btnview`).click((e) => {
     //console.log(e.currentTarget.dataset['id'])
-    location.href = "/payment_view/"+e.currentTarget.dataset['id']
+    location.href = "/payment_view/" + e.currentTarget.dataset['id']
   })
-    //Button to view status paymente details
-    dtInvoice.$(`.btnStatus`).click((e)=>{
+  //Button to view status paymente details
+  dtInvoice.$(`.btnStatus`).click((e) => {
     //console.log(e.currentTarget.dataset['id'])
-    location.href = "/status_payment_view/"+e.currentTarget.dataset['id']
+    location.href = "/status_payment_view/" + e.currentTarget.dataset['id']
   })
 
 }
@@ -130,6 +144,6 @@ $(function () {
   'use strict';
 
   // Whit document ready render dataTable
-paymentsTable()
+  paymentsTable()
 
 });
