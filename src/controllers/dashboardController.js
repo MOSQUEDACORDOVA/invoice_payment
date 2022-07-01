@@ -554,9 +554,9 @@ exports.searchOpenInvO = async (req, res) => {
     }
     
   } else {
-    query = `and ${filter} like '%25${search}%25'`;
+    query = `and ${filter} like '%25${search.toUpperCase()}%25'`;
     if (user["ROLE"] == 4) {
-      query = `${filter} like '%25${search}%25'`;
+      query = `${filter} like '%25${search.toUpperCase()}%25'`;
     }
   }
   // console.log(query);
@@ -578,7 +578,8 @@ exports.searchOpenInvO = async (req, res) => {
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
  
-
+console.log('where')
+console.log(where_filter_inv)
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +

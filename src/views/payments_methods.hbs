@@ -250,7 +250,7 @@
                                                     class="form-control add-credit-card-mask" type="text"
                                                     placeholder="ABA routing number" aria-describedby="addCard2"
                                                     data-msg="Please enter your ABA routing number" required
-                                                    minlength="9" value="" />
+                                                    value="" />
                                             </div>
                                             <div class="col-6 mt-0">
                                                 <label class="form-label" for="addCardNumber">Bank Account
@@ -435,7 +435,7 @@ if ($('#formBankOptions').length) {
       },
       'bank_id': {
         required: true,
-        minlength: 9,
+       // minlength: 9,
         maxlength: 9
 
       },
@@ -454,9 +454,17 @@ if ($('#formBankOptions').length) {
     var isValid = $('#formBankOptions').valid();   
      
     e.preventDefault();
+    
+    if ( $('#bank_id').val().length < 9){
+console.log($('#bank_id').val().length)
+let bank_id = $('#bank_id').val()
+     bank_id=   bank_id.padStart(9, "0");
+$('#bank_id').val(bank_id)
+    }
+
 if (isValid) {
 
-    this.submit()
+   this.submit()
       
     }
     
