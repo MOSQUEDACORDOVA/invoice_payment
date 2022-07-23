@@ -42,6 +42,7 @@ $('#btn_continue').on('click', (e) => {
 /** Firts verify if info is not blank, and send form with de payment info */
 
   if ($('#totalAmountcard').val() == 0) {
+      
       Swal.fire("The amount to pay must be greater than zero.!!")
       return
   }
@@ -61,14 +62,20 @@ $('#btn_continueACH').on('click', (e) => {
     /** Firts verify if info is not blank, and send form with de payment info */
     
       if ($('#totalAmountcard').val() == 0) {
+        postData('/saveSystemLog', { description: "totalAmount",comment:"The amount to pay must be greater than zero.!!-btn_continueACH" })
+        
           Swal.fire("The amount to pay must be greater than zero.!!")
           return
       }
       if ($('#bankrout').val() == "") {
+        postData('/saveSystemLog', { description: "payment method",comment:"You must select a payment method-btn_continueACH" })
+        
           Swal.fire("You must select a payment method")
           $('.paymentOptionsACH').focus()
           return
       }
+      postData('/saveSystemLog', { description: "btn_continueACH",comment:"sendformWF('form_processPayACH')" })
+        
       sendformWF('form_processPayACH') // Process payment
     })
 $('#diferentCardcheck').on('change', (e) => {
@@ -206,7 +213,7 @@ $('#addCardExpiryDate').on('keyup', (e) => {
   $('#addCardExpiryDate').val(valor)
 })
 
-$(`#btnplaceOrder`).click((event) => {
+$(`#step-payment-trigger`).click((event) => {
 event.preventDefault();
   /** Cheack out order, check the applieds amounts and shhort reasons and send the arrays to form hidden */
   var applied_amountPlus = [], applied_amountINV = [], reasons = [], amountInvs = [], bpcinv = []
@@ -221,6 +228,7 @@ event.preventDefault();
       applied_amountINV.push($(this).val())
   })
   $('.invoicesToPay').val(applied_amountINV.toString())
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 231 ~ $ ~ $('.invoicesToPay').val(", $('.invoicesToPay').val())
   $('.reasons').each(function (e) {
       console.log($(this).val())
       console.log($(this).attr('id'))
@@ -241,7 +249,47 @@ event.preventDefault();
       return bpcinv.indexOf(item) === index;
   })
   $(`.userIDInv`).val(bpcinv_result)
+  postData('/saveSystemLog', { description: "step-payment-trigger Click",comment:$('.invoicesToPay').val() })
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 253 ~ $ ~ postData")
+})
+$(`#btnplaceOrder`).click((event) => {
+event.preventDefault();
+  /** Cheack out order, check the applieds amounts and shhort reasons and send the arrays to form hidden */
+  var applied_amountPlus = [], applied_amountINV = [], reasons = [], amountInvs = [], bpcinv = []
+  $('.applied_amount').each(function () {
+      amountInvs.push($(this).data('amount'))
+      applied_amountPlus.push($(this).val())
+  })
+  $('#amtInvs').val(amountInvs.toString())
+  $('.amountsbyInv').val(applied_amountPlus.toString())
 
+  $('.applied_amountINV').each(function () {
+      applied_amountINV.push($(this).val())
+  })
+  $('.invoicesToPay').val(applied_amountINV.toString())
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 231 ~ $ ~ $('.invoicesToPay').val(", $('.invoicesToPay').val())
+  $('.reasons').each(function (e) {
+      console.log($(this).val())
+      console.log($(this).attr('id'))
+      if ($(`#${$(this).attr('id')}`).is(':visible') && $(this).val()=="") {
+        $(`#${$(this).attr('id')}`).addClass('border border-danger')
+        $(`#${$(this).attr('id')}`).focus()
+        
+        return
+      }
+      reasons.push($(this).val())
+  })
+  $('.reasonLessAmta').val(reasons.toString())
+  $('.bpcinv').each(function () {
+      bpcinv.push($(this).text())
+  })
+
+  let bpcinv_result = bpcinv.filter((item, index) => {
+      return bpcinv.indexOf(item) === index;
+  })
+  $(`.userIDInv`).val(bpcinv_result)
+  postData('/saveSystemLog', { description: "btnplaceOrder Click",comment:$('.invoicesToPay').val() })
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 253 ~ $ ~ postData")
 })
 
 //** HERE FUNCTIONS TO PROCESS PAYMENT*/
@@ -352,6 +400,8 @@ const sendformWF = (form) => {
         data: $(`#${form}`).serialize(),
         beforeSend: function () {
             // Show modal "Process please wait..."
+            postData('/saveSystemLog', { description: "process_paymentWF",comment:"Show modal Process please wait..." })
+        
             $('#bn_loading').removeClass('d-none')
             $('#primary').modal('show')
         },
@@ -359,6 +409,8 @@ const sendformWF = (form) => {
             console.log(data)
             if (data.WF_TransactionID) { //IF Status OK, response the API process payment
                 //SAVE PEDDING PAYMENT
+                postData('/saveSystemLog', { description: "process_paymentWF",comment:"Process payment OK and Status Pending" })
+        
                     $('#pmtKey').val(data.paymentKey.toString())
                     $('#status').val('PENDING')
                     $('#bn_loading').addClass('d-none')
@@ -372,8 +424,24 @@ const sendformWF = (form) => {
                         })
             }else {
                    //IF Status not OK, response the API process payment, show error msg and detail about this error, but don't save applied amount
-                $('#bn_loading').addClass('d-none')
-                $('#primary').modal('hide')
+                   
+                   $('#bn_loading').addClass('d-none')
+                   $('#primary').modal('hide')
+                   if (data.WF_TransactionID_Error) {
+                    postData('/saveSystemLog', { description: "process_paymentWF",comment:"Error: " + data.WF_TransactionID_Error})
+                    Swal.fire({
+                        icon: 'error',
+                        title: "Error: " + data.error[0]['error_code'],
+                        text: `${data.error[0]['description']}`,
+                    }).then((response) => {
+                        if (response.isConfirmed) {
+                            //SEND EMAIL IF RESPONSE ERROR
+                            sendEmailErrorWF(data.SystemLogL, data.paymentKey, $('#user-email').val(), JSON.stringify(data.WF_TransactionID_Error), JSON.stringify(data.WF_TransactionID_Error))
+                        }
+                    })
+                    return
+                   }
+                   postData('/saveSystemLog', { description: "process_paymentWF",comment:"Error: " + data.error[0]['error_code'] +"-"+data.error[0]['description']})
                 Swal.fire({
                     icon: 'error',
                     title: "Error: " + data.error[0]['error_code'],
@@ -387,13 +455,25 @@ const sendformWF = (form) => {
                 }
         },
         error: function (jqXHR, textStatus) {
+            postData('/saveSystemLog', { description: "process_paymentWF Error",comment:'error:' + jqXHR})
+        
             console.log('error:' + jqXHR)
+            Swal.fire({
+                icon: 'error',
+                title: "Error process_paymentWF: " + jqXHR,
+                text: `${jqXHR}`,
+            })
+             
+            $('#bn_loading').addClass('d-none')
+                    $('#primary').modal('hide') 
         }
     });
   }
 
 //Function to Send email in case the SOAP response error or status 0 in one of inv
 const sendEmailError = async (SystemLogNum, paymenKey, UserID, paymentx3SMessage, invError) => {
+    postData('/saveSystemLog', { description: "sendEmailError",comment:$('.invoicesToPay').val() })
+
   let data = new FormData()
   data.append('SystemLogNum', SystemLogNum)
   data.append('paymenKey', paymenKey)
@@ -417,6 +497,8 @@ const sendEmailError = async (SystemLogNum, paymenKey, UserID, paymentx3SMessage
 }
 //Function to Send email in case the API WF response error
 const sendEmailErrorWF = async (SystemLogNum, paymenKey, UserID, error_code,errorDesc) => {
+    postData('/saveSystemLog', { description: "sendEmailErrorWF",comment:$('.invoicesToPay').val() })
+
     let data = new FormData()
     data.append('SystemLogNum', SystemLogNum)
     data.append('paymenKey', paymenKey)
@@ -482,15 +564,42 @@ var appliedAmount = async (amount, id, inv, amwt) => {
 
 //Function to save the applied Amount info
 const appliedAmountForm = async () => {
+    postData('/saveSystemLog', { description: "appliedAmountForm",comment:'Saving appliedAmount' })
   $.ajax({
       url: `/applied_amount`,
       type: 'POST',
       data: $('#applied_amtform').serialize(),
       success: function (data, textStatus, jqXHR) {
           console.log(data)
+          postData('/saveSystemLog', { description: "appliedAmountForm Succes",comment:'appliedAmountForm Succes' })
+
       },
       error: function (jqXHR, textStatus) {
           console.log('error:' + jqXHR)
       }
   });
 }
+
+ function postData(url, data) {
+    console.log("🚀 ~ file: pay_inv_functions.js ~ line 536 ~ postData ~ url", url)
+    console.log("🚀 ~ file: pay_inv_functions.js ~ line 536 ~ postData ~ data", data)
+    // Default options are marked with *
+    const formData = new FormData();
+
+formData.append('data', data);
+console.log("🚀 ~ file: pay_inv_functions.js ~ line 542 ~ postData ~ formData", formData)
+$.ajax({
+    url: url,
+    type: 'POST',
+    data: data,
+    success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        
+    },
+    error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+    }
+});
+  }
+  
+  postData('/saveSystemLog', { description: "Init Payment Invoice",comment:'Enter in page' })

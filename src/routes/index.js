@@ -94,6 +94,7 @@ router.post('/editSetting',authController.authenticatedUser, dashboardController
 router.post('/saveEditSetting',authController.authenticatedUser, dashboardController.saveEditSetting);
 router.post('/saveCert', authController.authenticatedUser, certificateController.saveCert);
 router.post('/testValidate', authController.authenticatedUser, certificateController.testValidate);
+router.post('/saveSystemLog', authController.authenticatedUser, dashboardController.saveSystemLog);
 
 router.get('/changeCronServer',authController.authenticatedUser, dashboardController.changeCronServer);
 

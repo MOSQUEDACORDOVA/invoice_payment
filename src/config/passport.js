@@ -15,35 +15,36 @@ passport.use(
 		{
 			usernameField: 'email',
 			passwordField: 'password',
-			passReqToCallback : true
+			passReqToCallback: true
 		},
-		async (req,email, password, done) => {
-			let query_consulting= "&where=EMAIL eq '"+email+"'";
+		async (req, email, password, done) => {
+			let query_consulting = "&where=EMAIL eq '" + email + "'";
 			req.session.queryFolder = (JSON.parse(await DataBaseSq.settingsqueryFolder()))['valueSett'];
-			let URI = URLHost + req.session.queryFolder+"/";
-			try {				
+			let URI = URLHost + req.session.queryFolder + "/";
+			try {
 				const user = await request({
-					uri: URI + 'YPORTALUSR?representation=YPORTALUSR.$query&count=10000'+ query_consulting,
-					method:'GET',
+					uri: URI + 'YPORTALUSR?representation=YPORTALUSR.$query&count=10000' + query_consulting,
+					method: 'GET',
 					insecure: true,
 					rejectUnauthorized: false,
 					headers: {
-					  'Content-Type': 'application/json',
-					  'Accept': 'application/json',
-					  'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
-					  },
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+						Connection: 'close',
+						'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+					},	
 					json: true,
-				  })
-				  let decryptPass = decrypt(user['$resources'][0]['PASS'])
-				  if (password == decryptPass) {
+				})
+				let decryptPass = decrypt(user['$resources'][0]['PASS'])
+				if (password == decryptPass) {
 					return done(null, user);
-				  }else{
+				} else {
 					return done(null, false, {
 						message: 'Password wrong'
-					}); 
-				  }
-				
-			}catch(err) {
+					});
+				}
+
+			} catch (err) {
 				return done(null, false, {
 					message: 'User not exist'
 				});
