@@ -94,6 +94,7 @@ exports.dashboard = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
+      Connection: 'close',
       Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
@@ -131,6 +132,7 @@ exports.dashboard = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
+          Connection: 'close',
           Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
@@ -214,7 +216,8 @@ exports.openInvMore = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+          Connection: 'close',
+          Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -241,6 +244,7 @@ exports.openInvMore = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
+          Connection: 'close',
           Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
@@ -310,6 +314,7 @@ exports.paymentsL = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -388,6 +393,7 @@ exports.next_pageIO2 = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -411,6 +417,7 @@ exports.next_pageIO2 = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
+            Connection: 'close',
             Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
@@ -478,6 +485,7 @@ exports.next_pageIC2 = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -501,7 +509,8 @@ exports.next_pageIC2 = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -590,6 +599,7 @@ console.log(where_filter_inv)
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -616,7 +626,8 @@ console.log(where_filter_inv)
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -724,6 +735,7 @@ exports.searchCloseInvC = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -750,7 +762,8 @@ exports.searchCloseInvC = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -844,6 +857,7 @@ exports.close_invoices = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -885,7 +899,8 @@ exports.close_invoices = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -954,7 +969,8 @@ exports.inoviceO_detail = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -976,7 +992,8 @@ exports.inoviceO_detail = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -1044,7 +1061,8 @@ exports.inoviceC_detail = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -1063,7 +1081,8 @@ exports.inoviceC_detail = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+        Connection: 'close',
+        Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -1139,6 +1158,7 @@ exports.pay_methods = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
+      Connection: 'close',
       Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
@@ -1222,6 +1242,7 @@ exports.add_pay_methods = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
+      Connection: 'close',
       Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
@@ -1281,6 +1302,7 @@ exports.add_pay_methods = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1355,6 +1377,7 @@ exports.add_pay_methods = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1457,7 +1480,8 @@ exports.add_pay_methods = async (req, res) => {
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
           SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
-          res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
+          //res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
+          console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
           return res.redirect("/payments_methods");
           ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
         } else if (back_side_res == "OK OK") {
@@ -1571,6 +1595,7 @@ exports.verify_PM = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1704,6 +1729,7 @@ exports.edit_pay_methods = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1766,6 +1792,7 @@ exports.edit_pay_methods = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1843,6 +1870,7 @@ exports.delete_pay_methods = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
+      Connection: 'close',
       Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
@@ -1862,6 +1890,7 @@ exports.delete_pay_methods = async (req, res) => {
 /**FUNCTION TO RENDER PAY INVOICES PAGE */
 exports.pay_invoices = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
+  console.log("🚀 ~ file: dashboardController.js ~ line 1893 ~ exports.pay_invoices= ~ URI", URI)
   const user = res.locals.user["$resources"][0]; //USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PROFILE PICTURE
 
@@ -1897,6 +1926,7 @@ exports.pay_invoices = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -1936,7 +1966,7 @@ exports.pay_invoices = async (req, res) => {
     for (let i = 0; i < ACHMethod.length; i++) {
       search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
       ACHMethod[i].verify = 0;
-      if (search[0] == null) {
+      if (search[0] != null) {
         activeACH.push(ACHMethod[i]);
       }
     }
@@ -1967,7 +1997,8 @@ exports.pay_invoices = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -1989,6 +2020,7 @@ exports.pay_invoices = async (req, res) => {
   } else {
     // IF INVOICES QUANTITY IS EQUAL TO 1, CONSULT QUERY AND STORE IN ARRAY "INV_WOFILTER"
     where_filter_inv = "&where=NUM eq '" + split_id[0] + "' ";
+    console.log("🚀 ~ file: dashboardController.js ~ line 2023 ~ exports.pay_invoices= ~ where_filter_inv", where_filter_inv)
     inv_wofilter.push(
       await request({
         uri: URI +
@@ -2001,11 +2033,13 @@ exports.pay_invoices = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
       }).then(async (inv_wofilter2) => {
+        console.log("🚀 ~ file: dashboardController.js ~ line 2041 ~ exports.pay_invoices= ~ inv_wofilter2", inv_wofilter2)
         // IN CASE THE QUERY REQUEST RESPONSE BLANK, SAVE SQL LOGSYSTEM
         if (inv_wofilter2["$resources"].length == 0) {
           (Description = "Error get invoice for pay"),
@@ -2020,6 +2054,7 @@ exports.pay_invoices = async (req, res) => {
         return inv_wofilter2["$resources"][0];
       })
     );
+    console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
   }
 
   //IF INVOICES INFO IS BLANK REDIRECT TO OPEN INVOICE PAGE AND SHOW MSG WITH THE ERROR
@@ -2249,7 +2284,8 @@ exports.process_payment = async (req, res) => {
                 rejectUnauthorized: false,
                 headers: {
                   "Content-Type": "application/json",
-                  Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
                   Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
                 },
                 json: true,
@@ -2329,6 +2365,7 @@ exports.process_payment = async (req, res) => {
                 headers: {
                   "Content-Type": "application/json",
                   Accept: "*/*",
+      Connection: 'close',
                   Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
                   soapaction: "*",
                 },
@@ -2558,6 +2595,7 @@ exports.printInvoice = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
+      Connection: 'close',
       Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
@@ -2604,6 +2642,7 @@ exports.payments = async (req, res) => {
       rejectUnauthorized: false,
       headers: {
         "Content-Type": "application/json",
+        Connection: 'close',
         Accept: "application/json",
         Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
       },
@@ -2804,7 +2843,8 @@ exports.payments_detail = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -2988,7 +3028,8 @@ exports.Print_payments_detail = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -3032,7 +3073,8 @@ exports.Print_payments_detail = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            Connection: 'close',
+             Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -3113,6 +3155,7 @@ exports.process_payment_WF = async (req, res) => {
 
   //START PROCCESS PAYMENT
   var { bank_id, bank_account_number, totalAmountcard, inv, appliedAmount, reasonLessAmta, userIDInv, NamePayer_Bank, Payname, legalNameAccount } = req.body;
+  console.log("🚀 ~ file: dashboardController.js ~ line 3158 ~ exports.process_payment_WF= ~ req.body", req.body)
   //console.log(req.body)
   let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDWF()); //GET Last PaymentID WF to create next
   console.log(consult_paymentID);
@@ -3137,9 +3180,11 @@ exports.process_payment_WF = async (req, res) => {
   //SEND PAYMENT TO WF API
   let WF_TransactionID = JSON.parse(
     await WFCCtrl.WF(totalAmountcard, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF).then((response) => {
+      console.log("🚀 ~ file: dashboardController.js ~ line 3183 ~ awaitWFCCtrl.WF ~ response", response)
       return JSON.stringify(response);
     })
   );
+  console.log("🚀 ~ file: dashboardController.js ~ line 3186 ~ exports.process_payment_WF= ~ WF_TransactionID", WF_TransactionID)
 
   let back_side_res = WF_TransactionID["x-backside-transport"],
     payment_id = WF_TransactionID["payment-id"];
@@ -3156,7 +3201,7 @@ exports.process_payment_WF = async (req, res) => {
       "- process payment";
     console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
     let errorLogC = WF_TransactionID["errors"][0]["description"];
-    console.log(errorLogC); //SHOW IN CONSOLE THE ERROR
+    console.log("🚀 ~ file: dashboardController.js ~ line 3204 ~ exports.process_payment_WF= ~ errorLogC", errorLogC); //SHOW IN CONSOLE THE ERROR
     (Description = errorLogD), (Status = 0), (Comment = errorLogC);
     SystemLogL = await DataBasequerys.tSystemLog(
       UserID,
@@ -3195,6 +3240,22 @@ exports.process_payment_WF = async (req, res) => {
     //SHOW CONSOLE INFO ABOUT PAYMENT
     console.log("--Sucess in SQL: " + paymentKey);
     return res.send({ error, WF_TransactionID, SystemLogL, paymentKey }); //SEND RESPONSE TO AJAX REQUEST
+  }else{
+    (Description = 'process_payment_WF:WF_TransactionID'), (Status = 0), (Comment = 'Error lines 3187-3244/WF_TransactionID');
+    SystemLogL = await DataBasequerys.tSystemLog(
+      UserID,
+      IPAddress,
+      LogTypeKey,
+      SessionKey,
+      Description,
+      Status,
+      Comment
+    );
+    SystemLogL = JSON.parse(SystemLogL);
+    return res.send({
+      WF_TransactionID_Error:'Error: WF_TransactionID failed in process_payment_WF, please contact support.- ',
+      SystemLogL
+    }); // RETURN RESPONSE TO AJAX
   }
 };
 
@@ -3256,7 +3317,8 @@ exports.resendX3 = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -3433,4 +3495,22 @@ exports.finalizePayment = async (req, res) => {
     console.log(paymentAplication)
 
   res.send({paymentAplication})
+};
+
+/**FUNCTION TO save SystemLog */
+exports.saveSystemLog = async (req, res) => {
+  const user = res.locals.user["$resources"][0]; //USER INFO
+console.log('saveSystemLog line 3480:', req.body)
+const {description,  comment} = req.body;
+console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ comment", comment)
+console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
+  //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = description, Status = 1, Comment = comment;
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ SystemLogL", SystemLogL)
+
+   
+  res.send({SystemLogL})
 };
