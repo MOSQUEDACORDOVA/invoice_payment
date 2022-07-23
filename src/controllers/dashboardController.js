@@ -2054,7 +2054,7 @@ exports.pay_invoices = async (req, res) => {
         return inv_wofilter2["$resources"][0];
       })
     );
-    console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
+    
   }
 
   //IF INVOICES INFO IS BLANK REDIRECT TO OPEN INVOICE PAGE AND SHOW MSG WITH THE ERROR
@@ -2080,7 +2080,10 @@ exports.pay_invoices = async (req, res) => {
   if (user["ROLE"] == 4) {
     admin = true;
   }
-
+  console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
+  UserID = user["EMAIL"].toString(), Description = 'pay_invoices line 2083  ', Status = 1, Comment = ids_invoices;
+   SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  console.log("🚀 ~ file: dashboardController.js ~ line 2086 ~ exports.pay_invoices= ~ SystemLogL", SystemLogL)
   //HERE RENDER PAGE AND ENTER INFO
   res.render("pay_invoices", {
     pageName: "Pay Invoices",

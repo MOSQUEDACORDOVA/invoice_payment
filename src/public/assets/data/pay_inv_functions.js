@@ -393,7 +393,7 @@ const sendformO = (form) => {
 
 //Function to Process payment Wells Fargo
 const sendformWF = (form) => {
- 
+ Swal.showLoading()
     $.ajax({
         url: `/process_paymentWF`,
         type: 'POST',
@@ -402,8 +402,7 @@ const sendformWF = (form) => {
             // Show modal "Process please wait..."
             postData('/saveSystemLog', { description: "process_paymentWF",comment:"Show modal Process please wait..." })
         
-            $('#bn_loading').removeClass('d-none')
-            $('#primary').modal('show')
+
         },
         success: function (data, textStatus, jqXHR) {
             console.log(data)
@@ -413,8 +412,7 @@ const sendformWF = (form) => {
         
                     $('#pmtKey').val(data.paymentKey.toString())
                     $('#status').val('PENDING')
-                    $('#bn_loading').addClass('d-none')
-                    $('#primary').modal('hide') 
+                    Swal.close()
                         appliedAmountForm()//Save the applied amount info in SQL
                         Swal.fire('Process payment OK and Status "Pending"!').then((response) => {
                             console.log(response)
@@ -425,8 +423,7 @@ const sendformWF = (form) => {
             }else {
                    //IF Status not OK, response the API process payment, show error msg and detail about this error, but don't save applied amount
                    
-                   $('#bn_loading').addClass('d-none')
-                   $('#primary').modal('hide')
+                   Swal.close()
                    if (data.WF_TransactionID_Error) {
                     postData('/saveSystemLog', { description: "process_paymentWF",comment:"Error: " + data.WF_TransactionID_Error})
                     Swal.fire({
@@ -455,6 +452,7 @@ const sendformWF = (form) => {
                 }
         },
         error: function (jqXHR, textStatus) {
+            Swal.close()
             postData('/saveSystemLog', { description: "process_paymentWF Error",comment:'error:' + jqXHR})
         
             console.log('error:' + jqXHR)
@@ -463,9 +461,6 @@ const sendformWF = (form) => {
                 title: "Error process_paymentWF: " + jqXHR,
                 text: `${jqXHR}`,
             })
-             
-            $('#bn_loading').addClass('d-none')
-                    $('#primary').modal('hide') 
         }
     });
   }
