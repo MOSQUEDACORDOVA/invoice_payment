@@ -524,7 +524,10 @@ const sendEmailErrorWF = async (SystemLogNum, paymenKey, UserID, error_code,erro
   }
 //Function for verify applied Amount
 var appliedAmount = async (amount, id, inv, amwt) => {
-
+    $(`#reasons${id}`).val('')
+    $(`#shortReasonLabel${id}`).addClass(`d-none`)
+          $(`#shortReasonIn${id}`).addClass(`d-none`)
+          $(`#shortReasonIn${id}`).addClass(`d-none`) 
   let previousAmt = $(`#previousAmt${id}`).val();
   let newAmount = $(`#appliedAmount${id}`).val();
   let currentSub = $('#Stotal_preview').text()
@@ -551,7 +554,10 @@ var appliedAmount = async (amount, id, inv, amwt) => {
   //If applied amount is greatest to current amount show msg and reset input with the current amount
   if (parseFloat(newAmount) > parseFloat(amount)) {
       Swal.fire('The amount must not be greater than the current')
-      $(`#appliedAmount${id}`).val(amount)
+      $(`#shortReasonLabel${id}`).addClass(`d-none`)
+          $(`#shortReasonIn${id}`).addClass(`d-none`)
+          $(`#shortReasonIn${id}`).addClass(`d-none`) 
+          $(`#reasons${id}`).val('')
       return
   }
 

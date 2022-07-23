@@ -20,12 +20,16 @@ $(function () {
   removeItem.on('click', function (e) {
     let amountWOT = e.currentTarget.dataset['amount']
     let amountWT = e.currentTarget.dataset['amwt']
+    let id = e.currentTarget.dataset['id']
+    console.log("🚀 ~ file: checkout-payment-invoices.js ~ line 23 ~ e.currentTarget", e.currentTarget)
     let currentSub = $('#Stotal_preview').text()
     let currentTotal = $('#total_preview').text()
+    console.log("🚀 ~ file: checkout-payment-invoices.js ~ line 25 ~ currentTotal", currentTotal)
     let currentTax = $('#tax_preview').text()
     let newSub = 0, newTotal = 0, newTax = 0
     newSub = parseFloat(currentSub) - parseFloat(amountWOT)
-    newTotal = parseFloat(currentTotal) - parseFloat(amountWT)
+    
+    newTotal = parseFloat(currentTotal) - parseFloat($(`#appliedAmount${id}`).val())
     newTax = parseFloat(newTotal) - parseFloat(newSub)
     $('#Stotal_preview').text((newSub).toFixed(2))
     $('.total_preview').text((newTotal).toFixed(2))
@@ -37,8 +41,7 @@ $(function () {
     console.log("🚀 ~ file: checkout-payment-invoices.js ~ line 37 ~ items", items)
 
     $(this).closest('.ecommerce-card').remove();
-    if (items == 0 || items == '0') {
-      
+    if (items == 0 || items == '0') {      
       $('#btnplaceOrder').attr('disabled', true)
       $('#returnItems').removeClass('d-none')
       $('#reloadItems').removeClass('d-none')
