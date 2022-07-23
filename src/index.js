@@ -91,8 +91,25 @@ process.on('uncaughtException', async function (e, promise) {
 	let UserID = 'uncaughtException', IPAddress = null, LogTypeKey = 6, SessionKey = null, Description = "uncaughtException", Status = 1, Comment = JSON.stringify(promise).substring(0, 100);;
 	var errorLogSave = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
     console.log("🚀 ~ file: index.js ~ line 93 ~ errorLogSave", errorLogSave)
-    console.log("🚀 ~ file: index.js ~ line 97 ~ e", e)
-	location.href= '/dashboard'
+	app.use(function(req, res, next){
+		console.log("🚀 ~ file: index.js ~ line 97 ~ e", e)
+		res.status(404);
+	  
+		// respond with html page
+		if (req.accepts('html')) {
+		  res.render('404', { url: req.url });
+		  return;
+		}
+	  
+		// respond with json
+		if (req.accepts('json')) {
+		  res.send({ error: 'Not found' });
+		  return;
+		}
+	  
+		// default to plain-text. send()
+		res.type('txt').send('Not found');
+	  });
 	process.exitCode;
 });
 // Start server

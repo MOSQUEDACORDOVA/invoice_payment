@@ -261,7 +261,9 @@ event.preventDefault();
       applied_amountPlus.push($(this).val())
   })
   $('#amtInvs').val(amountInvs.toString())
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 264 ~ $ ~ amountInvs", amountInvs)
   $('.amountsbyInv').val(applied_amountPlus.toString())
+  console.log("🚀 ~ file: pay_inv_functions.js ~ line 266 ~ $ ~ applied_amountPlus", applied_amountPlus)
 
   $('.applied_amountINV').each(function () {
       applied_amountINV.push($(this).val())
@@ -288,6 +290,11 @@ event.preventDefault();
       return bpcinv.indexOf(item) === index;
   })
   $(`.userIDInv`).val(bpcinv_result)
+if (amountInvs.length == 0 || applied_amountPlus.length == 0) {
+    postData('/saveSystemLog', { description: "btnplaceOrder Click",comment:'You removed all invoice to pay or amount is 0, please verify' })
+    Swal.fire('Not invoice to pay','You removed all invoice to pay or amount is 0, please verify','warning')
+    return
+}
   postData('/saveSystemLog', { description: "btnplaceOrder Click",comment:$('.invoicesToPay').val() })
   console.log("🚀 ~ file: pay_inv_functions.js ~ line 253 ~ $ ~ postData")
 })
@@ -598,3 +605,6 @@ $.ajax({
   }
   
   postData('/saveSystemLog', { description: "Init Payment Invoice",comment:'Enter in page' })
+  $('#reloadItems').click(()=>{
+      location.reload();
+  })

@@ -28,7 +28,7 @@
                         <i data-feather="chevron-right" class="font-medium-2"></i>
                     </div>
                     <div class="step" data-target="#step-payment" role="tab" id="step-payment-trigger">
-                        <button type="button" class="step-trigger">
+                        <button type="button" class="step-trigger" disabled>
                             <span class="bs-stepper-box">
                                 <i data-feather="credit-card" class="font-medium-3"></i>
                             </span>
@@ -47,6 +47,16 @@
                         <div id="place-orderx" class="list-view product-checkout">
                             <!-- Checkout Place Order Left starts -->
                             <div class="checkout-items">
+
+                                <a href="/dashboard" class="btn btn-primary waves-effect waves-float waves-light d-none" id="returnItems">
+                                <span class="bs-stepper-box">
+                                <i data-feather="arrow-left" class=""></i>
+                            </span> Return</a>
+
+                                <button type="button" class="btn btn-primary waves-effect waves-float waves-light d-none" id="reloadItems">
+                                    <span class="bs-stepper-box">
+                                <i data-feather="refresh-ccw" class=""></i>
+                            </span>  Reload</button>
                                 {{#each inv_wofilter as |invoice i|}}
                                 <div class="card ecommerce-card mb-1">
                                     <div class="card-body p-1">
@@ -154,10 +164,10 @@
                                                 <label class="form-check-label" for="CCCheck">Credit/Debit/ATM
                                                     Card</label>
                                             </div>
-                                            <div class="form-check form-check-inline mb-1 ">
+                                            <div class="form-check form-check-inline mb-1 d-none">
                                                 <input name="collapsible-payment" class="form-check-input" type="radio"
-                                                    value="" id="ACHBankCheck" />
-                                                <label class="form-check-label" for="ACHBankCheck">ACH Bank</label>
+                                                    value="" id="ACHBankCheck" checked/>
+                                                <label class="form-check-label" for="ACHBankCheck" >ACH Bank</label>
                                             </div>
                                         </div>
                                     </div>
@@ -215,9 +225,16 @@
                                                 </label>
                                             </div>
                                             {{/each}}
+
                                             <div class="col-3">
+                                            {{#if activeACH}}
+
                                                 <button type="button" class="btn btn-primary btn-cvv mb-50 mt-2"
                                                     id="btn_continueACH">Continue</button>
+                                                    {{else}}
+                                                    <a href="/payments_methods" class="btn btn-primary btn-cvv mb-50 mt-2"
+                                                   >Add Payment Methods</a>
+                                            {{/if}}
                                             </div>
                                         </div>
 

@@ -34,8 +34,15 @@ $(function () {
     let items = $('#item_preview').text()
     items = parseInt(items) - 1
     $('#item_preview').text(items)
+    console.log("🚀 ~ file: checkout-payment-invoices.js ~ line 37 ~ items", items)
 
     $(this).closest('.ecommerce-card').remove();
+    if (items == 0 || items == '0') {
+      
+      $('#btnplaceOrder').attr('disabled', true)
+      $('#returnItems').removeClass('d-none')
+      $('#reloadItems').removeClass('d-none')
+    }
     toastr['error']('', 'Removed Item 🗑️', {
       closeButton: true,
       tapToDismiss: false,
