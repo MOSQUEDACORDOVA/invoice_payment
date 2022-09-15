@@ -4,7 +4,7 @@ const { Sequelize } = require('sequelize');
 DB_NAME="X3Connect";
 DB_USER="sa";
 DB_PASS=`Q"lS:MSZGd3=5UMZ`;
-DB_HOST="SQL1.riboli.local";
+DB_HOST="10.99.99.5";
 DB_PORT=3306;
 
 // DB_NAME="portal";

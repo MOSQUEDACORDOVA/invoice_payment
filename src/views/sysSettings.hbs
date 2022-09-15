@@ -12,6 +12,15 @@ dataTable --}}
 <div class="app-content content ">
     <div class="content-wrapper container-xxl p-0">
         <div class="content-body">
+            {{#if activeBanner}}
+            <div class="alert alert-primary alert-dismissible fade show" style="background-color: {{banner.colorBg}} !important;" role="alert">
+              <div class="alert-body" style="color: {{banner.colorText}} !important;">
+                {{banner.valueSett}}
+                </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {{/if}}
+
             <div class="row m-0 match-height" id="rowMain">
                 <div class="col-lg-5 col-md-6 col-12">
                     <div class="card card-developer-meetup">
@@ -170,6 +179,39 @@ dataTable --}}
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card card-body">
+                        <div class="row m-0 align-items-end">
+                            <div class="col-3 col-md-1 mb-1 mb-md-0">
+                                    <input type="hidden" class="form-control" name="bannerKey" id="bannerKey" value="{{banner.id}}">
+                                <div class="d-flex">
+                                    <div class="d-flex flex-column me-1">
+                                        <label class="form-check-label" for="customSwitch3">On/Off</label>
+                                        <div class="form-check form-check-primary form-switch">
+                                            <input type="checkbox" class="form-check-input" id="onBanner" value="1" {{#checkedSwitch
+                                                    banner.Status}}{{/checkedSwitch}}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-9 col-md-5 mb-1 mb-md-0">
+                                <label for="" class="form-label">Banner Text</label>
+                                <textarea name="" id="bannerText" class="form-control" style="height: 50px;">{{banner.valueSett}}</textarea>
+                            </div>
+                            <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+                                <label for="" class="form-label">Color Text</label>
+                                <input type="color" class="form-control" name="colorText" id="colorText" value="{{banner.colorText}}">
+                            </div>
+                            <div class="col-sm-6 col-md-3 mb-1 mb-md-0">
+                                <label for="" class="form-label">Color Background</label>
+                                <input type="color" class="form-control" name="colorBg" id="colorBg" value="{{banner.colorBg}}">
+                            </div>
+                            <div class="col-sm-6 col-md-3 mt-1"><button class="btn btn-primary w-100" type="button"
+                                            id="btnsaveBanner">Save</button></div>
+                        </div>
                     </div>
                 </div>
             </div>

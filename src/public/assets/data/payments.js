@@ -73,7 +73,7 @@ function paymentsTable(a) {
           }
         },
       ],
-      order: [[4, 'asc'], [7,'asc']],//Order by pmtKey desc
+      order: [[4, 'asc'], [6,'desc'],[7,'asc']],//Order by pmtKey desc
       dom:
         '<"row d-flex justify-content-between align-items-center m-1"' +
         '<"col-lg-6 d-flex align-items-center"l<"dt-action-buttons text-xl-end text-lg-start text-lg-end text-start "B>>' +

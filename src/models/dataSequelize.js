@@ -129,6 +129,18 @@ module.exports = {
         });
     });
   },
+  bannerSetting(){
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
+      tSettings.findOne({where:{typeSett:'banner'}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
   settingsTableTypeEnvProduction(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findOne({where:{typeSett:'Env'}})
@@ -158,6 +170,33 @@ module.exports = {
   settingsqueryFolder(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findOne({attributes:['valueSett'],where:{typeSett:'queryFolder'} })
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  saveSettingBanner(sValue, sType, sTatus,colorBg, colorText){//INSERT SETTING IN THE SETTING TABLE
+    return new Promise((resolve, reject) => {
+      tSettings.create({valueSett:sValue,
+        typeSett: sType,
+        Status:   sTatus,colorBg:colorBg,colorText:colorText})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey){// SAVE SETTING EDITED
+    return new Promise((resolve, reject) => {
+      tSettings.update({valueSett:bannerText,
+        Status:   status,colorBg:colorBg,colorText:colorText}, {where:{id:bannerKey}})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);

@@ -96,6 +96,8 @@ router.post('/saveCert', authController.authenticatedUser, certificateController
 router.post('/testValidate', authController.authenticatedUser, certificateController.testValidate);
 router.post('/saveSystemLog', authController.authenticatedUser, dashboardController.saveSystemLog);
 
+router.post('/saveEditBanner', authController.authenticatedUser, dashboardController.saveEditSettingBanner);
+
 router.get('/changeCronServer',authController.authenticatedUser, dashboardController.changeCronServer);
 
 module.exports = router;

@@ -488,5 +488,47 @@ console.log('here Cron')
        
     }); 
 
-/**END FUNCTION READY */});
+
+/**BUTOON SAVE BANNER */
+$('#btnsaveBanner').on('click', () => {
+  var bannerText = $('#bannerText').val()
+  console.log("🚀 ~ file: app-SysSettings.js ~ line 495 ~ $ ~ bannerText", bannerText)
+  var colorText = $('#colorText').val()
+  console.log("🚀 ~ file: app-SysSettings.js ~ line 497 ~ $ ~ colorText", colorText)
+  var colorBg = $('#colorBg').val()
+  console.log("🚀 ~ file: app-SysSettings.js ~ line 499 ~ $ ~ colorBg", colorBg)
+  var status =0
+  if ($('#onBanner').is(':checked')) {
+    status =1
+  }
+  console.log("🚀 ~ file: app-SysSettings.js ~ line 503 ~ $ ~ status", status)
+var bannerKey  = $('#bannerKey').val()
+  console.log("🚀 ~ file: app-SysSettings.js ~ line 506 ~ $ ~ bannerKey", bannerKey)
+  let data = new FormData();
+  data.append('bannerText',bannerText);
+  data.append('colorText',colorText);
+  data.append('colorBg',colorBg);
+  data.append('status',status);
+  data.append('bannerKey',bannerKey);
+  
+  $.ajax({
+    url: `saveEditBanner`,
+    type: 'POST',
+    data: data,
+    cache: false,
+      contentType: false,
+      processData: false,
+    success: function (data, textStatus, jqXHR) {
+      console.log(data);
+      if (data == 'OK') {
+        swal.fire('Banner success update')
+      }
+    },
+    error: function (jqXHR, textStatus) {
+      console.log('error:' + jqXHR)
+    }
+  });
+})
+
+    /**END FUNCTION READY */});
 

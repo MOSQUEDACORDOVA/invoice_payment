@@ -8,7 +8,15 @@ const tSettings = db.define('tSettings', {
 		autoIncrement: true
 	},
 	valueSett: {
-		type: DataTypes.STRING(100),
+		type: DataTypes.STRING(),
+		allowNull: true,
+	}, 
+	colorBg: {
+		type: DataTypes.STRING(150),
+		allowNull: true,
+	},
+	colorText: {
+		type: DataTypes.STRING(150),
 		allowNull: true,
 	},
 	typeSett: {

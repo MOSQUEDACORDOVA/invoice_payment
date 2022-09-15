@@ -1,7 +1,7 @@
 /** This script is for connect to SQL server with Tedius */
 var Connection = require('tedious').Connection;  
 var db = {  
-	server: 'SQL1.riboli.local',  //SQL SERVER
+	server: '10.99.99.5',  //SQL SERVER
 	authentication: {
 		type: 'default',
 		options: {

@@ -69,7 +69,7 @@ exports.dashboard = async (req, res) => {
   }
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
@@ -104,6 +104,12 @@ exports.dashboard = async (req, res) => {
     let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
     inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
     console.log(links)
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
       pageName: "Open Invoices",
@@ -116,7 +122,8 @@ exports.dashboard = async (req, res) => {
       inv_filtering,
       pictureProfile,
       admin,
-      links,
+      links,banner,
+      activeBanner
     });
   });
   }else{
@@ -161,6 +168,12 @@ exports.dashboard = async (req, res) => {
     let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
     let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
     console.log(inv_wofilter)
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("open_invoices", {
       pageName: "Open Invoices",
@@ -173,7 +186,8 @@ exports.dashboard = async (req, res) => {
       inv_filtering,
       pictureProfile,
       admin,
-      links,
+      links,banner,
+      activeBanner
     });
   }
   
@@ -192,7 +206,7 @@ exports.openInvMore = async (req, res) => {
     count = 0;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: openInvMore list", Status = 1, Comment = "Starting- line 139-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
@@ -229,7 +243,7 @@ exports.openInvMore = async (req, res) => {
     (Description = "Open Invoices list success to X3"),
       (Status = 1),
       (Comment = "Function: openInvMore-line 307");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment    );
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment    );
 
     var paymentsL;
     //FIRTS MAPPING LOG FOR GET BPCNUM'S
@@ -298,7 +312,7 @@ exports.paymentsL = async (req, res) => {
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:paymentsL ", Status = 1, Comment = "Starting- line 270-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
   );
   var paymentsL;
   //FIRTS MAPPING LOG FOR GET BPCNUM'S
@@ -365,7 +379,7 @@ exports.next_pageIO2 = async (req, res) => {
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:next_pageIO2 ", Status = 1, Comment = "Starting- line 348-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
@@ -457,7 +471,7 @@ exports.next_pageIC2 = async (req, res) => {
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:next_pageIC2 ", Status = 1, Comment = "Starting- line 392-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
   );
   // console.log(SystemLogL)
   //Request for GET the next page from query consulting
@@ -549,7 +563,7 @@ exports.searchOpenInvO = async (req, res) => {
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:searchOpenInvO ", Status = 1, Comment = "Starting- line 440-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   // console.log(SystemLogL);
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
@@ -689,7 +703,7 @@ exports.searchCloseInvC = async (req, res) => {
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(),IPAddress = ip,LogTypeKey = 5,SessionKey = SessionKeyLog,Description = "FUNCTION:searchCloseInvC ",Status = 1,Comment = "Starting- line 440-";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
   var search = req.params.search;
@@ -833,7 +847,7 @@ exports.close_invoices = async (req, res) => {
     count = 0;
   //Save LogSystem SQL init Request Closed invoices from X3
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Function: close_invoices- Line 559";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
@@ -871,7 +885,7 @@ exports.close_invoices = async (req, res) => {
       (Description = "Closed invoices list success from X3"),
         (Status = 1),
         (Comment = "Function: close_invoices- Line 557");
-      SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
       //HERE RENDER PAGE AND INTRO INFO
       res.render("close_invoices", {
         pageName: "Closed Invoices",
@@ -959,7 +973,7 @@ exports.inoviceO_detail = async (req, res) => {
 
   //SAVE SYSTEMLOG SQL
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Open invoice details from X3", Status = 1, Comment = "Function: inoviceO_detail-Line 420";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let URI0 = URLHost + req.session.queryFolder + "/";
   //Get Inv details from X3
   request({
@@ -979,7 +993,7 @@ exports.inoviceO_detail = async (req, res) => {
     (Description = "Open Invoice details success from X3"),
       (Status = 1),
       (Comment = "Loading Page");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     let query_consulting = "&where=ID eq " + user["ID"] + "";
     const maping_login = JSON.parse(
@@ -1051,7 +1065,7 @@ exports.inoviceC_detail = async (req, res) => {
 
   //SAVE SYSTEMLOG SQL
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request closed invoice details from X3", Status = 1, Comment = "Function: inoviceC_detail-Line 493";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let URI0 = URLHost + req.session.queryFolder + "/";
   //Get invoice colse detail from x3
   request({
@@ -1069,7 +1083,7 @@ exports.inoviceC_detail = async (req, res) => {
   }).then(async (inv_detail) => {
     // SAVE SYSTEMLOG SQL
     (Description = "Closed Invoice Details success from X3"), (Status = 1), (Comment = "Loading Page");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
     let query_consulting = "&where=ID eq " + user["ID"] + "";
     const maping_login = JSON.parse(
       await request({
@@ -1144,7 +1158,7 @@ exports.pay_methods = async (req, res) => {
 
   //SAVE SYSTEMLOG SQL
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from X3", Status = 1, Comment = "Function: pay_methods - Line 567";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //GET PayMethods from X3
   request({
@@ -1168,7 +1182,7 @@ exports.pay_methods = async (req, res) => {
     (Description = "Payments methods list from X3 success"),
       (Status = 1),
       (Comment = "Function: pay_methods - Line 599");
-    var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     pay_methods = pay_methods["$resources"]; //Pay Methods List
     let CCMethod = [],
@@ -1229,7 +1243,7 @@ exports.add_pay_methods = async (req, res) => {
 
   //Save SQL LOG
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Loading Add payments methods module to X3", Status = 1, Comment = "Function: add_pay_methods - line 659";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   //Get PayMethods for check out if not duplicate
   const payIDs = JSON.parse(await request({
     uri: URI +
@@ -1253,13 +1267,13 @@ exports.add_pay_methods = async (req, res) => {
       "Getting payments methods from X3 to created PAYID-Get Success"),
       (Status = 1),
       (Comment = "Function: add_pay_methods - line 695");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     return JSON.stringify(list_pays);
   })
   );
   var typeMP = req.body.typeM;
-  console.log(typeMP);
+  console.log("🚀 ~ file: dashboardController.js ~ line 1262 ~ exports.add_pay_methods= ~ typeMP", typeMP)
 
   if (typeMP == "CC") {
     var { cardNumber, cardName, addCardExpiryDate, cvv, addressCard, zipCode, totalAmountcard, state, city, cardNickName, } = req.body; //This variables contain  info about credit card for save in x3
@@ -1279,7 +1293,7 @@ exports.add_pay_methods = async (req, res) => {
         (Description = "Card Number exist in payments methods from X3 "),
           (Status = 1),
           (Comment = "Function: add_pay_methods - line 718");
-        SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+        SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
         if (totalAmountcard) {
           //If the request comes from the payment of invoices Page, it returns a message of Card Number exist, try another
@@ -1329,7 +1343,7 @@ exports.add_pay_methods = async (req, res) => {
       (Description = "Payments methods added to X3 "),
         (Status = 1),
         (Comment = "Payment method added success");
-      SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
       if (totalAmountcard) {
         //If the request comes from the payment of invoices Page, it returns success
@@ -1355,7 +1369,7 @@ exports.add_pay_methods = async (req, res) => {
       if (payIDs["$resources"][i]["BANKACCT"] === bank_account_number) {
         // Card Number exist in X3
         (Description = "Card Number exist in payments methods from X3 "), (Status = 1), (Comment = "Function: add_pay_methods - line 827");
-        SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+        SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
         if (totalAmountcard) {//If the request comes from the payment of invoices Page, it returns a message of Card Number exist, try another
           res.send({
@@ -1405,7 +1419,7 @@ exports.add_pay_methods = async (req, res) => {
     }).then(async () => {
       //Save LOG SYSTEM SQL
       (Description = "Payments methods added to X3 "), (Status = 1), (Comment = "Payment method added success");
-      SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
       if (totalAmountcard) {
         //If the request comes from the payment of invoices Page, it returns success
@@ -1478,7 +1492,7 @@ exports.add_pay_methods = async (req, res) => {
           let errorLogC = fraudProtection["errors"][0]["description"];
           console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
-          SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
           //res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
           console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
@@ -1497,7 +1511,7 @@ exports.add_pay_methods = async (req, res) => {
           descp = "Process status res: " + back_side_res;
           comm = "Process payment success: OK-PENDDING";
           (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
-          SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
           //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
           tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, FirstAmount, 0, transactionDate, 0, "PENDING", "PENDING", IDPay);
@@ -1515,6 +1529,12 @@ exports.add_pay_methods = async (req, res) => {
       }
       res.cookie('success', "ACH Bank Account added, please check your bank account for two deposits under $1 and verify the amounts. You have 14 days to verify the account, otherwise the deposits will be transferred and the bank account verification process will need to be restarted.", { maxAge: 3600 });
       res.redirect("/payments_methods"); //If the request comes from the PayMethods Page, redirect with a message Card added
+    }).catch((err)=>{
+    console.log("🚀 ~ file: dashboardController.js ~ line 1519 ~ exports.add_pay_methods= ~ err", err)
+
+
+      res.cookie('errorLogC', "Please contact support somethins wrong with X3.", { maxAge: 3600 });
+      res.redirect("/payments_methods");
     });
   }
 };
@@ -1526,7 +1546,7 @@ exports.verify_PM = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Verify Payments Methods", Status = 1, Comment = "Function: verify_PM - line 1280";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(PaymentMethodID, UserID));
   console.log(search);
 
@@ -1639,7 +1659,7 @@ exports.verify_PM = async (req, res) => {
           let errorLogC = fraudProtection["errors"][0]["description"];
           console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
-          SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
           res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
           return res.redirect("/payments_methods");
@@ -1652,7 +1672,7 @@ exports.verify_PM = async (req, res) => {
           descp = "Process status res: " + back_side_res;
           comm = "Process payment success: OK-PENDDING";
           (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
-          SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
           //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
           tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, 0.50, 0, transactionDate, 0, "OK", "OK", null);
@@ -1880,7 +1900,7 @@ exports.delete_pay_methods = async (req, res) => {
     (Description = "Success Delete payments methods module to X3"),
       (Status = 1),
       (Comment = "Function: delete_pay_methods- line 928");
-    SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
     let disabledPaymentMIDSQL = JSON.parse(await DataBaseSq.deletePaymentMethod(payID,UserID ))
     req.flash("success", "Card deleted");
     res.redirect("/payments_methods"); //Redirect to payment Methods page with success card deleted message
@@ -2009,7 +2029,7 @@ exports.pay_invoices = async (req, res) => {
               (Status = 1),
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. -pay_invoices Line 1037");
-            SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment            );
+            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment            );
             return false;
           }
           let inv_filtering = JSON.stringify(inv_wofilter2["$resources"]);
@@ -2046,7 +2066,7 @@ exports.pay_invoices = async (req, res) => {
             (Status = 1),
             (Comment =
               "Invoice query response blank or closed inv trying to pay. - Line 1080");
-          SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment          );
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment          );
           return false;
         }
 
@@ -2082,7 +2102,7 @@ exports.pay_invoices = async (req, res) => {
   }
   console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
   UserID = user["EMAIL"].toString(), Description = 'pay_invoices line 2083  ', Status = 1, Comment = ids_invoices;
-   SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+   SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 2086 ~ exports.pay_invoices= ~ SystemLogL", SystemLogL)
   //HERE RENDER PAGE AND ENTER INFO
   res.render("pay_invoices", {
@@ -2112,8 +2132,8 @@ exports.process_payment = async (req, res) => {
   //Save SQL SYSTEMLOG
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "FUNCTION: process_payment-LINE 1153";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "FUNCTION: process_payment-LINE 1153";
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //START PROCCESS PAYMENT
   var { paymentID, cardNumber, cardName, expMonth, expYear, cvv, totalAmountcard, emailCard, addressCard, zipCode, state, city, inv, appliedAmount, reasonLessAmta, userIDInv, typeCC } = req.body;
@@ -2515,7 +2535,7 @@ exports.applied_amount = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Applied amount int process", Status = 1, Comment = "FUNCITON: applied_amount - LINE 1760";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   var paymentAplication;
   var { inv, amount, shortDesc, appliedAmount, pmtKey, status
@@ -2553,7 +2573,7 @@ exports.save_PicProfile = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Saving pic profile", Status = 1, Comment = "FUNCTION: save_PicProfile - LINE 1614";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
   );
 
   //FIRTS CONSULTING IF EXIST A PREVIOUS PIC FOR CURRENT USER
@@ -2588,7 +2608,7 @@ exports.printInvoice = async (req, res) => {
   // console.log(user);
   let inv_num = req.params.inv;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request invoice details from X3 for print", Status = 1, Comment = "FUNCTION: printInvoice - LINE 1658";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //GET INVOICE DETAIL FROM X3
   request({
@@ -2625,7 +2645,7 @@ exports.payments = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from SQL TABLE", Status = 1, Comment = "FUNCTION: payments - LINE 1708";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   var admin = false;
   if (user["ROLE"] == 4) {
@@ -2728,6 +2748,12 @@ exports.settingsPreview = async (req, res) => {
   text0 = decrypt(text0);
   let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction()); //GET SETTING FROM SQL TABLE
   let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+  console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+  let activeBanner =false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   let sagex3Folder = req.session.queryFolder;
   //console.log(gateaway)
   //RENDER SYSTEM SETTING PAGE
@@ -2744,7 +2770,7 @@ exports.settingsPreview = async (req, res) => {
     text1,
     modeEnv,
     gateaway,
-    sagex3Folder,
+    sagex3Folder,banner,activeBanner
   });
 };
 
@@ -2780,6 +2806,21 @@ exports.saveEditSetting = async (req, res) => {
   return res.sendStatus(200);
   /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
+/**FUNCTION TO SAVE EDIT BANNER  */
+exports.saveEditSettingBanner = async (req, res) => {
+  const { bannerText,colorText,colorBg,status,bannerKey } = req.body;
+  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ req.body", req.body)
+  let saveSys
+  if (bannerKey !='') {
+      saveSys = await DataBaseSq.EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  }else{
+      saveSys = await DataBaseSq.saveSettingBanner(bannerText, 'banner', status,colorBg, colorText); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  } 
+  return res.sendStatus(200);
+  /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
+};
 
 /**FUNCTION TO GET INFO OF SETTINGS SYS TO EDIT */
 exports.editSetting = async (req, res) => {
@@ -2806,7 +2847,7 @@ exports.payments_detail = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init consulting payments details", Status = 1, Comment = "FUNCTION: payments_detail-line 1864";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //FIRTS GET PAYMENTS FROM SQL TABLE BY "PMTKEY"
   let pmtKey = req.params.id;
@@ -2859,7 +2900,7 @@ exports.payments_detail = async (req, res) => {
               (Status = 1),
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. - Line 1915");
-            SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
             return false;
           }
           return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
@@ -2900,7 +2941,7 @@ exports.status_payments_detail = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init consulting payments details", Status = 1, Comment = "FUNCTION: payments_detail-line 1864";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //FIRTS GET PAYMENTS FROM SQL TABLE BY "PMTKEY"
   let pmtKey = req.params.id;
@@ -3134,7 +3175,7 @@ exports.process_payment_WF = async (req, res) => {
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting process payment with wells fargo", Status = 1, Comment = "FUNCTION: process_payment_WF-LINE 2009";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   let apikey;
   let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
@@ -3234,7 +3275,7 @@ exports.process_payment_WF = async (req, res) => {
     descp = "Process status res: " + back_side_res;
     comm = "Process payment success: OK-PENDDING";
     (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
-    SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
     tPaymentSave = await DataBaseSq.RegtPaymentWF(1, SessionKey, UserID, payment_id, TranAmount, 0, transactionDate, 0, "PENDING", "PENDING", bank_id, bank_account_number, userIDInv);
@@ -3292,7 +3333,7 @@ exports.resendX3 = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init resendX3", Status = 1, Comment = "FUNCTION: resendX3-line ";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     console.log(req.body)
     const {tPaymentPmtKey,INVOICENUM,   AppliedAmount,  ShortDescription} = req.body
@@ -3381,6 +3422,7 @@ exports.resendX3 = async (req, res) => {
           Accept: "*/*",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           soapaction: "*",
+          Connection: 'close',
         },
         body: xmlB,
       }).then(async (SOAP) => {
@@ -3438,7 +3480,7 @@ exports.resendX3 = async (req, res) => {
        Description = "Resend SOAP ",
           Status = 1,
           Comment =extraida + "-Inv: " + INVOICENUM;
-            newSystemLog = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
             console.log(newSystemLog)
     //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
     var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'],newSystemLog));
@@ -3456,7 +3498,7 @@ exports.cancelPayment = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init cancelPayment", Status = 1, Comment = "FUNCTION: cancelPayment-line ";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     console.log(req.body)
     const {tPaymentPmtKey,INVOICENUM} = req.body
@@ -3479,7 +3521,7 @@ exports.finalizePayment = async (req, res) => {
   var ip = req.connection.remoteAddress;
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init finalizePayment", Status = 1, Comment = "FUNCTION: finalizePayment-line ";
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     console.log(req.body)
     const {tPaymentPmtKey,INVOICENUM} = req.body
@@ -3491,7 +3533,7 @@ exports.finalizePayment = async (req, res) => {
        Description = "finalizePayment",
           Status = 1,
           Comment = "finalizePayment-Inv: " + INVOICENUM;
-            newSystemLog = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
             console.log(newSystemLog)
     //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
     var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1,newSystemLog));
@@ -3511,7 +3553,7 @@ console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSyste
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
   let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = description, Status = 1, Comment = comment;
-  var SystemLogL = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ SystemLogL", SystemLogL)
 
    

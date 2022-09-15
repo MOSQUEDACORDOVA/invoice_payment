@@ -113,6 +113,7 @@ exports.sendToken = async (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
     },
     json: true,
@@ -140,6 +141,7 @@ exports.sendToken = async (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'Accept': '*/*',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
     },
     body: {
@@ -170,6 +172,7 @@ exports.resetPasswordForm = async (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
     },
     json: true,
@@ -204,6 +207,7 @@ if (req.body.currentpassword) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
       },
     json: true,
@@ -231,6 +235,7 @@ email = user.EMAIL
     headers: {
       'Content-Type': 'application/json',
       'Accept': '*/*',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
     },
     body: {
@@ -276,6 +281,7 @@ exports.UpdateUser = async (req, res) => {
     headers: {
       'Content-Type': 'application/json',
       'Accept': '*/*',
+      Connection: 'close',
       'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
     },
     body: {
