@@ -36,6 +36,12 @@ exports.contactUs = async (req, res) => {
     //If User Role is 4 the Settings page is enabled
     admin = true;
   }
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   res.render("contacts", {
     pageName: "Contact Us",
     dashboardPage: true,
@@ -43,7 +49,7 @@ exports.contactUs = async (req, res) => {
     contactUs: true,
     user,
     pictureProfile,
-    admin,
+    admin,banner, activeBanner
   });
 };
 
@@ -887,6 +893,12 @@ exports.close_invoices = async (req, res) => {
         (Comment = "Function: close_invoices- Line 557");
       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
       //HERE RENDER PAGE AND INTRO INFO
+      let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
       res.render("close_invoices", {
         pageName: "Closed Invoices",
         dashboardPage: true,
@@ -897,7 +909,7 @@ exports.close_invoices = async (req, res) => {
         inv_filtering,
         pictureProfile,
         admin,
-        links,
+        links,banner, activeBanner
       });
     });
     }else{
@@ -944,6 +956,12 @@ exports.close_invoices = async (req, res) => {
       let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
      console.log(links)
    //HERE RENDER PAGE AND INTRO INFO
+   let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
    res.render("close_invoices", {
      pageName: "Closed Invoices",
      dashboardPage: true,
@@ -954,7 +972,7 @@ exports.close_invoices = async (req, res) => {
      inv_filtering,
      pictureProfile,
      admin,
-     links,
+     links,banner, activeBanner
    });
     }
 };
@@ -1035,6 +1053,12 @@ exports.inoviceO_detail = async (req, res) => {
       msg = "Unable to load invoice. This invoice is not available to your user account.";
     }
   }
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -1046,7 +1070,7 @@ exports.inoviceO_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg,
+      msg,banner, activeBanner
     });
   });
 };
@@ -1124,6 +1148,12 @@ exports.inoviceC_detail = async (req, res) => {
       msg = "Unable to load invoice. This invoice is not available to your user account.";
     }
     }
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
@@ -1135,7 +1165,7 @@ exports.inoviceC_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg,
+      msg,banner, activeBanner
     });
   });
 };
@@ -1214,6 +1244,12 @@ exports.pay_methods = async (req, res) => {
     if (req.cookies.success) {
       msg = req.cookies.success
     }
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
     //HERE RENDER PAGE AND INTRO INFO
     res.render("payments_methods", {
       pageName: "Payments Methods",
@@ -1225,7 +1261,7 @@ exports.pay_methods = async (req, res) => {
       pictureProfile,
       admin,
       CCMethod, msg,
-      ACHMethod,
+      ACHMethod,banner, activeBanner
     });
   });
 };
@@ -2105,6 +2141,12 @@ exports.pay_invoices = async (req, res) => {
    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 2086 ~ exports.pay_invoices= ~ SystemLogL", SystemLogL)
   //HERE RENDER PAGE AND ENTER INFO
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   res.render("pay_invoices", {
     pageName: "Pay Invoices",
     dashboardPage: true,
@@ -2120,7 +2162,7 @@ exports.pay_invoices = async (req, res) => {
     pictureProfile,
     admin,
     CCMethod,
-    ACHMethod,activeACH
+    ACHMethod,activeACH, banner, activeBanner
   });
 };
 
@@ -2705,6 +2747,12 @@ exports.payments = async (req, res) => {
 
   //CLEAN PAYMENTS BLANK
   payments = JSON.stringify(payments.filter((el) => el != ""));
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   //RENDER PAYMENTS PAGE
   res.render("payments", {
     pageName: "Payments",
@@ -2714,7 +2762,7 @@ exports.payments = async (req, res) => {
     user,
     pictureProfile,
     payments,
-    admin,
+    admin,banner,activeBanner
   });
 };
 
@@ -2909,7 +2957,12 @@ exports.payments_detail = async (req, res) => {
   }
   let payments_st = JSON.stringify(payments_dt), //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
     inv_wofilter_st = JSON.stringify(inv_wofilter); //CONVERT ARRAY INVOICES INFO IN STRING FOR DATATABLE
-
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   //RENDER PAGE
   res.render("detail_payments", {
     pageName: "Payments Details",
@@ -2922,7 +2975,7 @@ exports.payments_detail = async (req, res) => {
     admin,
     inv_wofilter,
     payments_st,
-    inv_wofilter_st,
+    inv_wofilter_st,banner, activeBanner
   });
 };
 
@@ -2978,7 +3031,12 @@ exports.status_payments_detail = async (req, res) => {
   }
 
   let payments_st = JSON.stringify(payments_dt); //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
-
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+  console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
+  let activeBanner =false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   //RENDER PAGE
   res.render("statusPayment", {
     pageName: "Status Payments Details",
@@ -2990,7 +3048,7 @@ exports.status_payments_detail = async (req, res) => {
     payments_dt,
     admin,
     inv_wofilter,
-    payments_st,
+    payments_st,banner, activeBanner
   });
 };
 

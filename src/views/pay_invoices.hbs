@@ -10,6 +10,14 @@
             </div>
         </div>
         <div class="content-body">
+            {{#if activeBanner}}
+            <div class="alert alert-primary alert-dismissible fade show" style="background-color: {{banner.colorBg}} !important;" role="alert">
+              <div class="alert-body" style="color: {{banner.colorText}} !important;">
+                {{banner.valueSett}}
+                </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {{/if}}
             <div class="bs-stepper checkout-tab-steps">
                 <!-- Wizard starts -->
                 <div class="bs-stepper-header p-0">

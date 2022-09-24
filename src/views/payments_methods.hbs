@@ -14,6 +14,14 @@
         <div class="content-header row">
         </div>
         <div class="content-body">
+            {{#if activeBanner}}
+            <div class="alert alert-primary alert-dismissible fade show" style="background-color: {{banner.colorBg}} !important;" role="alert">
+              <div class="alert-body" style="color: {{banner.colorText}} !important;">
+                {{banner.valueSett}}
+                </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {{/if}}
             <section class="invoice-preview-wrapper">
                 <div class="row invoice-preview">
 
