@@ -75,9 +75,10 @@ $('#btn_continueACH').on('click', (e) => {
           return
       }
       postData('/saveSystemLog', { description: "btn_continueACH",comment:"sendformWF('form_processPayACH')" })
-        
+        $('#btn_continueACH').attr('disabled', true);
       sendformWF('form_processPayACH') // Process payment
     })
+
 $('#diferentCardcheck').on('change', (e) => {
   /**show the different card form */
   if ($('#diferentCardcheck').is(':checked')) {
@@ -423,8 +424,9 @@ const sendformWF = (form) => {
                         appliedAmountForm()//Save the applied amount info in SQL
                         Swal.fire('Process payment OK and Status "Pending"!').then((response) => {
                             console.log(response)
+                            window.location.href = "/payment_view/" + data.paymentKey
                             if (response.isConfirmed || response.isDismissed) {
-                                window.location.href = "/payment_view/" + data.paymentKey
+                              //  window.location.href = "/payment_view/" + data.paymentKey
                             }
                         })
             }else {

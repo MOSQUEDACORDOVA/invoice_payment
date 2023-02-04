@@ -79,10 +79,13 @@
                         data-feather='layers'></i><span class="menu-title text-truncate"
                         data-i18n="Email">Payments</span></a>
             </li>
-            <li class=" nav-item"><a class="d-flex align-items-center" href="/payments_methods"><i
+            
+            <li class=" nav-item {{#putDnoneClass user.ROLE}}{{/putDnoneClass}}"><a class="d-flex align-items-center" href="/payments_methods"><i
                         data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment
                         Methods</span></a>
             </li>
+
+            
             <li class="{{#if contactUs}}active{{/if}} nav-item"><a class="d-flex align-items-center"
                     href="/contactUs"><i data-feather="mail"></i><span class="menu-title text-truncate"
                         data-i18n="Email">Contact Us</span></a>

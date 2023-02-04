@@ -82,7 +82,7 @@ exports.dashboard = async (req, res) => {
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAO'
-    where_filter_inv = "&OrderBy=NUM";
+    where_filter_inv = "&OrderBy= NUM";
   } else if (user["ROLE"] == 1 || user["ROLE"] == 2){
     //Else consulting Loggin Map
     count = 100;
@@ -91,13 +91,14 @@ exports.dashboard = async (req, res) => {
   let URL0 = URLHost + req.session.queryFolder + "/";
   if (user["ROLE"] != 3) {
   //GET Open Invoices List to X3 by where clause EMAIL
+  
   request({
     uri: URL0 +
     Yportal +`?representation=${portalRepresentation}.$query&count=` +
       count + where_filter_inv,
     method: "GET",
     insecure: true,
-    rejectUnauthorized: false,
+    rejectUnauthorized: false,  
     headers: {
       "Content-Type": "application/json",
       Connection: 'close',
@@ -109,7 +110,7 @@ exports.dashboard = async (req, res) => {
     let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
     let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
     inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
-    console.log(links)
+    //console.log('line 113',inv_wofilter)
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
     console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
     let activeBanner =false
@@ -1714,9 +1715,41 @@ exports.verify_PM = async (req, res) => {
           tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, 0.50, 0, transactionDate, 0, "OK", "OK", null);
 
           paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
+          console.log("🚀 ~ file: dashboardController.js ~ line 1718 ~ exports.verify_PM= ~ paymentKey", paymentKey)
           //SHOW CONSOLE INFO ABOUT PAYMENT
           console.log("--Sucess in SQL: " + paymentKey);
         }
+        request({
+          uri: URI +
+            `YPORTALPAY('${user.ID}~${search[0]['PaymentMethodID']}')?representation=YPORTALPAY.$edit`,
+          method: "PUT",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          },
+          body: {
+           "VERIFIED" : true
+          },
+          json: true,
+        }).then(async (added_pay_methods) => {
+          // SAVE SQL LOGSYSTEM
+          (Description = "Success Edit payments methods VERIFIED"),
+            (Status = 1),
+            (Comment = "Function: edit_pay_methods- VERIFIED");
+          SystemLogL = await DataBasequerys.tSystemLog(
+            UserID,
+            IPAddress,
+            LogTypeKey,
+            SessionKey,
+            Description,
+            Status,
+            Comment
+          );
+        });
     res.cookie('success', "Your account was verified. Now is available to use.", { maxAge: 3600 });
     res.redirect("/payments_methods");
   } else {
@@ -2015,16 +2048,20 @@ exports.pay_invoices = async (req, res) => {
       case "ACH":
         ACHMethod.push(list_methods_par[i]);
         break;
+      }
     }
-  }
-  let activeACH = [];
-  let search =[]
+    let activeACH = [];
+    let search =[]
+    console.log("🚀 ~ file: dashboardController.js ~ line 2020 ~ exports.pay_invoices= ~ ACHMethod", ACHMethod)
     for (let i = 0; i < ACHMethod.length; i++) {
-      search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
-      ACHMethod[i].verify = 0;
-      if (search[0] != null) {
+      if (ACHMethod[i]['VERIFIED']  ) {
         activeACH.push(ACHMethod[i]);
       }
+      // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
+      // ACHMethod[i].verify = 0;
+      // if (search[0] != null) {
+      //   activeACH.push(ACHMethod[i]);
+      // }
     }
     
 
@@ -2036,6 +2073,16 @@ exports.pay_invoices = async (req, res) => {
   let split_id = ids_invoices.split(","); // CREATE ARRAY WITH DE INVOICES NUM
   let where_filter_inv;
   var inv_wofilter = [];
+  if (user["ROLE"] == 4) {
+    // If User rol is 1, consulting query by EMAIL
+    count = 100;
+    Yportal = 'YPORTALINA';
+    portalRepresentation = 'YPORTALINVAO'
+  } else {
+    count = 100;
+    Yportal = 'YPORTALINV';
+    portalRepresentation = 'YPORTALINVO'
+  }
 
   if (split_id.length > 1) {
     // IF INVOICES QUANTITY GREATER THAN 1, CONSULT QUERY ONE BY ONE AND STORE IN ARRAY "INV_WOFILTER"
@@ -2044,7 +2091,7 @@ exports.pay_invoices = async (req, res) => {
       inv_wofilter.push(
         await request({
           uri: URI +
-            "YPORTALINV?representation=YPORTALINVO.$query&count=" +
+          `${Yportal}?representation=${portalRepresentation}.$query&count=` +
             count +
             " " +
             where_filter_inv,
@@ -2076,11 +2123,11 @@ exports.pay_invoices = async (req, res) => {
   } else {
     // IF INVOICES QUANTITY IS EQUAL TO 1, CONSULT QUERY AND STORE IN ARRAY "INV_WOFILTER"
     where_filter_inv = "&where=NUM eq '" + split_id[0] + "' ";
-    console.log("🚀 ~ file: dashboardController.js ~ line 2023 ~ exports.pay_invoices= ~ where_filter_inv", where_filter_inv)
+
     inv_wofilter.push(
       await request({
         uri: URI +
-          "YPORTALINV?representation=YPORTALINVO.$query&count=" +
+          `${Yportal}?representation=${portalRepresentation}.$query&count=` +
           count +
           " " +
           where_filter_inv,

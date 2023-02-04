@@ -234,12 +234,14 @@
                                             </div>
                                             {{/each}}
 
-                                            <div class="col-3">
+                                            <div class="{{#if activeACH}}col-3{{else}}col-6{{/if}}">
                                             {{#if activeACH}}
 
                                                 <button type="button" class="btn btn-primary btn-cvv mb-50 mt-2"
                                                     id="btn_continueACH">Continue</button>
+                                                    
                                                     {{else}}
+                                                    <label>There are no payment methods available for use. Please add and verify one on the payment methods page to process payment for these invoices</label>
                                                     <a href="/payments_methods" class="btn btn-primary btn-cvv mb-50 mt-2"
                                                    >Add Payment Methods</a>
                                             {{/if}}

@@ -109,7 +109,7 @@ module.exports = {
 		if (id == 1) {
 			return `<span class="badge badge-light-success ms-50">Verified</span>`
 		}else{
-			return `<span class="badge badge-light-warning ms-50">No verified</span>`
+			return `<span class="badge badge-light-warning ms-50">Not Verified</span>`
 		}
 	},
 	virifiedACHBtn: (id,payID) => {
@@ -172,5 +172,12 @@ module.exports = {
 			checked = `class="d-none"`
 		}
 		return checked;
+	},
+	putDnoneClass: (value)=> {
+		let classD;
+		if (value == 1) {
+			classD = `d-none`
+		}
+		return classD;
 	}
 }
