@@ -1230,6 +1230,7 @@ exports.pay_methods = async (req, res) => {
       }
     }
     let search =[]
+    console.log("🚀 ~ file: dashboardController.js ~ line 1234 ~ exports.pay_methods= ~ ACHMethod", ACHMethod)
     for (let i = 0; i < ACHMethod.length; i++) {
       search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
       ACHMethod[i].verify = 0;
@@ -1531,8 +1532,12 @@ exports.add_pay_methods = async (req, res) => {
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
           SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
+          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, FirstAmount, 0, transactionDate, 0, "FAIL", "FAIL", IDPay);
           //res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
           console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
+
+          res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
+
           return res.redirect("/payments_methods");
           ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
         } else if (back_side_res == "OK OK") {
@@ -2820,6 +2825,7 @@ exports.settingsPreview = async (req, res) => {
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PIC PROFILE
 
   let settings = await DataBaseSq.settingsTable(); //GET SETTING FROM SQL TABLE
+  console.log("🚀 ~ file: dashboardController.js ~ line 2828 ~ exports.settingsPreview= ~ settings", settings)
 
   let admin = false;
   if (user["ROLE"] == 4) {
@@ -2843,8 +2849,9 @@ exports.settingsPreview = async (req, res) => {
   text0 = decrypt(text0);
   let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction()); //GET SETTING FROM SQL TABLE
   let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+  console.log("🚀 ~ file: dashboardController.js ~ line 2852 ~ exports.settingsPreview= ~ gateaway", gateaway)
+  let hostLink = gateaway[4]['valueSett'];
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
   let activeBanner =false
   if (banner.Status == 1) {
     activeBanner = true
@@ -2865,7 +2872,7 @@ exports.settingsPreview = async (req, res) => {
     text1,
     modeEnv,
     gateaway,
-    sagex3Folder,banner,activeBanner
+    sagex3Folder,banner,activeBanner,hostLink
   });
 };
 

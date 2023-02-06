@@ -290,7 +290,8 @@
                                                         <div class="d-flex align-items-center mb-50">
                                                             <h6 class="mb-0">{{#decryptData PAYNAME}}{{/decryptData}}
                                                             </h6>
-                                                            {{#virifiedACH verify}}{{/virifiedACH}}
+                                                            {{!-- {{#virifiedACH verify}}{{/virifiedACH}} --}}
+                                                            {{#if VERIFIED}}<span class="badge badge-light-success ms-50">Verified</span>{{else}}<span class="badge badge-light-warning ms-50">Not Verified</span>{{/if}}
                                                         </div>
                                                         <span class="card-number">{{#cardHide
                                                             BANKACCT}}{{/cardHide}}</span>
@@ -307,7 +308,8 @@
                                                             </button>
                                                             <a class="btn btn-outline-secondary me-75"
                                                                 onclick="deleteACH('{{PAYID}}')" href="#">Delete</a>
-                                                            {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}}
+                                                            {{!-- {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}} --}}
+                                                            {{#if VERIFIED}}<a class="btn btn-outline-success verified">Verified</a>{{else}}<a class="btn btn-outline-info" onclick ="verifyPM('{{PAYID}}')" >Verify</a>{{/if}}
 
                                                         </div>
                                                     </div>
