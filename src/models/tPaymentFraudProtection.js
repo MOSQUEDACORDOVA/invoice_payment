@@ -51,6 +51,23 @@ const tPaymentFraudProtection = db.define('tPaymentFraudProtection', {
 	PaymentMethodID:{
 		type: DataTypes.INTEGER,
 		allowNull: true
+	},
+	FundsReturned:{
+		type: DataTypes.INTEGER,
+		allowNull: true,
+		defaultValue: 0
+	},
+	X3UUID:{
+		type: DataTypes.STRING(500),
+		allowNull: true
+	},
+	FundsMovement:{
+		type: DataTypes.STRING(10),
+		allowNull: true
+	},
+	Observation:{
+		type: DataTypes.TEXT,
+		allowNull: true
 	}
 });
 

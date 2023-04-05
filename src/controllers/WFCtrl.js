@@ -18,6 +18,8 @@ module.exports = {
       let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
       let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
       let hostLink = gateaway[4]['valueSett'];
+      let bank_id_default = gateaway[5]['valueSett'];
+      let bank_account_number_default = gateaway[6]['valueSett'];
     if (modeEnv.Status == 1) {
       console.log('production');
     let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
@@ -102,9 +104,9 @@ module.exports = {
       'payee': {
         'name': 'San Antonio Winery',
         'bank_information': {
-          'bank_id': '121042882',
+          'bank_id': `${decrypt(bank_id_default)}`,
           'bank_id_type': 'ABA',
-          'bank_account_number': '12312312345',
+          'bank_account_number': `${decrypt(bank_account_number_default)}`,
           'bank_account_type': 'D'
         }
       }
@@ -258,6 +260,8 @@ module.exports = {
         let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
         let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
         let hostLink = gateaway[4]['valueSett'];
+        let bank_id_default = gateaway[5]['valueSett'];
+        let bank_account_number_default = gateaway[6]['valueSett'];
       if (modeEnv.Status == 1) {
         console.log('production');
       let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
@@ -333,9 +337,9 @@ module.exports = {
         'payer': {
           'name': 'San Antonio Winery',
           'bank_information': {
-            'bank_id': '121042882',
+            'bank_id': `${decrypt(bank_id_default)}`,
             'bank_id_type': 'ABA',
-            'bank_account_number': '12312312345',
+            'bank_account_number': `${decrypt(bank_account_number_default)}`,
             'bank_account_type': 'D'
           }
         },
@@ -349,6 +353,7 @@ module.exports = {
           }
         }
       });
+      console.log("🚀 ~ file: WFCtrl.js ~ line 354 ~ returnnewPromise ~ payload", payload)
       
       req2.write(payload);
       req2.end();

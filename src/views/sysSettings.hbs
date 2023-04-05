@@ -173,6 +173,30 @@ dataTable --}}
 
                                             </div>
                                         </div>
+                                        <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">Bank ID</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="bank_id"
+                                                        data-id="{{gateaway.5.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Bank ID."
+                                                        value="{{#decryptData gateaway.5.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">Bank Account Number</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="bank_account_number"
+                                                        data-id="{{gateaway.6.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Bank Account Number"
+                                                        value="{{#decryptData gateaway.6.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>

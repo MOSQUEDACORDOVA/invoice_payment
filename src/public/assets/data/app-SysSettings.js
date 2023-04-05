@@ -418,6 +418,58 @@ $(function () {
       }
     });
   });
+  $('#bank_account_number').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','bank_account_number')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+     //   console.log(data)
+        if (data == 'OK') {
+          swal.fire('Bank_account_number success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
+  $('#bank_id').on('change', function(e) {
+    let id = e.currentTarget['dataset']['id'];
+    let value = e.target.value;
+    let data = new FormData();
+    data.append('sId',id);
+    data.append('sValue',value);
+    data.append('sType','bank_id')
+    data.append('sStatus','1')
+    $.ajax({
+      url: `/saveEditSetting`,
+      type: 'POST',
+      data: data,
+      cache: false,
+        contentType: false,
+        processData: false,
+      success: function (data, textStatus, jqXHR) {
+     //   console.log(data)
+        if (data == 'OK') {
+          swal.fire('Bank_id success update')
+        }
+      },
+      error: function (jqXHR, textStatus) {
+        console.log('error:' + jqXHR)
+      }
+    });
+  });
 $('#btnValidate').on('click', function(e) {
     let value = $('#hostLink').val()///e.target.value;
     if (value==''){

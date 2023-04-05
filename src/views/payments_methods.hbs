@@ -307,7 +307,7 @@
                                                                 Edit
                                                             </button>
                                                             <a class="btn btn-outline-secondary me-75"
-                                                                onclick="deleteACH('{{PAYID}}')" href="#">Delete</a>
+                                                                onclick="deleteACH('{{PAYID}}','{{$uuid}}' )" href="#">Delete</a>
                                                             {{!-- {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}} --}}
                                                             {{#if VERIFIED}}<a class="btn btn-outline-success verified">Verified</a>{{else}}<a class="btn btn-outline-info" onclick ="verifyPM('{{PAYID}}')" >Verify</a>{{/if}}
 
@@ -515,7 +515,7 @@
     }
 
 
-    function deleteACH(PAYID) {
+    function deleteACH(PAYID, XIUUD) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -526,12 +526,13 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `/delete_payM/${PAYID}`
+                window.location.href = `/delete_payM/${PAYID}/${XIUUD}`
             }
         })
     }
     function isNumberKey(txt, evt) {
       var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    
                     
         if (charCode == 8 && $(txt).val().length == 2 ){
                            return false;  
@@ -549,11 +550,12 @@
           
 
         if (charCode > 31 &&
-          (charCode < 48 || charCode > 57))
+          (charCode < 48 || charCode > 57 && charCode <96))
           return false;
       }
       return true;
     }
+
 
     function verifyPM(payID) {
         console.log(payID);
@@ -597,12 +599,30 @@
             }
 
         });
-const input = document.getElementById('amount01');
+
+
+/*var input = document.getElementById("amount01");
+  input.focus();
+  var len = input.value.length;
+  input.setSelectionRange(len, len);
+ input.addEventListener("click", function() {
+    var len = input.value.length;
+    input.setSelectionRange(len, len);
+  });
+  var input2 = document.getElementById("amount02");
+  input2.focus();
+  var len2 = input2.value.length;
+  input2.setSelectionRange(len, len);
+   input2.addEventListener("click", function() {
+    var len2 = input2.value.length;
+    input2.setSelectionRange(len, len);
+  });*/
+/* const input = document.getElementById('amount01');
 
 const end = input.value.length;
 
 // ✅ Move focus to END of input field
 input.setSelectionRange(end, end);
-input.focus();
+input.focus();*/
   }
 </script>

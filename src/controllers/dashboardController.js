@@ -21,7 +21,7 @@ const {
 //Payment process configuration
 var cybersourceRestApi = require("cybersource-rest-client");
 var configuration = require("./ConfigurationPayment");
-const { parse} = require("path");
+const { parse } = require("path");
 const WFCCtrl = require("./WFCtrl");
 require("dotenv").config();
 
@@ -37,11 +37,10 @@ exports.contactUs = async (req, res) => {
     admin = true;
   }
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
+  let activeBanner = false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   res.render("contacts", {
     pageName: "Contact Us",
     dashboardPage: true,
@@ -49,7 +48,7 @@ exports.contactUs = async (req, res) => {
     contactUs: true,
     user,
     pictureProfile,
-    admin,banner, activeBanner
+    admin, banner, activeBanner
   });
 };
 
@@ -76,64 +75,63 @@ exports.dashboard = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAO'
     where_filter_inv = "&OrderBy= NUM";
-  } else if (user["ROLE"] == 1 || user["ROLE"] == 2){
+  } else if (user["ROLE"] == 1 || user["ROLE"] == 2) {
     //Else consulting Loggin Map
     count = 100;
     where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   if (user["ROLE"] != 3) {
-  //GET Open Invoices List to X3 by where clause EMAIL
-  
-  request({
-    uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&count=` +
-      count + where_filter_inv,
-    method: "GET",
-    insecure: true,
-    rejectUnauthorized: false,  
-    headers: {
-      "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-    },
-    json: true,
-  }).then(async (inv_wofilter) => {
-    let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
-    //console.log('line 113',inv_wofilter)
-    let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
-    //HERE RENDER PAGE AND INTRO INFO
-    res.render("open_invoices", {
-      pageName: "Open Invoices",
-      dashboardPage: true,
-      menu: true,
-      invoiceO: true,
-      user,
-      msg,
-      inv_wofilter,
-      inv_filtering,
-      pictureProfile,
-      admin,
-      links,banner,
-      activeBanner
+    //GET Open Invoices List to X3 by where clause EMAIL
+
+    request({
+      uri: URL0 +
+        Yportal + `?representation=${portalRepresentation}.$query&count=` +
+        count + where_filter_inv,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Connection: 'close',
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (inv_wofilter) => {
+      let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
+      //console.log('line 113',inv_wofilter)
+      let banner = JSON.parse(await DataBaseSq.bannerSetting());
+      let activeBanner = false
+      if (banner.Status == 1) {
+        activeBanner = true
+      }
+      //HERE RENDER PAGE AND INTRO INFO
+      res.render("open_invoices", {
+        pageName: "Open Invoices",
+        dashboardPage: true,
+        menu: true,
+        invoiceO: true,
+        user,
+        msg,
+        inv_wofilter,
+        inv_filtering,
+        pictureProfile,
+        admin,
+        links, banner,
+        activeBanner
+      });
     });
-  });
-  }else{
+  } else {
     console.log('test')
     let query_consulting = "&where=ID eq " + user["ID"] + "";
     const maping_login = JSON.parse(
@@ -162,22 +160,21 @@ exports.dashboard = async (req, res) => {
     }
 
     //GET PAYMENTS FROM SQL TABLE
-    let payments = [],inv_wofilter = [],
+    let payments = [], inv_wofilter = [],
       getPayments;
     for (let i = 0; i < bpcnum.length; i++) {
-     let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-     if (response[0]) {
-       inv_wofilter.push(response[0]) 
-     }
-     
+      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+      if (response[0]) {
+        inv_wofilter.push(response[0])
+      }
+
     }
 
     let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
     let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
     console.log(inv_wofilter)
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
+    let activeBanner = false
     if (banner.Status == 1) {
       activeBanner = true
     }
@@ -193,11 +190,11 @@ exports.dashboard = async (req, res) => {
       inv_filtering,
       pictureProfile,
       admin,
-      links,banner,
+      links, banner,
       activeBanner
     });
   }
-  
+
 
 
 
@@ -214,7 +211,7 @@ exports.openInvMore = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: openInvMore list", Status = 1, Comment = "Starting- line 139-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -230,15 +227,15 @@ exports.openInvMore = async (req, res) => {
   //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      Yportal + `?representation=${portalRepresentation}.$query&count=` +
       count + where_filter_inv,
     method: "GET",
     insecure: true,
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -250,7 +247,7 @@ exports.openInvMore = async (req, res) => {
     (Description = "Open Invoices list success to X3"),
       (Status = 1),
       (Comment = "Function: openInvMore-line 307");
-    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment    );
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     var paymentsL;
     //FIRTS MAPPING LOG FOR GET BPCNUM'S
@@ -390,7 +387,7 @@ exports.next_pageIO2 = async (req, res) => {
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -407,7 +404,7 @@ exports.next_pageIO2 = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+        Yportal + `?representation=${portalRepresentation}.$query&${data}&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -423,53 +420,53 @@ exports.next_pageIO2 = async (req, res) => {
       // GET INVOICES
       let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
       inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-      res.send({inv_wofilter,links});
+      res.send({ inv_wofilter, links });
     });
-    }else{
-      console.log('test')
-      let query_consulting = "&where=ID eq " + user["ID"] + "";
-      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
-      const maping_login = JSON.parse(
-        await request({
-          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
-            count + where_filter_inv,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-            Connection: 'close',
-            Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (map_loggin) => {
-          return JSON.stringify(map_loggin);
-        })
-      );
-      // STORE BPCNUM FORM MAPPINGLOGGING
-      let bpcnum = [];
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-      }
-  
-      //GET PAYMENTS FROM SQL TABLE
-      let payments = [],inv_wofilter = [],
-        getPayments;
-        console.log(bpcnum)
-      for (let i = 0; i < bpcnum.length; i++) {
-       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-       if (response[0]) {
-         inv_wofilter.push(response[0]) 
-       }       
-      }
-  
-      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-     console.log(links)
-     res.send({inv_wofilter,links});
+  } else {
+    console.log('test')
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 + `YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+          count + where_filter_inv,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
     }
-  
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [], inv_wofilter = [],
+      getPayments;
+    console.log(bpcnum)
+    for (let i = 0; i < bpcnum.length; i++) {
+      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+      if (response[0]) {
+        inv_wofilter.push(response[0])
+      }
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(links)
+    res.send({ inv_wofilter, links });
+  }
+
 };
 /**FUNCTION TO RENDER NEXT_PAGE  PAGE REQUEST FOR CLOSED INVOICES*/
 exports.next_pageIC2 = async (req, res) => {
@@ -484,7 +481,7 @@ exports.next_pageIC2 = async (req, res) => {
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -499,7 +496,7 @@ exports.next_pageIC2 = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
+        Yportal + `?representation=${portalRepresentation}.$query&${data}&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -515,52 +512,52 @@ exports.next_pageIC2 = async (req, res) => {
       // GET INVOICES
       let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
       inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-      res.send({inv_wofilter,links});
+      res.send({ inv_wofilter, links });
     });
-    }else{
-      console.log('test')
-      let query_consulting = "&where=ID eq " + user["ID"] + "";
-      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
-      const maping_login = JSON.parse(
-        await request({
-          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
-            count + where_filter_inv,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (map_loggin) => {
-          return JSON.stringify(map_loggin);
-        })
-      );
-      // STORE BPCNUM FORM MAPPINGLOGGING
-      let bpcnum = [];
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-      }
-  
-      //GET PAYMENTS FROM SQL TABLE
-      let payments = [],inv_wofilter = [],
-        getPayments;
-        console.log(bpcnum)
-      for (let i = 0; i < bpcnum.length; i++) {
-       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-       if (response[0]) {
-         inv_wofilter.push(response[0]) 
-       }       
-      }
-  
-      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-     console.log(links)
-     res.send({inv_wofilter,links});
+  } else {
+    console.log('test')
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 + `YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+          count + where_filter_inv,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
     }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [], inv_wofilter = [],
+      getPayments;
+    console.log(bpcnum)
+    for (let i = 0; i < bpcnum.length; i++) {
+      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+      if (response[0]) {
+        inv_wofilter.push(response[0])
+      }
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(links)
+    res.send({ inv_wofilter, links });
+  }
 };
 
 /** FUNCTION TO SEARCH IN OPENINVOICE WHIT THE API */
@@ -582,7 +579,7 @@ exports.searchOpenInvO = async (req, res) => {
     if (user["ROLE"] == 4) {
       query = `${filter} eq @${search}@`;
     }
-    
+
   } else {
     query = `and ${filter} like '%25${search.toUpperCase()}%25'`;
     if (user["ROLE"] == 4) {
@@ -593,27 +590,27 @@ exports.searchOpenInvO = async (req, res) => {
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAO'
-    where_filter_inv = "&OrderBy=NUM&where="+query;
+    where_filter_inv = "&OrderBy=NUM&where=" + query;
   } else {
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " " + query; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
- 
-console.log('where')
-console.log(where_filter_inv)
+
+  console.log('where')
+  console.log(where_filter_inv)
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        Yportal + `?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -635,73 +632,73 @@ console.log(where_filter_inv)
         links
       });
     });
-    }else{      
-      let query_consulting = "&where=ID eq " + user["ID"] + "";
-      const maping_login = JSON.parse(
-        await request({
-          uri: URL0 +
-            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-            query_consulting,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (map_loggin) => {
-          return JSON.stringify(map_loggin);
-        })
-      );
+  } else {
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
 
-      // STORE BPCNUM FORM MAPPINGLOGGING
-      let bpcnum = [];
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-      }
-  
-      //GET PAYMENTS FROM SQL TABLE
-      let payments = [],inv_wofilter = [],
-        getPayments, filter0;
-        console.log(bpcnum)
-        switch (filter) {
-          case 'NUM':
-            filter0 ='NUM_0'; 
-            break;
-          case 'INVREF':
-            filter0 = 'INVREF_0';
-            break;
-          case 'BPCORD':
-            filter0 = 'BPCORD_0';
-            break;
-          case 'BPCORD':
-            filter0 = 'BPCORD_0';
-            break;
-          case 'INVDAT':
-            filter0 = 'INVDAT_0';
-            break;
-          case 'DUDDAT':
-            filter0 = 'DUDDAT_0';
-            break;
-        
-          default:
-            break;
-        }
-      for (let i = 0; i < bpcnum.length; i++) {
-       let response = await DataBasequerys.Get_YPORTALINAOs(bpcnum[i],filter0,search)
-       if (response[0]) {
-         inv_wofilter.push(response[0]) 
-       }       
-      }
-  
-      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-     console.log(inv_wofilter)
-     res.send({inv_wofilter,links});
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
     }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [], inv_wofilter = [],
+      getPayments, filter0;
+    console.log(bpcnum)
+    switch (filter) {
+      case 'NUM':
+        filter0 = 'NUM_0';
+        break;
+      case 'INVREF':
+        filter0 = 'INVREF_0';
+        break;
+      case 'BPCORD':
+        filter0 = 'BPCORD_0';
+        break;
+      case 'BPCORD':
+        filter0 = 'BPCORD_0';
+        break;
+      case 'INVDAT':
+        filter0 = 'INVDAT_0';
+        break;
+      case 'DUDDAT':
+        filter0 = 'DUDDAT_0';
+        break;
+
+      default:
+        break;
+    }
+    for (let i = 0; i < bpcnum.length; i++) {
+      let response = await DataBasequerys.Get_YPORTALINAOs(bpcnum[i], filter0, search)
+      if (response[0]) {
+        inv_wofilter.push(response[0])
+      }
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(inv_wofilter)
+    res.send({ inv_wofilter, links });
+  }
 };
 /** FUNCTION TO SEARCH IN TABLE CLOSEINVOICE WHIT THE API */
 exports.searchCloseInvC = async (req, res) => {
@@ -709,8 +706,8 @@ exports.searchCloseInvC = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
-  let UserID = user["ID"].toString(),IPAddress = ip,LogTypeKey = 5,SessionKey = SessionKeyLog,Description = "FUNCTION:searchCloseInvC ",Status = 1,Comment = "Starting- line 440-";
-  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:searchCloseInvC ", Status = 1, Comment = "Starting- line 440-";
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
   var search = req.params.search;
@@ -720,7 +717,7 @@ exports.searchCloseInvC = async (req, res) => {
     if (user["ROLE"] == 4) {
       query = `${filter} eq @${search}@`;
     }
-    
+
   } else {
     query = `and ${filter} like '%25${search}%25'`;
     if (user["ROLE"] == 4) {
@@ -731,25 +728,25 @@ exports.searchCloseInvC = async (req, res) => {
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAC'
-    where_filter_inv = "&OrderBy=NUM&where="+query;
+    where_filter_inv = "&OrderBy=NUM&where=" + query;
   } else {
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " " + query; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
- 
+
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        Yportal + `?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -771,73 +768,73 @@ exports.searchCloseInvC = async (req, res) => {
         links
       });
     });
-    }else{      
-      let query_consulting = "&where=ID eq " + user["ID"] + "";
-      const maping_login = JSON.parse(
-        await request({
-          uri: URL0 +
-            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-            query_consulting,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (map_loggin) => {
-          return JSON.stringify(map_loggin);
-        })
-      );
+  } else {
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
 
-      // STORE BPCNUM FORM MAPPINGLOGGING
-      let bpcnum = [];
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-      }
-  
-      //GET PAYMENTS FROM SQL TABLE
-      let payments = [],inv_wofilter = [],
-        getPayments, filter0;
-        console.log(bpcnum)
-        switch (filter) {
-          case 'NUM':
-            filter0 ='NUM_0'; 
-            break;
-          case 'INVREF':
-            filter0 = 'INVREF_0';
-            break;
-          case 'BPCORD':
-            filter0 = 'BPCORD_0';
-            break;
-          case 'BPCORD':
-            filter0 = 'BPCORD_0';
-            break;
-          case 'INVDAT':
-            filter0 = 'INVDAT_0';
-            break;
-          case 'DUDDAT':
-            filter0 = 'DUDDAT_0';
-            break;
-        
-          default:
-            break;
-        }
-      for (let i = 0; i < bpcnum.length; i++) {
-       let response = await DataBasequerys.Get_YPORTALINACs(bpcnum[i],filter0,search)
-       if (response[0]) {
-         inv_wofilter.push(response[0]) 
-       }       
-      }
-  
-      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-     console.log(inv_wofilter)
-     res.send({inv_wofilter,links});
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
     }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [], inv_wofilter = [],
+      getPayments, filter0;
+    console.log(bpcnum)
+    switch (filter) {
+      case 'NUM':
+        filter0 = 'NUM_0';
+        break;
+      case 'INVREF':
+        filter0 = 'INVREF_0';
+        break;
+      case 'BPCORD':
+        filter0 = 'BPCORD_0';
+        break;
+      case 'BPCORD':
+        filter0 = 'BPCORD_0';
+        break;
+      case 'INVDAT':
+        filter0 = 'INVDAT_0';
+        break;
+      case 'DUDDAT':
+        filter0 = 'DUDDAT_0';
+        break;
+
+      default:
+        break;
+    }
+    for (let i = 0; i < bpcnum.length; i++) {
+      let response = await DataBasequerys.Get_YPORTALINACs(bpcnum[i], filter0, search)
+      if (response[0]) {
+        inv_wofilter.push(response[0])
+      }
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(inv_wofilter)
+    res.send({ inv_wofilter, links });
+  }
 };
 /**FUNCTION TO RENDER CLOSED INVOICES PAGE */
 exports.close_invoices = async (req, res) => {
@@ -855,7 +852,7 @@ exports.close_invoices = async (req, res) => {
   //Save LogSystem SQL init Request Closed invoices from X3
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Function: close_invoices- Line 559";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
+  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
   if (user["ROLE"] == 4) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -871,7 +868,7 @@ exports.close_invoices = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-      Yportal +`?representation=${portalRepresentation}.$query&count=` +
+        Yportal + `?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -895,11 +892,10 @@ exports.close_invoices = async (req, res) => {
       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
       //HERE RENDER PAGE AND INTRO INFO
       let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
+      let activeBanner = false
+      if (banner.Status == 1) {
+        activeBanner = true
+      }
       res.render("close_invoices", {
         pageName: "Closed Invoices",
         dashboardPage: true,
@@ -910,72 +906,71 @@ exports.close_invoices = async (req, res) => {
         inv_filtering,
         pictureProfile,
         admin,
-        links,banner, activeBanner
+        links, banner, activeBanner
       });
     });
-    }else{
-      console.log('test')
-      let query_consulting = "&where=ID eq " + user["ID"] + "";
-      const maping_login = JSON.parse(
-        await request({
-          uri: URL0 +
-            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-            query_consulting,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (map_loggin) => {
-          return JSON.stringify(map_loggin);
-        })
-      );
-      // STORE BPCNUM FORM MAPPINGLOGGING
-      let bpcnum = [];
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+  } else {
+    console.log('test')
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      })
+    );
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+    }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [], inv_wofilter = [],
+      getPayments;
+    console.log(bpcnum)
+    for (let i = 0; i < bpcnum.length; i++) {
+      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+      if (response[0]) {
+        inv_wofilter.push(response[0])
       }
-  
-      //GET PAYMENTS FROM SQL TABLE
-      let payments = [],inv_wofilter = [],
-        getPayments;
-        console.log(bpcnum)
-      for (let i = 0; i < bpcnum.length; i++) {
-       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-       if (response[0]) {
-         inv_wofilter.push(response[0]) 
-       }
-       
-      }
-  
-      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-     console.log(links)
-   //HERE RENDER PAGE AND INTRO INFO
-   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
+
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(links)
+    //HERE RENDER PAGE AND INTRO INFO
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner = false
     if (banner.Status == 1) {
       activeBanner = true
     }
-   res.render("close_invoices", {
-     pageName: "Closed Invoices",
-     dashboardPage: true,
-     menu: true,
-     invoiceC: true,
-     user,
-     inv_wofilter,
-     inv_filtering,
-     pictureProfile,
-     admin,
-     links,banner, activeBanner
-   });
-    }
+    res.render("close_invoices", {
+      pageName: "Closed Invoices",
+      dashboardPage: true,
+      menu: true,
+      invoiceC: true,
+      user,
+      inv_wofilter,
+      inv_filtering,
+      pictureProfile,
+      admin,
+      links, banner, activeBanner
+    });
+  }
 };
 
 /**FUNCTION TO RENDER INVOICE OPEN DETAILS PAGE */
@@ -1002,8 +997,8 @@ exports.inoviceO_detail = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -1025,8 +1020,8 @@ exports.inoviceO_detail = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
+          Connection: 'close',
+          Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -1038,25 +1033,25 @@ exports.inoviceO_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-      if (user["ROLE"] !== 4) {
-           for (let i = 0; i < maping_login["$resources"].length; i++) {
-      console.log(maping_login["$resources"]);
-      console.log(maping_login["$resources"][i]["BPCNUM"]);
-      if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
-        console.log("msg");
-        find++;
+    if (user["ROLE"] !== 4) {
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        console.log(maping_login["$resources"]);
+        console.log(maping_login["$resources"][i]["BPCNUM"]);
+        if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
+          console.log("msg");
+          find++;
+        }
       }
-    }     
 
-    console.log(find);
-    if (find == 0) {
-      inv_detail = "";
-      msg = "Unable to load invoice. This invoice is not available to your user account.";
+      console.log(find);
+      if (find == 0) {
+        inv_detail = "";
+        msg = "Unable to load invoice. This invoice is not available to your user account.";
+      }
     }
-  }
-  let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+
+    let activeBanner = false
     if (banner.Status == 1) {
       activeBanner = true
     }
@@ -1071,7 +1066,7 @@ exports.inoviceO_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg,banner, activeBanner
+      msg, banner, activeBanner
     });
   });
 };
@@ -1100,8 +1095,8 @@ exports.inoviceC_detail = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
+      Connection: 'close',
+      Accept: "application/json",
       Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
     },
     json: true,
@@ -1120,8 +1115,8 @@ exports.inoviceC_detail = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
+          Connection: 'close',
+          Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -1133,25 +1128,25 @@ exports.inoviceC_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-      if (user["ROLE"] !== 4) {
-        for (let i = 0; i < maping_login["$resources"].length; i++) {
-   console.log(maping_login["$resources"]);
-   console.log(maping_login["$resources"][i]["BPCNUM"]);
-   if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
-     console.log("msg");
-     find++;
-   }
- } 
-   
-    console.log(find);
-    if (find == 0) {
-      inv_detail = "";
-      msg = "Unable to load invoice. This invoice is not available to your user account.";
-    }
+    if (user["ROLE"] !== 4) {
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        console.log(maping_login["$resources"]);
+        console.log(maping_login["$resources"][i]["BPCNUM"]);
+        if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
+          console.log("msg");
+          find++;
+        }
+      }
+
+      console.log(find);
+      if (find == 0) {
+        inv_detail = "";
+        msg = "Unable to load invoice. This invoice is not available to your user account.";
+      }
     }
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
+
+    let activeBanner = false
     if (banner.Status == 1) {
       activeBanner = true
     }
@@ -1166,7 +1161,7 @@ exports.inoviceC_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg,banner, activeBanner
+      msg, banner, activeBanner
     });
   });
 };
@@ -1229,8 +1224,7 @@ exports.pay_methods = async (req, res) => {
           break;
       }
     }
-    let search =[]
-    console.log("🚀 ~ file: dashboardController.js ~ line 1234 ~ exports.pay_methods= ~ ACHMethod", ACHMethod)
+    let search = []
     for (let i = 0; i < ACHMethod.length; i++) {
       search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
       ACHMethod[i].verify = 0;
@@ -1247,8 +1241,7 @@ exports.pay_methods = async (req, res) => {
       msg = req.cookies.success
     }
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
+    let activeBanner = false
     if (banner.Status == 1) {
       activeBanner = true
     }
@@ -1263,7 +1256,7 @@ exports.pay_methods = async (req, res) => {
       pictureProfile,
       admin,
       CCMethod, msg,
-      ACHMethod,banner, activeBanner
+      ACHMethod, banner, activeBanner
     });
   });
 };
@@ -1454,7 +1447,7 @@ exports.add_pay_methods = async (req, res) => {
         CRY: "",
       },
       json: true,
-    }).then(async () => {
+    }).then(async (response) => {
       //Save LOG SYSTEM SQL
       (Description = "Payments methods added to X3 "), (Status = 1), (Comment = "Payment method added success");
       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -1467,6 +1460,7 @@ exports.add_pay_methods = async (req, res) => {
         return;
       }
 
+      console.log("🚀 ~ file: dashboardController.js ~ line 1458 ~ exports.add_pay_methods= ~ response", response['$uuid'])
       let apikey;
       let modeEnv = JSON.parse(
         await DataBaseSq.settingsTableTypeEnvProduction()
@@ -1494,7 +1488,10 @@ exports.add_pay_methods = async (req, res) => {
       console.log()
       //SEND PAYMENT TO WF API
       for (let i = 0; i < 2; i++) {
-        FirstAmount= Math.random().toFixed(2)
+        FirstAmount = Math.random().toFixed(2)
+        if (FirstAmount >=1) {
+          FirstAmount = Math.random().toFixed(2)
+        }
         let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDFraudP())//GET Last PaymentID WF to create next
         console.log(consult_paymentID);
         let prepare_idWF;
@@ -1510,6 +1507,11 @@ exports.add_pay_methods = async (req, res) => {
         bank_account_number = decrypt(bank_account_number);
         bank_id = decrypt(bank_id);
         payName = decrypt(payName);
+        if (bank_id.length < 9) {
+          console.log(bank_id.length)
+          bank_id = bank_id
+          bank_id = bank_id.padStart(9, "0");
+      }
         legalNameAccount = decrypt(legalNameAccount);
         let fraudProtection = await WFCCtrl.WF_FraudProtection(FirstAmount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
         console.log(fraudProtection);
@@ -1532,7 +1534,7 @@ exports.add_pay_methods = async (req, res) => {
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
           SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
-          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, FirstAmount, 0, transactionDate, 0, "FAIL", "FAIL", IDPay);
+          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, FirstAmount, 0, transactionDate, 0, "FAIL", "FAIL", IDPay, response['$uuid'], errorLogC,'Credit');
           //res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
           console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
 
@@ -1556,23 +1558,17 @@ exports.add_pay_methods = async (req, res) => {
           SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
           //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
-          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, FirstAmount, 0, transactionDate, 0, "PENDING", "PENDING", IDPay);
+          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, FirstAmount, 0, transactionDate, 0, "PENDING", "PENDING", IDPay, response['$uuid'],null,'Credit');
 
           paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
           //SHOW CONSOLE INFO ABOUT PAYMENT
           console.log("--Sucess in SQL: " + paymentKey);
-          // return res.send({
-          //   error,
-          //   WF_TransactionID,
-          //   SystemLogL,
-          //   paymentKey,
-          // });//SEND RESPONSE TO AJAX REQUEST
         }
       }
       res.cookie('success', "ACH Bank Account added, please check your bank account for two deposits under $1 and verify the amounts. You have 14 days to verify the account, otherwise the deposits will be transferred and the bank account verification process will need to be restarted.", { maxAge: 3600 });
       res.redirect("/payments_methods"); //If the request comes from the PayMethods Page, redirect with a message Card added
-    }).catch((err)=>{
-    console.log("🚀 ~ file: dashboardController.js ~ line 1519 ~ exports.add_pay_methods= ~ err", err)
+    }).catch((err) => {
+      console.log("🚀 ~ file: dashboardController.js ~ line 1519 ~ exports.add_pay_methods= ~ err", err)
 
 
       res.cookie('errorLogC', "Please contact support somethins wrong with X3.", { maxAge: 3600 });
@@ -1587,10 +1583,10 @@ exports.verify_PM = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Verify Payments Methods", Status = 1, Comment = "Function: verify_PM - line 1280";
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Verify Payments Methods", Status = 1, Comment = "Function: verify_PM - line 1586";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(PaymentMethodID, UserID));
-  console.log(search);
+  console.log('lines 1589',search);
 
 
   let status
@@ -1615,43 +1611,67 @@ exports.verify_PM = async (req, res) => {
       });
     }
   }
-  const amount1 = req.params.amount1,amount2 = req.params.amount2
+  const amount1 = req.params.amount1, amount2 = req.params.amount2
   let accountVerified = 0;
-  for (let i = 0; i < search.length; i++) {
-    console.log('amount2:' + amount2)
+  const isThereAnyAmount1 = search.some(item => item.TranAmount == (parseFloat(amount1)))
+  console.log("🚀 ~ file: dashboardController.js ~ line 1609 ~ exports.verify_PM= ~ isThereAnyAmount1", isThereAnyAmount1)
+  const isThereAnyAmount2 = search.some(item => item.TranAmount ==(parseFloat(amount2)))
+  console.log("🚀 ~ file: dashboardController.js ~ line 1611 ~ exports.verify_PM= ~ isThereAnyAmount2", isThereAnyAmount2)
+  if (!isThereAnyAmount1) {
+       res.cookie('errorLogC', "The amount 1 not correspond to the one sent to the account", { maxAge: 3600 });
+       accountVerified = -1;
+       Description = "Error: Amount Verify FP"
+        Status = 1
+        Comment = "The amount 1 not correspond to the one sent to the account -1623";
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  }
+  if (!isThereAnyAmount2) {
+    res.cookie('errorLogC', "The amount 2 does not correspond to the one sent to the account", { maxAge: 3600 });
+    accountVerified = -1;
+    Description = "Error: Amount Verify FP"
+     Status = 1
+     Comment = "The amount 2 not correspond to the one sent to the account -1623";
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  }
+   if (isThereAnyAmount1 && isThereAnyAmount2) {
+     for (let i = 0; i < search.length; i++) {
+    console.log('amount1:' , parseFloat(amount1))
+    console.log('amount2:' , parseFloat(amount2))
     console.log('i:' + i)
-    console.log(search[i]['TranAmount'])
-    if (i== 0 && search[i]['TranAmount'] != parseFloat(amount1) ) {    
-      res.cookie('errorLogC', "The amount 1 does not correspond to the one sent to the account", { maxAge: 3600 });
-      accountVerified = -1;
-      break
-    }
-    if (i== 1 && search[i]['TranAmount'] != parseFloat(amount2) ) {
-      res.cookie('success', "The amount 2 does not correspond to the one sent to the account", { maxAge: 3600 });
-      accountVerified = -1;
-      break     
-    }
+    console.log('TranAmount',search[i]['TranAmount'])
 
     status = JSON.parse(await WFCCtrl.GetStatus(apikey, search[i]['TransactionID']).then((response) => {
       return JSON.stringify(response);
     }))
-    console.log(status);
-    if (status['payment_status'] == 'PROCESSED') {     
+    console.log('line 1640',status);
+    if (status['payment_status'] == 'PROCESSED') {
 
-      let saveFraudPr = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']));
+      let saveFraudPr = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']),status['payment_status']);
       accountVerified++;
-            
+      Description = "Success: payment_status Verify FP"
+      Status = 1
+      Comment = "payment_status PROCESSED -1647";
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    }else{
+      let saveFraudPr0 = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']),status['payment_status']);
+      Description = "Error: payment_status Verify FP"
+      Status = 1
+      Comment = `${status['payment_status']} PROCESSED -1651`;
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
     }
   }
-  console.log(accountVerified)
+   }
+  
+
+  console.log('lines 1666',accountVerified)
 
   //console.log(search[0]['PaymentMethodID'])
-  
+
   if (accountVerified > 1) {
-    
+
     const payIDs = JSON.parse(await request({
       uri: URI +
-        `YPORTALPAY?representation=YPORTALPAY.$query&where=PAYID eq ${search[0]['PaymentMethodID']}` ,
+        `YPORTALPAY?representation=YPORTALPAY.$query&where=ID eq ${user["ID"]} AND PAYID eq ${search[0]['PaymentMethodID']}`,
       method: "GET",
       insecure: true,
       rejectUnauthorized: false,
@@ -1667,99 +1687,125 @@ exports.verify_PM = async (req, res) => {
       return JSON.stringify(list_pays);
     })
     );
-      console.log(payIDs)
-      
-      let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDFraudP())//GET Last PaymentID WF to create next
-        console.log(consult_paymentID);
-        let prepare_idWF;
-        if (consult_paymentID.length == 0) {
-          prepare_idWF = "FP000000000001";
-        } else {
-          let payment_id0 = consult_paymentID[0]["TransactionID"]; // GET TRANSACTIONID FOR CREATE NEXT NUM
-          prepare_idWF = payment_id0.replace("FP", ""); //
-          prepare_idWF = parseInt(consult_paymentID[0]["pmtKey"]) + 1;
-          let complete_seq = prepare_idWF.toString().padStart(12, "0");
-          prepare_idWF = "FP" + complete_seq;
-        }
-       let bank_account_number = decrypt(payIDs["$resources"][0]["BANKACCT"]);
-       let bank_id = decrypt(payIDs["$resources"][0]["BANKROUT"]);
-       let legalNameAccount = decrypt(payIDs["$resources"][0]["NAME"]);
-        let fraudProtection = await WFCCtrl.WF(0.50, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
-        console.log(fraudProtection);
+    console.log('lines 1780',payIDs)
+    console.log('AMOUNT1', amount1, ' amount2: ', amount2)
+    for (let i = 0; i < 2; i++) {
+        let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDFraudP())//GET Last PaymentID WF to create next
 
-        let back_side_res = fraudProtection["x-backside-transport"],
-          payment_id = fraudProtection["payment-id"];
-        let transactionDate = moment(fraudProtection["date"]).format(      "YYYY-MM-DD"    );
-        let error = "";
-        if (fraudProtection["errors"]) {
-          console.log(fraudProtection["errors"][0]);
-          error = fraudProtection["errors"];
-          //IF RESPONSE ERROR, SAVE IN LOGSYSTEM SQL THE ERROR
-          console.log("\nError : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
-          let errorLogD = "Error:" + fraudProtection["errors"][0]["error_code"] + "- process payment";
-          console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
-          let errorLogC = fraudProtection["errors"][0]["description"];
-          console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
-          (Description = errorLogD), (Status = 0), (Comment = errorLogC);
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-          SystemLogL = JSON.parse(SystemLogL);
-          res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
-          return res.redirect("/payments_methods");
-          ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
-        } else if (back_side_res == "OK OK") {
-          //IF RESPONSE FINE, SAVE PAYMENT INFO IN SQL TABLE
-          let descp, comm, TranAmount = parseFloat(0.50), tPaymentSave;
-          var paymentKey;
-          //IF PAYMENT STATUS IS "AUTHORIZED" SAVE IN SQL TABLE LOG SYSTEM
-          descp = "Process status res: " + back_side_res;
-          comm = "Process payment success: OK-PENDDING";
-          (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      console.log(consult_paymentID);
+      let amount
+      if (i == 0) {
+        amount = amount1
+      }
+      if (i == 1) {
+        amount = amount2
+      }
+      let prepare_idWF;
+      if (consult_paymentID.length == 0) {
+        prepare_idWF = "FP000000000001";
+      } else {
+        let payment_id0 = consult_paymentID[0]["TransactionID"]; // GET TRANSACTIONID FOR CREATE NEXT NUM
+        prepare_idWF = payment_id0.replace("FP", ""); //
+        prepare_idWF = parseInt(consult_paymentID[0]["pmtKey"]) + 1;
+        let complete_seq = prepare_idWF.toString().padStart(12, "0");
+        prepare_idWF = "FP" + complete_seq;
+      }
+      let bank_account_number = decrypt(payIDs["$resources"][0]["BANKACCT"]);
+      let bank_id = decrypt(payIDs["$resources"][0]["BANKROUT"]);
+      let legalNameAccount = decrypt(payIDs["$resources"][0]["NAME"]);
+      if (bank_id.length < 9) {
+        console.log(bank_id.length)
+        bank_id = bank_id
+        bank_id = bank_id.padStart(9, "0");
+    }
+      let fraudProtection = await WFCCtrl.WF(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
+      console.log('line 1806',fraudProtection);
 
-          //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
-          tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, 0.50, 0, transactionDate, 0, "OK", "OK", null);
+      let back_side_res = fraudProtection["x-backside-transport"],
+        payment_id = fraudProtection["payment-id"];
+      let transactionDate = moment(fraudProtection["date"]).format("YYYY-MM-DD");
+      let error = "";
+      if (fraudProtection["errors"]) {
+        console.log(fraudProtection["errors"][0]);
+        error = fraudProtection["errors"];
+        //IF RESPONSE ERROR, SAVE IN LOGSYSTEM SQL THE ERROR
+        console.log("\nError : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
+        let errorLogD = "Error:" + fraudProtection["errors"][0]["error_code"] + "- amount:" + amount;
+        console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
+        let errorLogC = fraudProtection["errors"][0]["description"];
+        console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
+        (Description = errorLogD), (Status = 0), (Comment = errorLogC);
+        SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+        SystemLogL = JSON.parse(SystemLogL);
 
-          paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
-          console.log("🚀 ~ file: dashboardController.js ~ line 1718 ~ exports.verify_PM= ~ paymentKey", paymentKey)
-          //SHOW CONSOLE INFO ABOUT PAYMENT
-          console.log("--Sucess in SQL: " + paymentKey);
-        }
-        request({
-          uri: URI +
-            `YPORTALPAY('${user.ID}~${search[0]['PaymentMethodID']}')?representation=YPORTALPAY.$edit`,
-          method: "PUT",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-            Connection: 'close',
-            Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          body: {
-           "VERIFIED" : true
-          },
-          json: true,
-        }).then(async (added_pay_methods) => {
-          // SAVE SQL LOGSYSTEM
-          (Description = "Success Edit payments methods VERIFIED"),
-            (Status = 1),
-            (Comment = "Function: edit_pay_methods- VERIFIED");
-          SystemLogL = await DataBasequerys.tSystemLog(
-            UserID,
-            IPAddress,
-            LogTypeKey,
-            SessionKey,
-            Description,
-            Status,
-            Comment
-          );
-        });
+        tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, amount, 0, transactionDate, 0, "FAIL", "FAIL", null, PaymentMethodID, errorLogC,'Debit');
+        let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
+        saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(0, errorLogC, getpmtKeyToRefund[0]['pmtKey'],'Credit');
+
+
+        res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
+        return res.redirect("/payments_methods");
+        ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
+      } else if (back_side_res == "OK OK") {
+        //IF RESPONSE FINE, SAVE PAYMENT INFO IN SQL TABLE
+        let descp, comm, tPaymentSave;
+        var paymentKey;
+        //IF PAYMENT STATUS IS "AUTHORIZED" SAVE IN SQL TABLE LOG SYSTEM
+        descp = "Process status res: " + back_side_res;
+        comm = "Process payment Debit success: OK-OK, amount: " + amount;
+        (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
+        SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+        //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
+        tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, amount, 0, transactionDate, 0, "OK", "OK", null, PaymentMethodID,null,'Debit');
+
+        let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
+       saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(1, null, getpmtKeyToRefund[0]['pmtKey'],'Credit');
+
+        paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
+        console.log("🚀 ~ file: dashboardController.js ~ line 1718 ~ exports.verify_PM= ~ paymentKey", paymentKey)
+        //SHOW CONSOLE INFO ABOUT PAYMENT
+        console.log("--Sucess in SQL: " + paymentKey);
+      }
+    }
+
+    request({
+      uri: URI +
+        `YPORTALPAY('${user.ID}~${search[0]['PaymentMethodID']}')?representation=YPORTALPAY.$edit`,
+      method: "PUT",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Connection: 'close',
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      body: {
+        "VERIFIED": true
+      },
+      json: true,
+    }).then(async (added_pay_methods) => {
+      // SAVE SQL LOGSYSTEM
+      (Description = "Success payments methods VERIFIED"),
+        (Status = 1),
+        (Comment = "Function: - VERIFIED");
+      SystemLogL = await DataBasequerys.tSystemLog(
+        UserID,
+        IPAddress,
+        LogTypeKey,
+        SessionKey,
+        Description,
+        Status,
+        Comment
+      );
+    });
+    
     res.cookie('success', "Your account was verified. Now is available to use.", { maxAge: 3600 });
     res.redirect("/payments_methods");
   } else {
     if (accountVerified == -1) {
-     return res.redirect("/payments_methods");
+      return res.redirect("/payments_methods");
     }
     res.cookie('errorLogC', "Your account could not be verified, please reach out to support.", { maxAge: 3600 });
     res.redirect("/payments_methods");
@@ -1944,19 +1990,183 @@ exports.delete_pay_methods = async (req, res) => {
     SessionKey = SessionKeyLog,
     Description = "Delete payments methods module to X3",
     Status = 1,
-    Comment = "Function: delete_pay_methods- line 898";
-  var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
-    IPAddress,
-    LogTypeKey,
-    SessionKey,
-    Description,
-    Status,
-    Comment
+    Comment = "Function: delete_pay_methods- line 1988";
+  var SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment);
+  const payID = req.params.IDPay;
+  const IUUD = req.params.IUUD;
+  let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(payID, UserID));
+  console.log('line 1998',search);
+
+  if (search[0].FundsReturned == 0) {
+    const amount1 = search[0].TranAmount;//FP amounts
+  const amount2 = search[1].TranAmount;//FP amounts
+  let status
+  let apikey;
+  let modeEnv = JSON.parse(
+    await DataBaseSq.settingsTableTypeEnvProduction()
   );
+  if (req.cookies.wf && modeEnv.Status == 1) {
+    apikey = req.cookies.wf;
+  } else {
+    let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+    let hostLink = gateaway[4]["valueSett"];
+    let WF_APIKey = JSON.parse(
+      await WFCCtrl.APYKeyGet(hostLink).then((response) => {
+        return JSON.stringify(response);
+      })
+    );
+    apikey = WF_APIKey["access_token"];
+    if (modeEnv.Status == 1) {
+      res.cookie("wf", WF_APIKey["access_token"], {
+        maxAge: WF_APIKey["expires_in"],
+      });
+    }
+  }
+  UserID = user["ID"].toString(),
+    IPAddress = ip,
+    LogTypeKey = 6,
+    SessionKey = SessionKeyLog,
+    Description = "Verify Amounts FPS before send debit-2004",
+    Status = 1,
+    Comment = `AMOUNT1: ${amount1}, amount2: ${amount2}`;
+  SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment);
+
+  for (let i = 0; i < search.length; i++) {
+    console.log('amount1:' , parseFloat(amount1))
+    console.log('amount2:' , parseFloat(amount2))
+    console.log('i:' + i)
+    console.log('TranAmount',search[i]['TranAmount'])
+
+    status = JSON.parse(await WFCCtrl.GetStatus(apikey, search[i]['TransactionID']).then((response) => {
+      return JSON.stringify(response);
+    }))
+    console.log('line 1640',status);
+    if (status['payment_status'] == 'PROCESSED') {
+
+      let saveFraudPr = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']),status['payment_status']);
+      Description = "Success: payment_status Verify FP Delete"
+      Status = 1
+      Comment = "payment_status PROCESSED -2049 - Delete";
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    }else{
+      let saveFraudPr0 = JSON.parse(await DataBaseSq.saveFraudProtectionSave(status['trace_number'], status['payment_status'], status['payment_status'], search[i]['pmtKey']),status['payment_status']);
+      Description = "Error: payment_status Verify FP-Delete"
+      Status = 1
+      Comment = `${status['payment_status']} PROCESSED -2055`;
+       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+       res.cookie('errorLogC', `Your account could not be deleted, verification is PENDING, please reach out to support(${status['payment_status']}).-2057`, { maxAge: 3600 });
+      return res.redirect("/payments_methods");
+    }
+  }
+    
+
+
+  const payIDs = JSON.parse(await request({
+    uri: URI +
+      `YPORTALPAY?representation=YPORTALPAY.$query&where=ID eq ${user["ID"]} AND PAYID eq ${payID}`,
+    method: "GET",
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      "Content-Type": "application/json",
+      Connection: 'close',
+      Accept: "application/json",
+      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+    },
+    json: true,
+  }).then(async (list_pays) => {
+    //SAVE SQL LOG  
+    return JSON.stringify(list_pays);
+  })
+  );
+  console.log('lines 1780',payIDs)
+  console.log('AMOUNT1', amount1, ' amount2: ', amount2)
+  for (let i = 0; i < 2; i++) {
+      let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDFraudP())//GET Last PaymentID WF to create next
+
+    console.log('line 2035',consult_paymentID);
+    let amount
+    if (i == 0) {
+      amount = amount1
+    }
+    if (i == 1) {
+      amount = amount2
+    }
+    let prepare_idWF;
+    if (consult_paymentID.length == 0) {
+      prepare_idWF = "FP000000000001";
+    } else {
+      let payment_id0 = consult_paymentID[0]["TransactionID"]; // GET TRANSACTIONID FOR CREATE NEXT NUM
+      prepare_idWF = payment_id0.replace("FP", ""); //
+      prepare_idWF = parseInt(consult_paymentID[0]["pmtKey"]) + 1;
+      let complete_seq = prepare_idWF.toString().padStart(12, "0");
+      prepare_idWF = "FP" + complete_seq;
+
+      console.log('line 2053',prepare_idWF);
+    }
+    let bank_account_number = decrypt(payIDs["$resources"][0]["BANKACCT"]);
+    let bank_id = decrypt(payIDs["$resources"][0]["BANKROUT"]);
+    let legalNameAccount = decrypt(payIDs["$resources"][0]["NAME"]);
+    if (bank_id.length < 9) {
+      bank_id = bank_id
+      bank_id = bank_id.padStart(9, "0");
+    }
+    console.log('line 2063',amount, bank_account_number,bank_id,legalNameAccount);
+    let fraudProtection = await WFCCtrl.WF(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
+    console.log('line 1806',fraudProtection);
+
+    let back_side_res = fraudProtection["x-backside-transport"],
+      payment_id = fraudProtection["payment-id"];
+    let transactionDate = moment(fraudProtection["date"]).format("YYYY-MM-DD");
+    let error = "";
+    if (fraudProtection["errors"]) {
+      console.log(fraudProtection["errors"][0]);
+      error = fraudProtection["errors"];
+      //IF RESPONSE ERROR, SAVE IN LOGSYSTEM SQL THE ERROR
+      console.log("\nError : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
+      let errorLogD = "Error:" + fraudProtection["errors"][0]["error_code"] + "- FP amount:" + amount;
+      console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
+      let errorLogC = fraudProtection["errors"][0]["description"];
+      console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
+      (Description = errorLogD), (Status = 0), (Comment = errorLogC);
+      SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      SystemLogL = JSON.parse(SystemLogL);
+
+      tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, amount, 0, transactionDate, 0, "FAIL", "FAIL", null, payID, errorLogC,'Debit');
+      let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
+      saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(0, errorLogC, getpmtKeyToRefund[0]['pmtKey'],'Credit');
+
+
+      res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
+      return res.redirect("/payments_methods");
+      ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
+    } else if (back_side_res == "OK OK") {
+      //IF RESPONSE FINE, SAVE PAYMENT INFO IN SQL TABLE
+      let descp, comm, tPaymentSave;
+      var paymentKey;
+      //IF PAYMENT STATUS IS "AUTHORIZED" SAVE IN SQL TABLE LOG SYSTEM
+      descp = "Process status res: " + back_side_res;
+      comm = "WFback_side_res (OK OK) Debit amount: " + amount + "-2089";
+      (Description = descp), (Status = 1), (Comment = comm), (SessionKey = SessionKeyLog);
+      SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+      //IF PAYMENT STATUS IS "OK OK" SAVE IN SQL TABLE PAYMENT
+      tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, amount, 0, transactionDate, 0, "OK", "OK", null, payID,null,'Debit');
+
+      let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
+     saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(1, null, getpmtKeyToRefund[0]['pmtKey'],'Debit');
+
+      paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
+      console.log("🚀 ~ file: dashboardController.js ~ line 1718 ~ exports.verify_PM= ~ paymentKey", paymentKey)
+      //SHOW CONSOLE INFO ABOUT PAYMENT
+      console.log("--Sucess in SQL: " + paymentKey);
+    }
+  }
+  }
+  
 
   //Delete Payment Method by IDPAY param
-  const payID = req.params.IDPay;
+ 
   request({
     uri: URI + `YPORTALPAY('${user.ID}~${payID}')?representation=YPORTALPAY.$edit`,
     method: "DELETE",
@@ -1974,9 +2184,10 @@ exports.delete_pay_methods = async (req, res) => {
     (Description = "Success Delete payments methods module to X3"),
       (Status = 1),
       (Comment = "Function: delete_pay_methods- line 928");
-    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
-    let disabledPaymentMIDSQL = JSON.parse(await DataBaseSq.deletePaymentMethod(payID,UserID ))
-    req.flash("success", "Card deleted");
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+    let disabledPaymentMIDSQL = JSON.parse(await DataBaseSq.deletePaymentMethod(payID, UserID))
+    req.flash("success", "Payment Method deleted");
     res.redirect("/payments_methods"); //Redirect to payment Methods page with success card deleted message
   });
 };
@@ -2053,22 +2264,22 @@ exports.pay_invoices = async (req, res) => {
       case "ACH":
         ACHMethod.push(list_methods_par[i]);
         break;
-      }
     }
-    let activeACH = [];
-    let search =[]
-    console.log("🚀 ~ file: dashboardController.js ~ line 2020 ~ exports.pay_invoices= ~ ACHMethod", ACHMethod)
-    for (let i = 0; i < ACHMethod.length; i++) {
-      if (ACHMethod[i]['VERIFIED']  ) {
-        activeACH.push(ACHMethod[i]);
-      }
-      // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
-      // ACHMethod[i].verify = 0;
-      // if (search[0] != null) {
-      //   activeACH.push(ACHMethod[i]);
-      // }
+  }
+  let activeACH = [];
+  let search = []
+  console.log("🚀 ~ file: dashboardController.js ~ line 2020 ~ exports.pay_invoices= ~ ACHMethod", ACHMethod)
+  for (let i = 0; i < ACHMethod.length; i++) {
+    if (ACHMethod[i]['VERIFIED']) {
+      activeACH.push(ACHMethod[i]);
     }
-    
+    // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
+    // ACHMethod[i].verify = 0;
+    // if (search[0] != null) {
+    //   activeACH.push(ACHMethod[i]);
+    // }
+  }
+
 
   //GET INVOICES INFO BY SELECTED IN THE OPEN INV TABLE
   let count = 100;
@@ -2096,7 +2307,7 @@ exports.pay_invoices = async (req, res) => {
       inv_wofilter.push(
         await request({
           uri: URI +
-          `${Yportal}?representation=${portalRepresentation}.$query&count=` +
+            `${Yportal}?representation=${portalRepresentation}.$query&count=` +
             count +
             " " +
             where_filter_inv,
@@ -2105,8 +2316,8 @@ exports.pay_invoices = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
+            Connection: 'close',
+            Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -2117,7 +2328,7 @@ exports.pay_invoices = async (req, res) => {
               (Status = 1),
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. -pay_invoices Line 1037");
-            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment            );
+            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
             return false;
           }
           let inv_filtering = JSON.stringify(inv_wofilter2["$resources"]);
@@ -2141,8 +2352,8 @@ exports.pay_invoices = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
+          Connection: 'close',
+          Accept: "application/json",
           Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
         },
         json: true,
@@ -2154,7 +2365,7 @@ exports.pay_invoices = async (req, res) => {
             (Status = 1),
             (Comment =
               "Invoice query response blank or closed inv trying to pay. - Line 1080");
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment          );
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           return false;
         }
 
@@ -2162,7 +2373,7 @@ exports.pay_invoices = async (req, res) => {
         return inv_wofilter2["$resources"][0];
       })
     );
-    
+
   }
 
   //IF INVOICES INFO IS BLANK REDIRECT TO OPEN INVOICE PAGE AND SHOW MSG WITH THE ERROR
@@ -2190,15 +2401,14 @@ exports.pay_invoices = async (req, res) => {
   }
   console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
   UserID = user["EMAIL"].toString(), Description = 'pay_invoices line 2083  ', Status = 1, Comment = ids_invoices;
-   SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 2086 ~ exports.pay_invoices= ~ SystemLogL", SystemLogL)
   //HERE RENDER PAGE AND ENTER INFO
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
+  let activeBanner = false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   res.render("pay_invoices", {
     pageName: "Pay Invoices",
     dashboardPage: true,
@@ -2214,7 +2424,7 @@ exports.pay_invoices = async (req, res) => {
     pictureProfile,
     admin,
     CCMethod,
-    ACHMethod,activeACH, banner, activeBanner
+    ACHMethod, activeACH, banner, activeBanner
   });
 };
 
@@ -2401,8 +2611,8 @@ exports.process_payment = async (req, res) => {
                 rejectUnauthorized: false,
                 headers: {
                   "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
+                  Connection: 'close',
+                  Accept: "application/json",
                   Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
                 },
                 json: true,
@@ -2482,7 +2692,7 @@ exports.process_payment = async (req, res) => {
                 headers: {
                   "Content-Type": "application/json",
                   Accept: "*/*",
-      Connection: 'close',
+                  Connection: 'close',
                   Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
                   soapaction: "*",
                 },
@@ -2800,11 +3010,10 @@ exports.payments = async (req, res) => {
   //CLEAN PAYMENTS BLANK
   payments = JSON.stringify(payments.filter((el) => el != ""));
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
+  let activeBanner = false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   //RENDER PAYMENTS PAGE
   res.render("payments", {
     pageName: "Payments",
@@ -2814,7 +3023,7 @@ exports.payments = async (req, res) => {
     user,
     pictureProfile,
     payments,
-    admin,banner,activeBanner
+    admin, banner, activeBanner
   });
 };
 
@@ -2852,7 +3061,7 @@ exports.settingsPreview = async (req, res) => {
   console.log("🚀 ~ file: dashboardController.js ~ line 2852 ~ exports.settingsPreview= ~ gateaway", gateaway)
   let hostLink = gateaway[4]['valueSett'];
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner =false
+  let activeBanner = false
   if (banner.Status == 1) {
     activeBanner = true
   }
@@ -2872,7 +3081,7 @@ exports.settingsPreview = async (req, res) => {
     text1,
     modeEnv,
     gateaway,
-    sagex3Folder,banner,activeBanner,hostLink
+    sagex3Folder, banner, activeBanner, hostLink
   });
 };
 
@@ -2893,13 +3102,13 @@ exports.saveSetting = async (req, res) => {
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
   let enValue = sValue;
-  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret") {
+  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id") {
     enValue = encrypt(sValue);
   }
   let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable(); // GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
-  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret") {
+  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id") {
     return res.sendStatus(200);
   }
   if (sType == "queryFolder") {
@@ -2910,16 +3119,16 @@ exports.saveEditSetting = async (req, res) => {
 };
 /**FUNCTION TO SAVE EDIT BANNER  */
 exports.saveEditSettingBanner = async (req, res) => {
-  const { bannerText,colorText,colorBg,status,bannerKey } = req.body;
+  const { bannerText, colorText, colorBg, status, bannerKey } = req.body;
   console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ req.body", req.body)
   let saveSys
-  if (bannerKey !='') {
-      saveSys = await DataBaseSq.EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
-  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
-  }else{
-      saveSys = await DataBaseSq.saveSettingBanner(bannerText, 'banner', status,colorBg, colorText); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
-  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
-  } 
+  if (bannerKey != '') {
+    saveSys = await DataBaseSq.EditSettingBanner(bannerText, status, colorBg, colorText, bannerKey); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+    console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  } else {
+    saveSys = await DataBaseSq.saveSettingBanner(bannerText, 'banner', status, colorBg, colorText); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+    console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  }
   return res.sendStatus(200);
   /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
@@ -2974,49 +3183,48 @@ exports.payments_detail = async (req, res) => {
   //GET FROM X3, INVOICE IN PAYMENTS ARRAY INFO ONE BY ONE
   for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
     //THIS IS FOR GET INFO 
-      console.log('search ayment invoice details')
-      where_filter_inv =
-        "&where=NUM eq '" +
-        payments_dt[0].tPaymentApplication[i].INVOICENUM +
-        "' "; //WHERE CLAUSE WITH INVNUM,FOR X3
-      //STORE INFO INVOICE IN ARRAY
-      inv_wofilter.push(
-        await request({
-          uri: URI +
-            `YPORTALINVD('${payments_dt[0].tPaymentApplication[i].INVOICENUM}')?representation=YPORTALINVD.$details`,
-          method: "GET",
-          insecure: true,
-          rejectUnauthorized: false,
-          headers: {
-            "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          },
-          json: true,
-        }).then(async (inv_wofilter2) => {
-          console.log('inv_wofilter2')
-          // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
-          if (inv_wofilter2.length == 0) {
-            (Description = "Error get invoice for pay"),
-              (Status = 1),
-              (Comment =
-                "Invoice query response blank or closed inv trying to pay. - Line 1915");
-            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-            return false;
-          }
-          return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
-        })
-      );
+    console.log('search ayment invoice details')
+    where_filter_inv =
+      "&where=NUM eq '" +
+      payments_dt[0].tPaymentApplication[i].INVOICENUM +
+      "' "; //WHERE CLAUSE WITH INVNUM,FOR X3
+    //STORE INFO INVOICE IN ARRAY
+    inv_wofilter.push(
+      await request({
+        uri: URI +
+          `YPORTALINVD('${payments_dt[0].tPaymentApplication[i].INVOICENUM}')?representation=YPORTALINVD.$details`,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        },
+        json: true,
+      }).then(async (inv_wofilter2) => {
+        console.log('inv_wofilter2')
+        // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
+        if (inv_wofilter2.length == 0) {
+          (Description = "Error get invoice for pay"),
+            (Status = 1),
+            (Comment =
+              "Invoice query response blank or closed inv trying to pay. - Line 1915");
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          return false;
+        }
+        return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
+      })
+    );
   }
   let payments_st = JSON.stringify(payments_dt), //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
     inv_wofilter_st = JSON.stringify(inv_wofilter); //CONVERT ARRAY INVOICES INFO IN STRING FOR DATATABLE
-    let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-    let activeBanner =false
-    if (banner.Status == 1) {
-      activeBanner = true
-    }
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+  let activeBanner = false
+  if (banner.Status == 1) {
+    activeBanner = true
+  }
   //RENDER PAGE
   res.render("detail_payments", {
     pageName: "Payments Details",
@@ -3029,7 +3237,7 @@ exports.payments_detail = async (req, res) => {
     admin,
     inv_wofilter,
     payments_st,
-    inv_wofilter_st,banner, activeBanner
+    inv_wofilter_st, banner, activeBanner
   });
 };
 
@@ -3078,16 +3286,15 @@ exports.status_payments_detail = async (req, res) => {
     console.log(searchLog)
     if (!searchLog) {
       payments_dt[0].tPaymentApplication[i].errorLog = 'N/A'
-    }else {
-     payments_dt[0].tPaymentApplication[i].errorLog = searchLog 
+    } else {
+      payments_dt[0].tPaymentApplication[i].errorLog = searchLog
     }
-    
+
   }
 
   let payments_st = JSON.stringify(payments_dt); //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  console.log("🚀 ~ file: dashboardController.js ~ line 2738 ~ exports.settingsPreview= ~ banner", banner)
-  let activeBanner =false
+  let activeBanner = false
   if (banner.Status == 1) {
     activeBanner = true
   }
@@ -3102,7 +3309,7 @@ exports.status_payments_detail = async (req, res) => {
     payments_dt,
     admin,
     inv_wofilter,
-    payments_st,banner, activeBanner
+    payments_st, banner, activeBanner
   });
 };
 
@@ -3184,8 +3391,8 @@ exports.Print_payments_detail = async (req, res) => {
           rejectUnauthorized: false,
           headers: {
             "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
+            Connection: 'close',
+            Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -3230,7 +3437,7 @@ exports.Print_payments_detail = async (req, res) => {
           headers: {
             "Content-Type": "application/json",
             Connection: 'close',
-             Accept: "application/json",
+            Accept: "application/json",
             Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
           },
           json: true,
@@ -3396,7 +3603,7 @@ exports.process_payment_WF = async (req, res) => {
     //SHOW CONSOLE INFO ABOUT PAYMENT
     console.log("--Sucess in SQL: " + paymentKey);
     return res.send({ error, WF_TransactionID, SystemLogL, paymentKey }); //SEND RESPONSE TO AJAX REQUEST
-  }else{
+  } else {
     (Description = 'process_payment_WF:WF_TransactionID'), (Status = 0), (Comment = 'Error lines 3187-3244/WF_TransactionID');
     SystemLogL = await DataBasequerys.tSystemLog(
       UserID,
@@ -3409,7 +3616,7 @@ exports.process_payment_WF = async (req, res) => {
     );
     SystemLogL = JSON.parse(SystemLogL);
     return res.send({
-      WF_TransactionID_Error:'Error: WF_TransactionID failed in process_payment_WF, please contact support.- ',
+      WF_TransactionID_Error: 'Error: WF_TransactionID failed in process_payment_WF, please contact support.- ',
       SystemLogL
     }); // RETURN RESPONSE TO AJAX
   }
@@ -3447,54 +3654,54 @@ exports.resendX3 = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init resendX3", Status = 1, Comment = "FUNCTION: resendX3-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-    console.log(req.body)
-    const {tPaymentPmtKey,INVOICENUM,   AppliedAmount,  ShortDescription} = req.body
-    var i_file = "",inv_detail,amountPayment;
+  console.log(req.body)
+  const { tPaymentPmtKey, INVOICENUM, AppliedAmount, ShortDescription } = req.body
+  var i_file = "", inv_detail, amountPayment;
   let today = moment().format("YYYYMMDD");//FORMAY DATE: 20220101
   var statusSOAP = [];//ALMACENATE IN ARRAY SOAP STATUS RESPONSE
   const parser = new xml2js.Parser({
     explicitArray: true,
   });//THIS FUNCTION IS FOR PARSER XML 
-  
-  var msgErroSOAP = [],inVError = [];
 
-    statusSOAP.pop()
-    console.log('reSendX3')
-    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-    console.log(Payment)
-    // FIRTS GET INVOICE DETAIL FROM X3
-    inv_detail = JSON.parse(
-      await request({
-        uri:
-          URI +
-          `YPORTALINVD('${INVOICENUM}')?representation=YPORTALINVD.$details`,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-      Connection: 'close',
-      Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (invD) => {
-        return JSON.stringify(invD);
-      })
-    );
-    //GET AMOUNT APPLIED FOR INVOICE
-    amountPayment = Number.parseFloat(AppliedAmount).toFixed(2);
-    let bankAccount = decrypt(Payment['bank_account_number']);//DECRYPT
-    let Lastfour = bankAccount.slice(-4);// GET LAST FOR NUMBER 
-    let reasonLeast = ShortDescription;
-  
-  
-    i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${Payment['ProcessorTranID']};${Payment['TransactionID']};ACH${Lastfour};10204|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLeast.toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;000;BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`; //I_FILE
-  
-    console.log(i_file);//CHECK I_FILE
-  
-    //PREPARE THE XML FOR SAVE IN SOAP X3, ENTER THE I_FILE VARIABLE
-    let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
+  var msgErroSOAP = [], inVError = [];
+
+  statusSOAP.pop()
+  console.log('reSendX3')
+  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+  console.log(Payment)
+  // FIRTS GET INVOICE DETAIL FROM X3
+  inv_detail = JSON.parse(
+    await request({
+      uri:
+        URI +
+        `YPORTALINVD('${INVOICENUM}')?representation=YPORTALINVD.$details`,
+      method: "GET",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Connection: 'close',
+        Accept: "application/json",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      },
+      json: true,
+    }).then(async (invD) => {
+      return JSON.stringify(invD);
+    })
+  );
+  //GET AMOUNT APPLIED FOR INVOICE
+  amountPayment = Number.parseFloat(AppliedAmount).toFixed(2);
+  let bankAccount = decrypt(Payment['bank_account_number']);//DECRYPT
+  let Lastfour = bankAccount.slice(-4);// GET LAST FOR NUMBER 
+  let reasonLeast = ShortDescription;
+
+
+  i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${Payment['ProcessorTranID']};${Payment['TransactionID']};ACH${Lastfour};10204|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLeast.toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;000;BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`; //I_FILE
+
+  console.log(i_file);//CHECK I_FILE
+
+  //PREPARE THE XML FOR SAVE IN SOAP X3, ENTER THE I_FILE VARIABLE
+  let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
   <soapenv:Header/>
   <soapenv:Body>
   <wss:run soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -3521,84 +3728,84 @@ exports.resendX3 = async (req, res) => {
   </wss:run>
   </soapenv:Body>
   </soapenv:Envelope>`;
-  
-    //SEND TO SOAP X3 THE XML WIHT THE PAYMENT INFO, AND GET RESPONSE
-    var SOAPP = JSON.parse(
-      await request({
-        uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
-        method: "POST",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-          soapaction: "*",
-          Connection: 'close',
-        },
-        body: xmlB,
-      }).then(async (SOAP) => {
-        return JSON.stringify(SOAP);
-      })
-    );
+
+  //SEND TO SOAP X3 THE XML WIHT THE PAYMENT INFO, AND GET RESPONSE
+  var SOAPP = JSON.parse(
+    await request({
+      uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
+      method: "POST",
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        soapaction: "*",
+        Connection: 'close',
+      },
+      body: xmlB,
+    }).then(async (SOAP) => {
+      return JSON.stringify(SOAP);
+    })
+  );
   var newSystemLog
-    //PARSE XML RESPONSE FROM SOAP X3
-    parser.parseString(SOAPP, async function (err, result) {
-      if (result["soapenv:Envelope"]["soapenv:Body"][0]["wss:runResponse"][0]["runReturn"][0]["status"][0]["_"] == "1") {
-        //IF STATUS RESPONSE IS 1, PUSH IN ARRAY STATUS FOR THAT INVOICE
-        statusSOAP.push({
-          status:
-            result["soapenv:Envelope"]["soapenv:Body"][0][
-            "wss:runResponse"
-            ][0]["runReturn"][0]["status"][0]["_"],
-          error: msgErroSOAP,
-        });
-        console.log('Line 145')
-        console.log(statusSOAP)
-        return statusSOAP;
-      } else {
-        //IF STATUS RESPONSE IS 0, CHECK OUT THE MESSAGE RES FROM SOAP AND STORE IN ARRAY "msgErroSOAP"
-        for (let i = 0; i < result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"].length; i++) {
-  
-          msgErroSOAP.push(
-            result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"][
-            i
-            ]["message"][0]
-          );
-        }
-  
-        inVError.push(inv_detail.NUM);//STORE THE INVOICE IS IN ERROR
-        statusSOAP.push({
-          status:
-            result["soapenv:Envelope"]["soapenv:Body"][0][
-            "wss:runResponse"
-            ][0]["runReturn"][0]["status"][0]["_"],
-          error: msgErroSOAP,
-          invError: inVError,
-        });//STORE IN ARRAY: STATUS SOAP, MSG ERROR FROM X3, INVOICE NUM WITH ERROR
-        
-            console.log(newSystemLog)
-            statusSOAP.push({newSystemLog : newSystemLog});
+  //PARSE XML RESPONSE FROM SOAP X3
+  parser.parseString(SOAPP, async function (err, result) {
+    if (result["soapenv:Envelope"]["soapenv:Body"][0]["wss:runResponse"][0]["runReturn"][0]["status"][0]["_"] == "1") {
+      //IF STATUS RESPONSE IS 1, PUSH IN ARRAY STATUS FOR THAT INVOICE
+      statusSOAP.push({
+        status:
+          result["soapenv:Envelope"]["soapenv:Body"][0][
+          "wss:runResponse"
+          ][0]["runReturn"][0]["status"][0]["_"],
+        error: msgErroSOAP,
+      });
+      console.log('Line 145')
+      console.log(statusSOAP)
+      return statusSOAP;
+    } else {
+      //IF STATUS RESPONSE IS 0, CHECK OUT THE MESSAGE RES FROM SOAP AND STORE IN ARRAY "msgErroSOAP"
+      for (let i = 0; i < result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"].length; i++) {
+
+        msgErroSOAP.push(
+          result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"][
+          i
+          ]["message"][0]
+        );
       }
 
-      return statusSOAP;
-    });
-    console.log("ss : " + JSON.stringify(statusSOAP));// IN CONSOLE CHECKOUT PAYMENT X3 SOAP STATUS RESPONSE
-    console.log('--------------------')
-  console.log(statusSOAP[0]['status'])
-  
-  let extraida = JSON.stringify(statusSOAP[0]['error']).substring(0, 70);
-        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
-       Description = "Resend SOAP ",
-          Status = 1,
-          Comment =extraida + "-Inv: " + INVOICENUM;
-            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-            console.log(newSystemLog)
-    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'],newSystemLog));
-    console.log(paymentAplication)
+      inVError.push(inv_detail.NUM);//STORE THE INVOICE IS IN ERROR
+      statusSOAP.push({
+        status:
+          result["soapenv:Envelope"]["soapenv:Body"][0][
+          "wss:runResponse"
+          ][0]["runReturn"][0]["status"][0]["_"],
+        error: msgErroSOAP,
+        invError: inVError,
+      });//STORE IN ARRAY: STATUS SOAP, MSG ERROR FROM X3, INVOICE NUM WITH ERROR
 
-  res.send({statusx3: statusSOAP[0]['status'], error:statusSOAP[0]['error']})
+      console.log(newSystemLog)
+      statusSOAP.push({ newSystemLog: newSystemLog });
+    }
+
+    return statusSOAP;
+  });
+  console.log("ss : " + JSON.stringify(statusSOAP));// IN CONSOLE CHECKOUT PAYMENT X3 SOAP STATUS RESPONSE
+  console.log('--------------------')
+  console.log(statusSOAP[0]['status'])
+
+  let extraida = JSON.stringify(statusSOAP[0]['error']).substring(0, 70);
+  //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+  Description = "Resend SOAP ",
+    Status = 1,
+    Comment = extraida + "-Inv: " + INVOICENUM;
+  newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  console.log(newSystemLog)
+  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'], newSystemLog));
+  console.log(paymentAplication)
+
+  res.send({ statusx3: statusSOAP[0]['status'], error: statusSOAP[0]['error'] })
 };
 /**FUNCTION TO cancelPayment PAYMENTS DETAIL PAGE */
 exports.cancelPayment = async (req, res) => {
@@ -3612,16 +3819,16 @@ exports.cancelPayment = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init cancelPayment", Status = 1, Comment = "FUNCTION: cancelPayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-    console.log(req.body)
-    const {tPaymentPmtKey,INVOICENUM} = req.body
-    console.log('finalizePayment')
-    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-    console.log(Payment)
-    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 2));
-    console.log(paymentAplication)
+  console.log(req.body)
+  const { tPaymentPmtKey, INVOICENUM } = req.body
+  console.log('finalizePayment')
+  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+  console.log(Payment)
+  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 2));
+  console.log(paymentAplication)
 
-  res.send({paymentAplication})
+  res.send({ paymentAplication })
 };
 /**FUNCTION TO finalizePayment PAYMENTS DETAIL PAGE */
 exports.finalizePayment = async (req, res) => {
@@ -3635,32 +3842,32 @@ exports.finalizePayment = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init finalizePayment", Status = 1, Comment = "FUNCTION: finalizePayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-    console.log(req.body)
-    const {tPaymentPmtKey,INVOICENUM} = req.body
-    console.log('finalizePayment')
-    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-    console.log(Payment)
-  var newSystemLog  
-        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
-       Description = "finalizePayment",
-          Status = 1,
-          Comment = "finalizePayment-Inv: " + INVOICENUM;
-            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-            console.log(newSystemLog)
-    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1,newSystemLog));
-    console.log(paymentAplication)
+  console.log(req.body)
+  const { tPaymentPmtKey, INVOICENUM } = req.body
+  console.log('finalizePayment')
+  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+  console.log(Payment)
+  var newSystemLog
+  //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+  Description = "finalizePayment",
+    Status = 1,
+    Comment = "finalizePayment-Inv: " + INVOICENUM;
+  newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  console.log(newSystemLog)
+  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1, newSystemLog));
+  console.log(paymentAplication)
 
-  res.send({paymentAplication})
+  res.send({ paymentAplication })
 };
 
 /**FUNCTION TO save SystemLog */
 exports.saveSystemLog = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //USER INFO
-console.log('saveSystemLog line 3480:', req.body)
-const {description,  comment} = req.body;
-console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ comment", comment)
-console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
+  console.log('saveSystemLog line 3480:', req.body)
+  const { description, comment } = req.body;
+  console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ comment", comment)
+  console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
@@ -3668,6 +3875,6 @@ console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSyste
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ SystemLogL", SystemLogL)
 
-   
-  res.send({SystemLogL})
+
+  res.send({ SystemLogL })
 };

@@ -156,7 +156,7 @@ module.exports = {
   settingsgateway(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findAll({where:{[Op.or]: [
-        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'}
+        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'},{typeSett:'bank_id'},{typeSett:'bank_account_number'}
       ] },order: [ [ 'id', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
@@ -261,11 +261,11 @@ module.exports = {
 
   /**FUNCTIONS FOR FRAUD PROTECTION */
 
-  tPaymentFraudProtectionSave(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,PaymentMethodID) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+  tPaymentFraudProtectionSave(PaymentStatus, CreateSessionKey, UserID, TransactionID, TranAmount, ProcessorKey, DateProcessesed, ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,PaymentMethodID,X3UUID,Observation,FundsMovement) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
     return new Promise((resolve, reject) => {
       tPaymentFraudProtection.create(
         {
-          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID,TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, PaymentMethodID:PaymentMethodID})
+          PaymentStatus: PaymentStatus, CreateSessionKey: CreateSessionKey, UserID: UserID,TransactionID: TransactionID, TranAmount: TranAmount, ProcessorKey: ProcessorKey, DateProcessesed: DateProcessesed, ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc, PaymentMethodID:PaymentMethodID,X3UUID:X3UUID ,Observation:Observation,FundsMovement:FundsMovement})
         .then((data) => {
           let data_set = JSON.stringify(data);
           resolve(data_set);
@@ -289,8 +289,10 @@ module.exports = {
     });
   }, 
   verifyPaymentMethodID(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
-    return new Promise((resolve, reject) => {
-      tPaymentFraudProtection.findAll({where: {PaymentMethodID:PaymentMethodID, UserID: UserID,PaymentStatus:1},order: [ [ 'createdAt', 'ASC' ]]})
+    return new Promise((resolve, reject) => {//{X3UUID:PaymentMethodID, UserID: UserID,PaymentStatus:1},
+      tPaymentFraudProtection.findAll({where: {[Op.or]: [
+        {PaymentMethodID:PaymentMethodID, UserID: UserID,PaymentStatus:1}
+      ] },order: [ [ 'createdAt', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
@@ -312,10 +314,24 @@ module.exports = {
         });
     });
   },
-  saveFraudProtectionSave(ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,paymentKey) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+  saveFraudProtectionSave(ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,paymentKey, observation) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
     return new Promise((resolve, reject) => {
       tPaymentFraudProtection.update(
-        { ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc},{where:{pmtKey:paymentKey}})
+        { ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc,Observation:observation},{where:{pmtKey:paymentKey}})
+        .then((data) => {
+          let data_set = JSON.stringify(data);
+          resolve(data_set);
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(err)
+        });
+    });
+  },
+  saveFraudProtectionSaveFundsReturned(FundsReturned, Observation, paymentKey,FundsMovement) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+    return new Promise((resolve, reject) => {
+      tPaymentFraudProtection.update(
+        { FundsReturned: FundsReturned, Observation:Observation,FundsMovement:FundsMovement},{where:{pmtKey:paymentKey}})
         .then((data) => {
           let data_set = JSON.stringify(data);
           resolve(data_set);
