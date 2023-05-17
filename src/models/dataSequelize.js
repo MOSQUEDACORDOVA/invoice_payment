@@ -156,7 +156,7 @@ module.exports = {
   settingsgateway(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findAll({where:{[Op.or]: [
-        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'},{typeSett:'bank_id'},{typeSett:'bank_account_number'}
+        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'},{typeSett:'bank_id'},{typeSett:'bank_account_number'},{typeSett:'bank_id_FP'},{typeSett:'bank_account_number_FP'},{typeSett:'PauseCustomerPaymentMethods'}
       ] },order: [ [ 'id', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);

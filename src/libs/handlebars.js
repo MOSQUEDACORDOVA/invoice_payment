@@ -29,6 +29,9 @@ module.exports = {
 			case 4:
 				return 'Administrator';
 				break;
+			case 5:
+				return 'AR Administrator';
+				break;
 			default:
 				return 'Check out Support Please';
 				break;
@@ -173,9 +176,10 @@ module.exports = {
 		}
 		return checked;
 	},
-	putDnoneClass: (value)=> {
+	putDnoneClass: (value, state)=> {
 		let classD;
-		if (value == 1) {
+		console.log('178 handlerbar', state)
+		if (value == 1 && state == 0) {
 			classD = `d-none`
 		}
 		return classD;

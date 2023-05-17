@@ -260,8 +260,8 @@ module.exports = {
         let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
         let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
         let hostLink = gateaway[4]['valueSett'];
-        let bank_id_default = gateaway[5]['valueSett'];
-        let bank_account_number_default = gateaway[6]['valueSett'];
+        let bank_id_default = gateaway[7]['valueSett'];
+        let bank_account_number_default = gateaway[8]['valueSett'];
       if (modeEnv.Status == 1) {
         console.log('production');
       let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
@@ -355,6 +355,109 @@ module.exports = {
       });
       console.log("🚀 ~ file: WFCtrl.js ~ line 354 ~ returnnewPromise ~ payload", payload)
       
+      req2.write(payload);
+      req2.end();
+    })
+    },
+    WFFP_Debit(totalAmountcard,apiKey,NamePayer_Bank,bank_id,bank_account_number,payment_id) {
+      return new Promise(async (resolve, reject) => {
+        let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction());
+        let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+        let hostLink = gateaway[4]['valueSett'];
+        let bank_id_default = gateaway[7]['valueSett'];
+        let bank_account_number_default = gateaway[8]['valueSett'];
+      if (modeEnv.Status == 1) {
+        console.log('production');
+      let keyA =fs.readFileSync(file_N2, 'utf8', (error, data) => {
+        if (error) throw error;
+       return data;
+      });
+      let crt =fs.readFileSync(file_N,'utf8', (error, data) => {
+        if (error) throw error;
+       return data;
+      });
+            //SET HEADER
+            keyA=decrypt(keyA)
+            crt=decrypt(crt)
+            console.log(hostLink)
+            var options = {
+              method: 'POST',
+              hostname: hostLink,
+              path: '/ach/v1/payments',
+              key:keyA , 
+              cert:crt ,
+              headers: {
+                'Authorization': 'Bearer ' + apiKey,
+                'Content-Type': 'application/json',
+                'request-id': requestId,
+                'gateway-company-id': decrypt(gateaway[0]['valueSett']),
+                'gateway-entity-id': decrypt(gateaway[1]['valueSett']),
+                'Accept': '*/*', 
+              }
+            };
+      }else{
+        //SET HEADER
+      var options = {
+        method: 'POST',
+        hostname: 'api-sandbox.wellsfargo.com',
+        path: '/ach/v1/payments',
+        headers: {
+          'Authorization': 'Bearer ' + apiKey,
+          'Content-Type': 'application/json',
+          'request-id': requestId,
+          'gateway-company-id': GATEWAYCOMPANYID,
+          'Accept': '*/*'
+        }
+      };
+      }
+        
+      var req2 = http.request(options, function (res2) {
+        var chunks = [];
+        res2.on('data', function (chunk) {    
+          chunks.push(chunk);
+        });
+      
+        res2.on('end', function () {    
+          var body = new Buffer.concat(chunks);
+                     
+          if (body.toString().length > 0) {
+            let errors = JSON.parse(body.toString())
+            resolve(errors) //RETURN ERROR
+          } else {
+            resolve(res2.headers) //RETURN HEADER FOR GET DE RESPONSE AND PAYMENT-ID
+          }
+          
+        });
+      });
+     
+      // THIS HAVE THE JSON WITH THE PAYMENT INFO FOR SEND TO WF API
+      var payload = JSON.stringify({
+        'payment_method': 'NURG',
+        'payment_id': payment_id,
+        'payment_amount': parseFloat(totalAmountcard),
+        'debit_credit_indicator': 'D',
+        'payment_format': 'WEB',
+        'payment_description': 'Payment from San Antonio Payment Portal',
+        'payer': {
+          'name': `${NamePayer_Bank}`,
+          'bank_information': {
+            'bank_id': `${bank_id}`,
+            'bank_id_type': 'ABA',
+            'bank_account_number': `${bank_account_number}`,
+            'bank_account_type': 'D'
+          }
+        },
+        'payee': {
+          'name': 'San Antonio Winery',
+          'bank_information': {
+            'bank_id': `${decrypt(bank_id_default)}`,
+            'bank_id_type': 'ABA',
+            'bank_account_number': `${decrypt(bank_account_number_default)}`,
+            'bank_account_type': 'D'
+          }
+        }
+      });
+      console.log('line 460 WF',payload)
       req2.write(payload);
       req2.end();
     })

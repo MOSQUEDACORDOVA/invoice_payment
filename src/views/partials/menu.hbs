@@ -28,7 +28,7 @@
                     id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="user-nav d-sm-flex d-none"><span class="user-name fw-bolder">{{user.FNAME}}
                             {{user.LNAME}}</span><span class="user-status">{{#getRoles user.ROLE}}{{/getRoles}}</span>
-                    </div><span class="avatar"><img class="round" src="../../../assets/uploads/{{pictureProfile}}"
+                    </div><span class="avatar"><img class="round" src="{{#if pictureProfile}}../../../assets/uploads/{{pictureProfile}}{{else}}../../app-assets/images/avatars/profile.png{{/if}}"
                             alt="avatar" height="40" width="40"><span class="avatar-status-online"></span></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
@@ -80,7 +80,7 @@
                         data-i18n="Email">Payments</span></a>
             </li>
             
-            <li class=" nav-item {{#putDnoneClass user.ROLE}}{{/putDnoneClass}}"><a class="d-flex align-items-center" href="/payments_methods"><i
+            <li class=" nav-item {{#putDnoneClass user.ROLE user.PauseCustomerPMethods}}{{/putDnoneClass}}"><a class="d-flex align-items-center" href="/payments_methods"><i
                         data-feather='credit-card'></i><span class="menu-title text-truncate" data-i18n="Email">Payment
                         Methods</span></a>
             </li>

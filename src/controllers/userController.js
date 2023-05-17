@@ -4,6 +4,7 @@ const request = require("request-promise");
 var queryFolder = 'SAWTEST1' //Name the query folder X3
 var URLHost = `https://sawoffice.technolify.com:8443/api1/x3/erp/`; //URI query link 
 var DataBasequerys = require('../models/data');// Functions for X3 querys
+var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys with sequelize
 const { encrypt, decrypt } = require('./crypto');
 const ecoSys = require('../../ecosystem.config')
 /** FUNCTION TO RENDER LOGGIN PAGE */
@@ -83,7 +84,15 @@ exports.loginUser2 = async (req, res) => {
 
       //SAVE SQL LOGSYSTEM
       let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
-      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)   
+      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+      
+      //Checkout menu option state
+
+      const PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.settingsgateway());
+console.log('line 92 user constroller login', PauseCustomerPaymentMethods[9]['valueSett'])
+user['$resources'][0].PauseCustomerPMethods= PauseCustomerPaymentMethods[9]['valueSett']
+
+
       res.redirect('/dashboard')//REDIRECT TO OPEN INVOICES PAGE
     });
   })(req, res);

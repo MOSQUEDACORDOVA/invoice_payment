@@ -61,6 +61,7 @@ exports.dashboard = async (req, res) => {
   }
 
   const user = res.locals.user["$resources"][0]; //User info
+  console.log("🚀 ~ file: dashboardController.js:64 ~ exports.dashboard= ~ user:", user)
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //Pic Profile
 
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
@@ -76,7 +77,7 @@ exports.dashboard = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -212,7 +213,7 @@ exports.openInvMore = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: openInvMore list", Status = 1, Comment = "Starting- line 139-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -388,7 +389,7 @@ exports.next_pageIO2 = async (req, res) => {
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -482,7 +483,7 @@ exports.next_pageIC2 = async (req, res) => {
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -576,13 +577,13 @@ exports.searchOpenInvO = async (req, res) => {
 
   if (filter == "INVDAT" || filter == "DUDDAT") {
     query = `and ${filter} eq @${search}@`;
-    if (user["ROLE"] == 4) {
+    if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} eq @${search}@`;
     }
 
   } else {
     query = `and ${filter} like '%25${search.toUpperCase()}%25'`;
-    if (user["ROLE"] == 4) {
+    if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} like '%25${search.toUpperCase()}%25'`;
     }
   }
@@ -591,7 +592,7 @@ exports.searchOpenInvO = async (req, res) => {
     query = ``;
   }
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -714,13 +715,13 @@ exports.searchCloseInvC = async (req, res) => {
   var query = "";
   if (filter == "INVDAT" || filter == "DUDDAT") {
     query = `and ${filter} eq @${search}@`;
-    if (user["ROLE"] == 4) {
+    if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} eq @${search}@`;
     }
 
   } else {
     query = `and ${filter} like '%25${search}%25'`;
-    if (user["ROLE"] == 4) {
+    if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} like '%25${search}%25'`;
     }
   }
@@ -729,7 +730,7 @@ exports.searchCloseInvC = async (req, res) => {
     query = ``;
   }
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -853,7 +854,7 @@ exports.close_invoices = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Function: close_invoices- Line 559";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -1718,7 +1719,7 @@ exports.verify_PM = async (req, res) => {
         bank_id = bank_id
         bank_id = bank_id.padStart(9, "0");
     }
-      let fraudProtection = await WFCCtrl.WF(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
+      let fraudProtection = await WFCCtrl.WFFP_Debit(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
       console.log('line 1806',fraudProtection);
 
       let back_side_res = fraudProtection["x-backside-transport"],
@@ -2112,7 +2113,7 @@ exports.delete_pay_methods = async (req, res) => {
       bank_id = bank_id.padStart(9, "0");
     }
     console.log('line 2063',amount, bank_account_number,bank_id,legalNameAccount);
-    let fraudProtection = await WFCCtrl.WF(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
+    let fraudProtection = await WFCCtrl.WFFP_Debit(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
     console.log('line 1806',fraudProtection);
 
     let back_side_res = fraudProtection["x-backside-transport"],
@@ -2289,7 +2290,7 @@ exports.pay_invoices = async (req, res) => {
   let split_id = ids_invoices.split(","); // CREATE ARRAY WITH DE INVOICES NUM
   let where_filter_inv;
   var inv_wofilter = [];
-  if (user["ROLE"] == 4) {
+  if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
@@ -3102,13 +3103,13 @@ exports.saveSetting = async (req, res) => {
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
   let enValue = sValue;
-  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id") {
+  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id" || sType == "bank_account_number_FP" || sType == "bank_id_FP") {
     enValue = encrypt(sValue);
   }
   let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable(); // GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
-  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id") {
+  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id" || sType == "bank_account_number_FP" || sType == "bank_id_FP"|| sType == "PauseCustomerPaymentMethods") {
     return res.sendStatus(200);
   }
   if (sType == "queryFolder") {

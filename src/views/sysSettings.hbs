@@ -197,6 +197,42 @@ dataTable --}}
 
                                             </div>
                                         </div>
+                                         <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">Bank ID FP</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="bank_id_FP"
+                                                        data-id="{{gateaway.7.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Bank ID FP."
+                                                        value="{{#decryptData gateaway.7.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">Bank Account Number FP</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="bank_account_number_FP"
+                                                        data-id="{{gateaway.8.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Bank Account Number FP"
+                                                        value="{{#decryptData gateaway.8.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                           <div class="col-12 mt-1">
+                                    <input type="hidden" class="form-control" name="bannerKey" id="bannerKey" value="{{banner.id}}">
+                                <div class="d-flex">
+                                    <div class="d-flex flex-column me-1">
+                                        <label class="form-check-label" for="customSwitch3">Pause Customer Payment Methods (On/Off) </label>
+                                        <div class="form-check form-check-primary form-switch">
+                                            <input type="checkbox" data-id="{{gateaway.9.id}}" class="form-check-input" id="PauseCustomerPaymentMethods" value="1" {{#checkedSwitch
+                                                    gateaway.9.valueSett}}{{/checkedSwitch}}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                                     </div>
 
                                 </div>
