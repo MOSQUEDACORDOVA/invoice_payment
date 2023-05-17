@@ -1236,22 +1236,11 @@ exports.pay_methods = async (req, res) => {
     }
     console.log('message')
     if (req.cookies.errorLogC) {
-      msg = req.cookies.errorLogC;
-      console.log("🚀 ~ file: dashboardController.js:1240 ~ exports.pay_methods= ~ ms");
-      Description = "pay_methods Showing error Msg"
-      Status = 0
-      Comment = msg;
-     SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+      msg = req.cookies.errorLogC
+      
     }
-
     if (req.cookies.success) {
       msg = req.cookies.success
-      console.log("🚀 ~ file: dashboardController.js:1248 ~ exports.pay_methods= ~ msg:", msg);
-      Description = "pay_methods Showing success Msg"
-      Status = 1
-      Comment = msg
-     SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-      
     }
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
     let activeBanner = false
@@ -1412,7 +1401,7 @@ exports.add_pay_methods = async (req, res) => {
       IDPay = parseInt(payIDs["$resources"][i]["PAYID"]);
       if (payIDs["$resources"][i]["BANKACCT"] === bank_account_number) {
         // Card Number exist in X3
-        (Description = "ACHI exist in payments methods from X3 "), (Status = 1), (Comment = "Function: add_pay_methods - line 827");
+        (Description = "Card Number exist in payments methods from X3 "), (Status = 1), (Comment = "Function: add_pay_methods - line 827");
         SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
         if (totalAmountcard) {//If the request comes from the payment of invoices Page, it returns a message of Card Number exist, try another
@@ -1536,25 +1525,20 @@ exports.add_pay_methods = async (req, res) => {
         );
         let error = "";
         if (fraudProtection["errors"]) {
-          console.log(fraudProtection["errors"][0]);
+          console.error(fraudProtection["errors"][0]);
           error = fraudProtection["errors"];
           //IF RESPONSE ERROR, SAVE IN LOGSYSTEM SQL THE ERROR
-          console.log("Error : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
+          console.error("\nError : " + JSON.stringify(error)); //SHOW IN CONSOLE THE ERROR
           let errorLogD = "Error:" + fraudProtection["errors"][0]["error_code"] + "- process payment";
-          console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
+          console.error(errorLogD); //SHOW IN CONSOLE THE ERROR
           let errorLogC = fraudProtection["errors"][0]["description"];
-          console.log('errorLogC'); //SHOW IN CONSOLE THE ERROR
+          console.error('errorLogC'); //SHOW IN CONSOLE THE ERROR
           (Description = errorLogD), (Status = 0), (Comment = errorLogC);
           SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
           SystemLogL = JSON.parse(SystemLogL);
           tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, FirstAmount, 0, transactionDate, 0, "FAIL", "FAIL", IDPay, response['$uuid'], errorLogC,'Credit');
           //res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
-          (Description = 'JSON call WFFP'), (Status = 0), (Comment = `payee:${legalNameAccount}/bank_id:${bank_id}/bank_account_number:${bank_account_number}/bank_account_type: D`);
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-          SystemLogL = JSON.parse(SystemLogL);
-
-
-          console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
+          console.error("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
 
           res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
 
@@ -1758,14 +1742,9 @@ exports.verify_PM = async (req, res) => {
 
         tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, amount, 0, transactionDate, 0, "FAIL", "FAIL", null, PaymentMethodID, errorLogC,'Debit');
         let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
-        saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(0, errorLogC, getpmtKeyToRefund[0]['pmtKey'],'Debit');
-
-        (Description = 'JSON call WFFP Debit'), (Status = 0), (Comment = `payee:${legalNameAccount}/bank_id:${bank_id}/bank_account_number:${bank_account_number}/bank_account_type: D`);
-        SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-        SystemLogL = JSON.parse(SystemLogL);
+        saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(0, errorLogC, getpmtKeyToRefund[0]['pmtKey'],'Credit');
 
 
-        console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
         res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
         return res.redirect("/payments_methods");
         ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
@@ -1783,7 +1762,7 @@ exports.verify_PM = async (req, res) => {
         tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(1, SessionKey, UserID, payment_id, amount, 0, transactionDate, 0, "OK", "OK", null, PaymentMethodID,null,'Debit');
 
         let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
-       saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(1, null, getpmtKeyToRefund[0]['pmtKey'],'Debit');
+       saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(1, null, getpmtKeyToRefund[0]['pmtKey'],'Credit');
 
         paymentKey = JSON.parse(tPaymentSave).pmtKey; // THIS GET THE PAYMENT KEY ID
         console.log("🚀 ~ file: dashboardController.js ~ line 1718 ~ exports.verify_PM= ~ paymentKey", paymentKey)
