@@ -129,9 +129,36 @@ module.exports = {
         });
     });
   },
-  bannerSetting(){
+    bannerSetting(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findOne({where:{typeSett:'banner'}})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  saveSettingBanner(sValue, sType, sTatus,colorBg, colorText){//INSERT SETTING IN THE SETTING TABLE
+    return new Promise((resolve, reject) => {
+      tSettings.create({valueSett:sValue,
+        typeSett: sType,
+        Status:   sTatus,colorBg:colorBg,colorText:colorText})
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey){// SAVE SETTING EDITED
+    return new Promise((resolve, reject) => {
+      tSettings.update({valueSett:bannerText,
+        Status:   status,colorBg:colorBg,colorText:colorText}, {where:{id:bannerKey}})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
@@ -170,33 +197,6 @@ module.exports = {
   settingsqueryFolder(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findOne({attributes:['valueSett'],where:{typeSett:'queryFolder'} })
-        .then((response) => {
-          let data_p = JSON.stringify(response);
-          resolve(data_p);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
-  },
-  saveSettingBanner(sValue, sType, sTatus,colorBg, colorText){//INSERT SETTING IN THE SETTING TABLE
-    return new Promise((resolve, reject) => {
-      tSettings.create({valueSett:sValue,
-        typeSett: sType,
-        Status:   sTatus,colorBg:colorBg,colorText:colorText})
-        .then((response) => {
-          let data_p = JSON.stringify(response);
-          resolve(data_p);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
-  },
-  EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey){// SAVE SETTING EDITED
-    return new Promise((resolve, reject) => {
-      tSettings.update({valueSett:bannerText,
-        Status:   status,colorBg:colorBg,colorText:colorText}, {where:{id:bannerKey}})
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);
@@ -288,7 +288,7 @@ module.exports = {
         });
     });
   }, 
-  verifyPaymentMethodID(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
+verifyPaymentMethodID(PaymentMethodID,UserID){// SELECT PAYMENTID LAST, WF
     return new Promise((resolve, reject) => {//{X3UUID:PaymentMethodID, UserID: UserID,PaymentStatus:1},
       tPaymentFraudProtection.findAll({where: {[Op.or]: [
         {PaymentMethodID:PaymentMethodID, UserID: UserID,PaymentStatus:1}
@@ -314,7 +314,7 @@ module.exports = {
         });
     });
   },
-  saveFraudProtectionSave(ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,paymentKey, observation) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
+saveFraudProtectionSave(ProcessorTranID, ProcessorStatus, ProcessorStatusDesc,paymentKey, observation) { // THIS FUNCTION INSERT THE NEW PAYMENT IN tPayment TABLE FOR WELLS FARGO API
     return new Promise((resolve, reject) => {
       tPaymentFraudProtection.update(
         { ProcessorTranID: ProcessorTranID, ProcessorStatus: ProcessorStatus, ProcessorStatusDesc: ProcessorStatusDesc,Observation:observation},{where:{pmtKey:paymentKey}})

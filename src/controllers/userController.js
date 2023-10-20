@@ -76,15 +76,17 @@ exports.loginUser2 = async (req, res) => {
         req.session.errorLogin = req.flash()
         return res.redirect('/login')
       }
-
+    
+     console.log('userlinea 79', user['$resources'][0]);
       //SAVE SQL TABLE SESSIONLOG
       const SessionLog = await DataBasequerys.tSessionLog(user['$resources'][0]['EMAIL'], user['$resources'][0]['ROLE'])
 
       req.session.SessionLog = SessionLog //STORE IN SESSION THE SESSION LOG ID TO USE IN SYSTEMLOG SQL
-
+    console.log(SessionLog)
       //SAVE SQL LOGSYSTEM
       let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
-      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)  
+      
       
       //Checkout menu option state
 
@@ -121,9 +123,9 @@ exports.sendToken = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': 'application/json',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
     },
     json: true,
   }).then((response) => {
@@ -149,9 +151,9 @@ exports.sendToken = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': '*/*',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': '*/*',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
     },
     body: {
       "TOKEN": token,
@@ -180,9 +182,9 @@ exports.resetPasswordForm = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': 'application/json',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
     },
     json: true,
   })
@@ -215,9 +217,9 @@ if (req.body.currentpassword) {
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': 'application/json',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
       },
     json: true,
     })
@@ -243,9 +245,9 @@ email = user.EMAIL
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': '*/*',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': '*/*',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
     },
     body: {
       "PASS": password_new,
@@ -289,9 +291,9 @@ exports.UpdateUser = async (req, res) => {
     rejectUnauthorized: false,
     headers: {
       'Content-Type': 'application/json',
-      'Accept': '*/*',
       Connection: 'close',
-      'Authorization': 'Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=',
+      'Accept': '*/*',
+      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
     },
     body: {
       "FNAME": firstName_edit_profile,

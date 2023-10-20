@@ -7,7 +7,7 @@ const tSettings = db.define('tSettings', {
 		primaryKey: true,
 		autoIncrement: true
 	},
-	valueSett: {
+valueSett: {
 		type: DataTypes.STRING(),
 		allowNull: true,
 	}, 

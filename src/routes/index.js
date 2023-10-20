@@ -100,5 +100,6 @@ router.post('/saveSystemLog', authController.authenticatedUser, dashboardControl
 router.post('/saveEditBanner', authController.authenticatedUser, dashboardController.saveEditSettingBanner);
 
 router.get('/changeCronServer',authController.authenticatedUser, dashboardController.changeCronServer);
+router.get('/statusWFCheckAPI/:idp',authController.authenticatedUser, dashboardController.statusWFCheckAPI);
 
 module.exports = router;

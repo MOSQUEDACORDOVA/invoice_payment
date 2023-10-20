@@ -307,7 +307,7 @@
                                                                 Edit
                                                             </button>
                                                             <a class="btn btn-outline-secondary me-75"
-                                                                onclick="deleteACH('{{PAYID}}','{{$uuid}}' )" href="#">Delete</a>
+                                                                onclick="deleteACH('{{PAYID}}','{{$uuid}}')" href="#">Delete</a>
                                                             {{!-- {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}} --}}
                                                             {{#if VERIFIED}}<a class="btn btn-outline-success verified">Verified</a>{{else}}<a class="btn btn-outline-info" onclick ="verifyPM('{{PAYID}}')" >Verify</a>{{/if}}
 
@@ -530,10 +530,9 @@
             }
         })
     }
-    function isNumberKey(txt, evt) {
+ function isNumberKey(txt, evt) {
       var charCode = (evt.which) ? evt.which : evt.keyCode;
-                    
-                    
+
         if (charCode == 8 && $(txt).val().length == 2 ){
                            return false;  
           }
@@ -555,7 +554,6 @@
       }
       return true;
     }
-
 
     function verifyPM(payID) {
         console.log(payID);
@@ -599,8 +597,6 @@
             }
 
         });
-
-
 /*var input = document.getElementById("amount01");
   input.focus();
   var len = input.value.length;

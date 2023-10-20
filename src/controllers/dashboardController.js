@@ -21,7 +21,7 @@ const {
 //Payment process configuration
 var cybersourceRestApi = require("cybersource-rest-client");
 var configuration = require("./ConfigurationPayment");
-const { parse } = require("path");
+const { parse} = require("path");
 const WFCCtrl = require("./WFCtrl");
 require("dotenv").config();
 
@@ -37,10 +37,10 @@ exports.contactUs = async (req, res) => {
     admin = true;
   }
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
-  if (banner.Status == 1) {
-    activeBanner = true
-  }
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   res.render("contacts", {
     pageName: "Contact Us",
     dashboardPage: true,
@@ -48,7 +48,7 @@ exports.contactUs = async (req, res) => {
     contactUs: true,
     user,
     pictureProfile,
-    admin, banner, activeBanner
+    admin,banner, activeBanner
   });
 };
 
@@ -61,7 +61,6 @@ exports.dashboard = async (req, res) => {
   }
 
   const user = res.locals.user["$resources"][0]; //User info
-  console.log("🚀 ~ file: dashboardController.js:64 ~ exports.dashboard= ~ user:", user)
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //Pic Profile
 
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
@@ -76,106 +75,42 @@ exports.dashboard = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAO'
-    where_filter_inv = "&OrderBy= NUM";
-  } else if (user["ROLE"] == 1 || user["ROLE"] == 2) {
+    where_filter_inv = "&OrderBy=NUM";
+  } else if (user["ROLE"] == 1 || user["ROLE"] == 2){
     //Else consulting Loggin Map
     count = 100;
     where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " "; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   if (user["ROLE"] != 3) {
-    //GET Open Invoices List to X3 by where clause EMAIL
-
-    request({
-      uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&count=` +
-        count + where_filter_inv,
-      method: "GET",
-      insecure: true,
-      rejectUnauthorized: false,
-      headers: {
-        "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-      },
-      json: true,
-    }).then(async (inv_wofilter) => {
-      let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
-      let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-      inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
-      //console.log('line 113',inv_wofilter)
-      let banner = JSON.parse(await DataBaseSq.bannerSetting());
-      let activeBanner = false
-      if (banner.Status == 1) {
-        activeBanner = true
-      }
-      //HERE RENDER PAGE AND INTRO INFO
-      res.render("open_invoices", {
-        pageName: "Open Invoices",
-        dashboardPage: true,
-        menu: true,
-        invoiceO: true,
-        user,
-        msg,
-        inv_wofilter,
-        inv_filtering,
-        pictureProfile,
-        admin,
-        links, banner,
-        activeBanner
-      });
-    });
-  } else {
-    console.log('test')
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 +
-          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-          query_consulting,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
-
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments;
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-      if (response[0]) {
-        inv_wofilter.push(response[0])
-      }
-
-    }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(inv_wofilter)
-    let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    let activeBanner = false
+  //GET Open Invoices List to X3 by where clause EMAIL
+  request({
+    uri: URL0 +
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
+      count + where_filter_inv,
+    method: "GET",
+    insecure: true,
+    rejectUnauthorized: false,
+    headers: {
+      "Content-Type": "application/json",
+      Connection: 'close',
+      Accept: "application/json",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+    },
+    json: true,
+  }).then(async (inv_wofilter) => {
+    let inv_filtering = JSON.stringify(inv_wofilter["$resources"]); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List3
+    //console.log(links)
+     let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner =false
     if (banner.Status == 1) {
       activeBanner = true
     }
@@ -191,11 +126,85 @@ exports.dashboard = async (req, res) => {
       inv_filtering,
       pictureProfile,
       admin,
-      links, banner,
-      activeBanner
+      links,banner,
+activeBanner
+    });
+  }).catch((err)=>{
+    console.log("🚀 ~ file: dashboardController.js ~ line 122 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 122";
+    return res.redirect(`/dashboard/${msg0}`);
+    });
+  }else{
+    console.log('test')
+    let query_consulting = "&where=ID eq " + user["ID"] + "";
+    const maping_login = JSON.parse(
+      await request({
+        uri: URL0 +
+          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+          query_consulting,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        },
+        json: true,
+      }).then(async (map_loggin) => {
+        return JSON.stringify(map_loggin);
+      }).catch((err)=>{
+    console.log("🚀 ~ file: dashboardController.js ~ line 148 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 148";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    );
+    // STORE BPCNUM FORM MAPPINGLOGGING
+    let bpcnum = [];
+    for (let i = 0; i < maping_login["$resources"].length; i++) {
+      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
+    }
+
+    //GET PAYMENTS FROM SQL TABLE
+    let payments = [],inv_wofilter = [],
+      getPayments;
+    for (let i = 0; i < bpcnum.length; i++) {
+     let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+     if (response[0]) {
+       inv_wofilter.push(response[0]) 
+     }
+     
+    }
+
+    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+    console.log(inv_wofilter)
+     let banner = JSON.parse(await DataBaseSq.bannerSetting());
+
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
+    //HERE RENDER PAGE AND INTRO INFO
+    res.render("open_invoices", {
+      pageName: "Open Invoices",
+      dashboardPage: true,
+      menu: true,
+      invoiceO: true,
+      user,
+      msg,
+      inv_wofilter,
+      inv_filtering,
+      pictureProfile,
+      admin,
+      links,banner,
+activeBanner
     });
   }
-
+  
 
 
 
@@ -212,7 +221,7 @@ exports.openInvMore = async (req, res) => {
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: openInvMore list", Status = 1, Comment = "Starting- line 139-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -228,7 +237,7 @@ exports.openInvMore = async (req, res) => {
   //GET Open Invoices List to X3 by where clause EMAIL
   request({
     uri: URL0 +
-      Yportal + `?representation=${portalRepresentation}.$query&count=` +
+    Yportal +`?representation=${portalRepresentation}.$query&count=` +
       count + where_filter_inv,
     method: "GET",
     insecure: true,
@@ -237,7 +246,7 @@ exports.openInvMore = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (inv_wofilter) => {
@@ -248,7 +257,7 @@ exports.openInvMore = async (req, res) => {
     (Description = "Open Invoices list success to X3"),
       (Status = 1),
       (Comment = "Function: openInvMore-line 307");
-    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+    SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment    );
 
     var paymentsL;
     //FIRTS MAPPING LOG FOR GET BPCNUM'S
@@ -262,10 +271,10 @@ exports.openInvMore = async (req, res) => {
         insecure: true,
         rejectUnauthorized: false,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json",       
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -308,7 +317,12 @@ exports.openInvMore = async (req, res) => {
       links,
       paymentsL
     });
-  });
+  }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 303 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 303";
+    return res.redirect(`/dashboard/${msg0}`);
+    });
 };
 /**FUNCTION TO RENDER OPEN INVOICES PAGE */
 exports.paymentsL = async (req, res) => {
@@ -335,7 +349,7 @@ exports.paymentsL = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (map_loggin) => {
@@ -368,6 +382,11 @@ exports.paymentsL = async (req, res) => {
           tPaymentApplication: response[j].tPaymentApplication,
         });
       }
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 373 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 373";
+    return res.redirect(`/dashboard/${msg0}`);
     });
   }
 
@@ -388,7 +407,7 @@ exports.next_pageIO2 = async (req, res) => {
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -405,7 +424,7 @@ exports.next_pageIO2 = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&${data}&count=` +
+      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -414,60 +433,70 @@ exports.next_pageIO2 = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (inv_wofilter) => {
       // GET INVOICES
       let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
       inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-      res.send({ inv_wofilter, links });
+      res.send({inv_wofilter,links});
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 432 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 432";
+    return res.redirect(`/dashboard/${msg0}`);
     });
-  } else {
-    console.log('test')
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 + `YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
-          count + where_filter_inv,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+            count + where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 458 ~ = ~ err", err)
 
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments;
-    console.log(bpcnum)
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-      if (response[0]) {
-        inv_wofilter.push(response[0])
+        var msg0 =  "Please contact support, sageX3 response Error-line 458";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
       }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+     res.send({inv_wofilter,links});
     }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(links)
-    res.send({ inv_wofilter, links });
-  }
-
+  
 };
 /**FUNCTION TO RENDER NEXT_PAGE  PAGE REQUEST FOR CLOSED INVOICES*/
 exports.next_pageIC2 = async (req, res) => {
@@ -482,7 +511,7 @@ exports.next_pageIC2 = async (req, res) => {
   //Request for GET the next page from query consulting
   var data = req.params.data;
   let URL0 = URLHost + req.session.queryFolder + "/";
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -497,7 +526,7 @@ exports.next_pageIC2 = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&${data}&count=` +
+      Yportal +`?representation=${portalRepresentation}.$query&${data}&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -506,59 +535,69 @@ exports.next_pageIC2 = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (inv_wofilter) => {
       // GET INVOICES
       let links = JSON.stringify(inv_wofilter["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
       inv_wofilter = inv_wofilter["$resources"]; // Create JSON Array with the Open Invoices List
-      res.send({ inv_wofilter, links });
-    });
-  } else {
-    console.log('test')
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 + `YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
-          count + where_filter_inv,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
+      res.send({inv_wofilter,links});
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 534 ~ = ~ err", err)
 
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments;
-    console.log(bpcnum)
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-      if (response[0]) {
-        inv_wofilter.push(response[0])
+        var msg0 =  "Please contact support, sageX3 response Error-line 534";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      where_filter_inv = "&OrderBy=ID,BPCNUM asc&where=ID eq " + user["ID"]; //Consulting OpenInv querys by EMAIL
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +`YPORTALBPS?representation=YPORTALBPS.$query&${data}&count=` +
+            count + where_filter_inv,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 560 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 560";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
       }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+     res.send({inv_wofilter,links});
     }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(links)
-    res.send({ inv_wofilter, links });
-  }
 };
 
 /** FUNCTION TO SEARCH IN OPENINVOICE WHIT THE API */
@@ -580,9 +619,9 @@ exports.searchOpenInvO = async (req, res) => {
     if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} eq @${search}@`;
     }
-
+    
   } else {
-    query = `and ${filter} like '%25${search.toUpperCase()}%25'`;
+   query = `and ${filter} like '%25${search.toUpperCase()}%25'`;
     if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} like '%25${search.toUpperCase()}%25'`;
     }
@@ -591,27 +630,26 @@ exports.searchOpenInvO = async (req, res) => {
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVO';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAO'
-    where_filter_inv = "&OrderBy=NUM&where=" + query;
+    where_filter_inv = "&OrderBy=NUM&where="+query;
   } else {
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " " + query; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
+ 
 
-  console.log('where')
-  console.log(where_filter_inv)
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&count=` +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -620,7 +658,7 @@ exports.searchOpenInvO = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -632,74 +670,84 @@ exports.searchOpenInvO = async (req, res) => {
         inv_wofilter,
         links
       });
-    });
-  } else {
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 +
-          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-          query_consulting,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 661 ~ = ~ err", err)
 
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
+        var msg0 =  "Please contact support, sageX3 response Error-line 661";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    }else{      
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 686 ~ = ~ err", err)
 
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments, filter0;
-    console.log(bpcnum)
-    switch (filter) {
-      case 'NUM':
-        filter0 = 'NUM_0';
-        break;
-      case 'INVREF':
-        filter0 = 'INVREF_0';
-        break;
-      case 'BPCORD':
-        filter0 = 'BPCORD_0';
-        break;
-      case 'BPCORD':
-        filter0 = 'BPCORD_0';
-        break;
-      case 'INVDAT':
-        filter0 = 'INVDAT_0';
-        break;
-      case 'DUDDAT':
-        filter0 = 'DUDDAT_0';
-        break;
+        var msg0 =  "Please contact support, sageX3 response Error-line 686";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
 
-      default:
-        break;
-    }
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINAOs(bpcnum[i], filter0, search)
-      if (response[0]) {
-        inv_wofilter.push(response[0])
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
       }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments, filter0;
+        console.log(bpcnum)
+        switch (filter) {
+          case 'NUM':
+            filter0 ='NUM_0'; 
+            break;
+          case 'INVREF':
+            filter0 = 'INVREF_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'INVDAT':
+            filter0 = 'INVDAT_0';
+            break;
+          case 'DUDDAT':
+            filter0 = 'DUDDAT_0';
+            break;
+        
+          default:
+            break;
+        }
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAOs(bpcnum[i],filter0,search)
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(inv_wofilter)
+     res.send({inv_wofilter,links});
     }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(inv_wofilter)
-    res.send({ inv_wofilter, links });
-  }
 };
 /** FUNCTION TO SEARCH IN TABLE CLOSEINVOICE WHIT THE API */
 exports.searchCloseInvC = async (req, res) => {
@@ -707,8 +755,8 @@ exports.searchCloseInvC = async (req, res) => {
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
   var ip = req.connection.remoteAddress;
   //Declare and send log to SystemLo
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:searchCloseInvC ", Status = 1, Comment = "Starting- line 440-";
-  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+  let UserID = user["ID"].toString(),IPAddress = ip,LogTypeKey = 5,SessionKey = SessionKeyLog,Description = "FUNCTION:searchCloseInvC ",Status = 1,Comment = "Starting- line 440-";
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
   //Request for GET the next page from query consulting
   var filter = req.params.filter;
   var search = req.params.search;
@@ -718,7 +766,7 @@ exports.searchCloseInvC = async (req, res) => {
     if (user["ROLE"] == 4 || user["ROLE"] == 5) {
       query = `${filter} eq @${search}@`;
     }
-
+    
   } else {
     query = `and ${filter} like '%25${search}%25'`;
     if (user["ROLE"] == 4 || user["ROLE"] == 5) {
@@ -729,25 +777,25 @@ exports.searchCloseInvC = async (req, res) => {
   if (filter == "NUM" && search == "-") {
     query = ``;
   }
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
     Yportal = 'YPORTALINA';
     portalRepresentation = 'YPORTALINVAC'
-    where_filter_inv = "&OrderBy=NUM&where=" + query;
+    where_filter_inv = "&OrderBy=NUM&where="+query;
   } else {
     //Else consulting Loggin Map
     count = 100;
-    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] + " " + query; //Consulting OpenInv querys by EMAIL
+    where_filter_inv = "&OrderBy=ID,NUM&where=ID eq " + user["ID"] +" "+ query; //Consulting OpenInv querys by EMAIL
   }
   let URL0 = URLHost + req.session.queryFolder + "/";
   //GET Open Invoices List to X3 by where clause EMAIL
-
+ 
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&count=` +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -756,7 +804,7 @@ exports.searchCloseInvC = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -768,74 +816,84 @@ exports.searchCloseInvC = async (req, res) => {
         inv_wofilter,
         links
       });
-    });
-  } else {
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 +
-          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-          query_consulting,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 807 ~ = ~ err", err)
 
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
+        var msg0 =  "Please contact support, sageX3 response Error-line 807";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    }else{      
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 832 ~ = ~ err", err)
 
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments, filter0;
-    console.log(bpcnum)
-    switch (filter) {
-      case 'NUM':
-        filter0 = 'NUM_0';
-        break;
-      case 'INVREF':
-        filter0 = 'INVREF_0';
-        break;
-      case 'BPCORD':
-        filter0 = 'BPCORD_0';
-        break;
-      case 'BPCORD':
-        filter0 = 'BPCORD_0';
-        break;
-      case 'INVDAT':
-        filter0 = 'INVDAT_0';
-        break;
-      case 'DUDDAT':
-        filter0 = 'DUDDAT_0';
-        break;
+        var msg0 =  "Please contact support, sageX3 response Error-line 832";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
 
-      default:
-        break;
-    }
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINACs(bpcnum[i], filter0, search)
-      if (response[0]) {
-        inv_wofilter.push(response[0])
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
       }
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments, filter0;
+        console.log(bpcnum)
+        switch (filter) {
+          case 'NUM':
+            filter0 ='NUM_0'; 
+            break;
+          case 'INVREF':
+            filter0 = 'INVREF_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'BPCORD':
+            filter0 = 'BPCORD_0';
+            break;
+          case 'INVDAT':
+            filter0 = 'INVDAT_0';
+            break;
+          case 'DUDDAT':
+            filter0 = 'DUDDAT_0';
+            break;
+        
+          default:
+            break;
+        }
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINACs(bpcnum[i],filter0,search)
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(inv_wofilter)
+     res.send({inv_wofilter,links});
     }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(inv_wofilter)
-    res.send({ inv_wofilter, links });
-  }
 };
 /**FUNCTION TO RENDER CLOSED INVOICES PAGE */
 exports.close_invoices = async (req, res) => {
@@ -853,7 +911,7 @@ exports.close_invoices = async (req, res) => {
   //Save LogSystem SQL init Request Closed invoices from X3
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request Closed invoices list from X3", Status = 1, Comment = "Function: close_invoices- Line 559";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  let Yportal = 'YPORTALINV', portalRepresentation = 'YPORTALINVC';
+  let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVC';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
     // If User rol is 1, consulting query by EMAIL
     count = 100;
@@ -869,7 +927,7 @@ exports.close_invoices = async (req, res) => {
   if (user["ROLE"] != 3) {
     request({
       uri: URL0 +
-        Yportal + `?representation=${portalRepresentation}.$query&count=` +
+      Yportal +`?representation=${portalRepresentation}.$query&count=` +
         count + where_filter_inv,
       method: "GET",
       insecure: true,
@@ -878,7 +936,7 @@ exports.close_invoices = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -893,10 +951,10 @@ exports.close_invoices = async (req, res) => {
       SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
       //HERE RENDER PAGE AND INTRO INFO
       let banner = JSON.parse(await DataBaseSq.bannerSetting());
-      let activeBanner = false
-      if (banner.Status == 1) {
-        activeBanner = true
-      }
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
       res.render("close_invoices", {
         pageName: "Closed Invoices",
         dashboardPage: true,
@@ -907,71 +965,81 @@ exports.close_invoices = async (req, res) => {
         inv_filtering,
         pictureProfile,
         admin,
-        links, banner, activeBanner
+        links,banner, activeBanner
       });
-    });
-  } else {
-    console.log('test')
-    let query_consulting = "&where=ID eq " + user["ID"] + "";
-    const maping_login = JSON.parse(
-      await request({
-        uri: URL0 +
-          "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
-          query_consulting,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (map_loggin) => {
-        return JSON.stringify(map_loggin);
-      })
-    );
-    // STORE BPCNUM FORM MAPPINGLOGGING
-    let bpcnum = [];
-    for (let i = 0; i < maping_login["$resources"].length; i++) {
-      bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
-    }
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 953 ~ = ~ err", err)
 
-    //GET PAYMENTS FROM SQL TABLE
-    let payments = [], inv_wofilter = [],
-      getPayments;
-    console.log(bpcnum)
-    for (let i = 0; i < bpcnum.length; i++) {
-      let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
-      if (response[0]) {
-        inv_wofilter.push(response[0])
+        var msg0 =  "Please contact support, sageX3 response Error-line 953";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    }else{
+      console.log('test')
+      let query_consulting = "&where=ID eq " + user["ID"] + "";
+      const maping_login = JSON.parse(
+        await request({
+          uri: URL0 +
+            "YPORTALBPS?representation=YPORTALBPS.$query&count=100" +
+            query_consulting,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (map_loggin) => {
+          return JSON.stringify(map_loggin);
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 979 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 979";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
+      // STORE BPCNUM FORM MAPPINGLOGGING
+      let bpcnum = [];
+      for (let i = 0; i < maping_login["$resources"].length; i++) {
+        bpcnum.push(maping_login["$resources"][i]["BPCNUM"]);
       }
-
-    }
-
-    let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
-    let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
-    console.log(links)
-    //HERE RENDER PAGE AND INTRO INFO
-    let banner = JSON.parse(await DataBaseSq.bannerSetting());
-    let activeBanner = false
+  
+      //GET PAYMENTS FROM SQL TABLE
+      let payments = [],inv_wofilter = [],
+        getPayments;
+        console.log(bpcnum)
+      for (let i = 0; i < bpcnum.length; i++) {
+       let response = await DataBasequerys.Get_YPORTALINAO(bpcnum[i])
+       if (response[0]) {
+         inv_wofilter.push(response[0]) 
+       }
+       
+      }
+  
+      let inv_filtering = JSON.stringify(inv_wofilter); // Create JSON String with the Open Invoices List for dataTable
+      let links = JSON.stringify(maping_login["$links"]); // Create JSON String with Links to use for "Next or Previous page" consulting
+     console.log(links)
+   //HERE RENDER PAGE AND INTRO INFO
+   let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner =false
     if (banner.Status == 1) {
       activeBanner = true
     }
-    res.render("close_invoices", {
-      pageName: "Closed Invoices",
-      dashboardPage: true,
-      menu: true,
-      invoiceC: true,
-      user,
-      inv_wofilter,
-      inv_filtering,
-      pictureProfile,
-      admin,
-      links, banner, activeBanner
-    });
-  }
+   res.render("close_invoices", {
+     pageName: "Closed Invoices",
+     dashboardPage: true,
+     menu: true,
+     invoiceC: true,
+     user,
+     inv_wofilter,
+     inv_filtering,
+     pictureProfile,
+     admin,
+     links,banner, activeBanner
+   });
+    }
 };
 
 /**FUNCTION TO RENDER INVOICE OPEN DETAILS PAGE */
@@ -1000,7 +1068,7 @@ exports.inoviceO_detail = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -1023,7 +1091,7 @@ exports.inoviceO_detail = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -1034,29 +1102,28 @@ exports.inoviceO_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-    if (user["ROLE"] !== 4) {
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        console.log(maping_login["$resources"]);
-        console.log(maping_login["$resources"][i]["BPCNUM"]);
-        if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
-          console.log("msg");
-          find++;
-        }
+      if (user["ROLE"] !== 4) {
+           for (let i = 0; i < maping_login["$resources"].length; i++) {
+      console.log(maping_login["$resources"]);
+      console.log(maping_login["$resources"][i]["BPCNUM"]);
+      if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
+        console.log("msg");
+        find++;
       }
+    }     
 
-      console.log(find);
-      if (find == 0) {
-        inv_detail = "";
-        msg = "Unable to load invoice. This invoice is not available to your user account.";
-      }
+    console.log(find);
+    if (find == 0) {
+      inv_detail = "";
+      msg = "Unable to load invoice. This invoice is not available to your user account.";
     }
+  }
+    //HERE RENDER PAGE AND INTRO INFO
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
-
-    let activeBanner = false
+    let activeBanner =false
     if (banner.Status == 1) {
       activeBanner = true
     }
-    //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
       dashboardPage: true,
@@ -1067,9 +1134,14 @@ exports.inoviceO_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg, banner, activeBanner
+      msg,banner, activeBanner
     });
-  });
+  }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 1112 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 1112";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
 };
 
 /**FUNCTION TO RENDER INVOICE CLOSE DETAILS PAGE */
@@ -1098,7 +1170,7 @@ exports.inoviceC_detail = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -1116,9 +1188,8 @@ exports.inoviceC_detail = async (req, res) => {
         rejectUnauthorized: false,
         headers: {
           "Content-Type": "application/json",
-          Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -1129,29 +1200,28 @@ exports.inoviceC_detail = async (req, res) => {
     console.log(inv_detail["BPCINV"]);
     let msg = false,
       find = 0;
-    if (user["ROLE"] !== 4) {
-      for (let i = 0; i < maping_login["$resources"].length; i++) {
-        console.log(maping_login["$resources"]);
-        console.log(maping_login["$resources"][i]["BPCNUM"]);
-        if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
-          console.log("msg");
-          find++;
-        }
-      }
-
-      console.log(find);
-      if (find == 0) {
-        inv_detail = "";
-        msg = "Unable to load invoice. This invoice is not available to your user account.";
-      }
+      if (user["ROLE"] !== 4) {
+        for (let i = 0; i < maping_login["$resources"].length; i++) {
+   console.log(maping_login["$resources"]);
+   console.log(maping_login["$resources"][i]["BPCNUM"]);
+   if (maping_login["$resources"][i]["BPCNUM"] == inv_detail["BPCINV"]) {
+     console.log("msg");
+     find++;
+   }
+ } 
+   
+    console.log(find);
+    if (find == 0) {
+      inv_detail = "";
+      msg = "Unable to load invoice. This invoice is not available to your user account.";
     }
+    }
+    //HERE RENDER PAGE AND INTRO INFO
     let banner = JSON.parse(await DataBaseSq.bannerSetting());
-
-    let activeBanner = false
+    let activeBanner =false
     if (banner.Status == 1) {
       activeBanner = true
     }
-    //HERE RENDER PAGE AND INTRO INFO
     res.render("detail_invoice", {
       pageName: "Details " + inv_num,
       dashboardPage: true,
@@ -1162,9 +1232,14 @@ exports.inoviceC_detail = async (req, res) => {
       inv_detail,
       pictureProfile,
       admin,
-      msg, banner, activeBanner
+      msg,banner, activeBanner
     });
-  });
+  }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 1205 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 1207";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
 };
 
 /**FUNCTION TO RENDER PAY METHOD PAGE */
@@ -1201,7 +1276,7 @@ exports.pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (pay_methods) => {
@@ -1302,7 +1377,7 @@ exports.add_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (list_pays) => {
@@ -1362,7 +1437,7 @@ exports.add_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       body: {
         ID: user.ID,
@@ -1437,7 +1512,7 @@ exports.add_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       body: {
         PAYTYPE: typeMP,
@@ -1697,7 +1772,7 @@ exports.verify_PM = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (list_pays) => {
@@ -1736,8 +1811,8 @@ exports.verify_PM = async (req, res) => {
         bank_id = bank_id
         bank_id = bank_id.padStart(9, "0");
     }
-      let fraudProtection = await WFCCtrl.WFFP_Debit(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
-      console.log('line 1806',fraudProtection);
+        let fraudProtection = await WFCCtrl.WFFP_Debit(amount, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF);
+        console.log('line 1806',fraudProtection);
 
       let back_side_res = fraudProtection["x-backside-transport"],
         payment_id = fraudProtection["payment-id"];
@@ -1759,13 +1834,14 @@ exports.verify_PM = async (req, res) => {
         tPaymentSave = await DataBaseSq.tPaymentFraudProtectionSave(0, SessionKey, UserID, prepare_idWF, amount, 0, transactionDate, 0, "FAIL", "FAIL", null, PaymentMethodID, errorLogC,'Debit');
         let getpmtKeyToRefund = search.filter(x=> x.TranAmount == amount)
         saveFraudProtectionSaveFundsReturned = await DataBaseSq.saveFraudProtectionSaveFundsReturned(0, errorLogC, getpmtKeyToRefund[0]['pmtKey'],'Debit');
-
+        
         (Description = 'JSON call WFFP Debit'), (Status = 0), (Comment = `payee:${legalNameAccount}/bank_id:${bank_id}/bank_account_number:${bank_account_number}/bank_account_type: D`);
         SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
         SystemLogL = JSON.parse(SystemLogL);
 
 
         console.log("🚀 ~ file: dashboardController.js ~ line 1461 ~ exports.add_pay_methods= ~ errorLogC", errorLogC)
+
         res.cookie('errorLogC', errorLogC, { maxAge: 3600 });
         return res.redirect("/payments_methods");
         ///return res.send({ error, SystemLogL });// RETURN RESPONSE TO AJAX
@@ -1802,7 +1878,7 @@ exports.verify_PM = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       body: {
         "VERIFIED": true
@@ -1851,7 +1927,7 @@ exports.edit_pay_methods = async (req, res) => {
     Status = 1,
     Comment = "Function: edit_pay_methods- line 805";
   var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
+    user["EMAIL"].toString(),
     IPAddress,
     LogTypeKey,
     SessionKey,
@@ -1894,7 +1970,7 @@ exports.edit_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       body: {
         PAYTYPE: typeMP,
@@ -1919,7 +1995,7 @@ exports.edit_pay_methods = async (req, res) => {
         (Status = 1),
         (Comment = "Function: edit_pay_methods- line 870");
       SystemLogL = await DataBasequerys.tSystemLog(
-        UserID,
+        user["EMAIL"].toString(),
         IPAddress,
         LogTypeKey,
         SessionKey,
@@ -1929,7 +2005,12 @@ exports.edit_pay_methods = async (req, res) => {
       );
       req.flash("success", "Card edited");
       res.redirect("/payments_methods"); //Redirect with msg success Card Edited
-    });
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 1881 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 1881";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
   } else {
     //GET INFO OF ACH
     var {
@@ -1957,7 +2038,7 @@ exports.edit_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       body: {
         PAYTYPE: typeMP,
@@ -1985,7 +2066,7 @@ exports.edit_pay_methods = async (req, res) => {
         (Status = 1),
         (Comment = "Function: edit_pay_methods- line 1049");
       SystemLogL = await DataBasequerys.tSystemLog(
-        UserID,
+        user["EMAIL"].toString(),
         IPAddress,
         LogTypeKey,
         SessionKey,
@@ -1995,7 +2076,12 @@ exports.edit_pay_methods = async (req, res) => {
       );
       req.flash("success", "ACH Edited");
       res.redirect("/payments_methods"); //Redirect with msg success Card Edited
-    });
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 1952 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 1952";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
   }
 };
 
@@ -2094,7 +2180,7 @@ exports.delete_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (list_pays) => {
@@ -2199,7 +2285,7 @@ exports.delete_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (delete_pay_methods) => {
@@ -2218,7 +2304,6 @@ exports.delete_pay_methods = async (req, res) => {
 /**FUNCTION TO RENDER PAY INVOICES PAGE */
 exports.pay_invoices = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
-  console.log("🚀 ~ file: dashboardController.js ~ line 1893 ~ exports.pay_invoices= ~ URI", URI)
   const user = res.locals.user["$resources"][0]; //USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PROFILE PICTURE
 
@@ -2233,7 +2318,7 @@ exports.pay_invoices = async (req, res) => {
     Status = 1,
     Comment = "Function: pay_invoices- Line 957";
   var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
+    user["EMAIL"].toString(),
     IPAddress,
     LogTypeKey,
     SessionKey,
@@ -2256,7 +2341,7 @@ exports.pay_invoices = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (pay_methods) => {
@@ -2265,7 +2350,7 @@ exports.pay_invoices = async (req, res) => {
         (Status = 1),
         (Comment = "Function:pay_invoices - Line 989 ");
       SystemLogL = await DataBasequerys.tSystemLog(
-        UserID,
+        user["EMAIL"].toString(),
         IPAddress,
         LogTypeKey,
         SessionKey,
@@ -2274,6 +2359,11 @@ exports.pay_invoices = async (req, res) => {
         Comment
       );
       return JSON.stringify(pay_methods["$resources"]);
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2075 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2077";
+    return res.redirect(`/dashboard/${msg0}`);
     })
   );
   let CCMethod = [],
@@ -2290,19 +2380,19 @@ exports.pay_invoices = async (req, res) => {
     }
   }
   let activeACH = [];
-  let search = []
+  let search =[]
   console.log("🚀 ~ file: dashboardController.js ~ line 2020 ~ exports.pay_invoices= ~ ACHMethod", ACHMethod)
-  for (let i = 0; i < ACHMethod.length; i++) {
-    if (ACHMethod[i]['VERIFIED']) {
-      activeACH.push(ACHMethod[i]);
+    for (let i = 0; i < ACHMethod.length; i++) {
+      if (ACHMethod[i]['VERIFIED']  ) {
+        activeACH.push(ACHMethod[i]);
+      }
+      // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
+      // ACHMethod[i].verify = 0;
+      // if (search[0] != null) {
+      //   activeACH.push(ACHMethod[i]);
+      // }
     }
-    // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
-    // ACHMethod[i].verify = 0;
-    // if (search[0] != null) {
-    //   activeACH.push(ACHMethod[i]);
-    // }
-  }
-
+    
 
   //GET INVOICES INFO BY SELECTED IN THE OPEN INV TABLE
   let count = 100;
@@ -2322,7 +2412,7 @@ exports.pay_invoices = async (req, res) => {
     Yportal = 'YPORTALINV';
     portalRepresentation = 'YPORTALINVO'
   }
-
+  
   if (split_id.length > 1) {
     // IF INVOICES QUANTITY GREATER THAN 1, CONSULT QUERY ONE BY ONE AND STORE IN ARRAY "INV_WOFILTER"
     for (let i = 0; i < split_id.length; i++) {
@@ -2341,7 +2431,7 @@ exports.pay_invoices = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -2351,22 +2441,26 @@ exports.pay_invoices = async (req, res) => {
               (Status = 1),
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. -pay_invoices Line 1037");
-            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment            );
             return false;
           }
           let inv_filtering = JSON.stringify(inv_wofilter2["$resources"]);
           return inv_wofilter2["$resources"][0];
-        })
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2148 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2148";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
       );
     }
   } else {
     // IF INVOICES QUANTITY IS EQUAL TO 1, CONSULT QUERY AND STORE IN ARRAY "INV_WOFILTER"
     where_filter_inv = "&where=NUM eq '" + split_id[0] + "' ";
-
     inv_wofilter.push(
       await request({
         uri: URI +
-          `${Yportal}?representation=${portalRepresentation}.$query&count=` +
+          `${Yportal}?representation=${portalRepresentation}.$query&count=`  +
           count +
           " " +
           where_filter_inv,
@@ -2377,26 +2471,29 @@ exports.pay_invoices = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
         },
         json: true,
       }).then(async (inv_wofilter2) => {
-        console.log("🚀 ~ file: dashboardController.js ~ line 2041 ~ exports.pay_invoices= ~ inv_wofilter2", inv_wofilter2)
         // IN CASE THE QUERY REQUEST RESPONSE BLANK, SAVE SQL LOGSYSTEM
         if (inv_wofilter2["$resources"].length == 0) {
           (Description = "Error get invoice for pay"),
             (Status = 1),
             (Comment =
               "Invoice query response blank or closed inv trying to pay. - Line 1080");
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment          );
           return false;
         }
 
         let inv_filtering = JSON.stringify(inv_wofilter2["$resources"]);
         return inv_wofilter2["$resources"][0];
-      })
-    );
+      }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2189 ~ = ~ err", err)
 
+        var msg0 =  "Please contact support, sageX3 response Error-line 2189";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+    );
   }
 
   //IF INVOICES INFO IS BLANK REDIRECT TO OPEN INVOICE PAGE AND SHOW MSG WITH THE ERROR
@@ -2422,16 +2519,16 @@ exports.pay_invoices = async (req, res) => {
   if (user["ROLE"] == 4) {
     admin = true;
   }
-  console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
+console.log("🚀 ~ file: dashboardController.js ~ line 2055 ~ exports.pay_invoices= ~ inv_wofilter", inv_wofilter)
   UserID = user["EMAIL"].toString(), Description = 'pay_invoices line 2083  ', Status = 1, Comment = ids_invoices;
-  SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+   SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 2086 ~ exports.pay_invoices= ~ SystemLogL", SystemLogL)
   //HERE RENDER PAGE AND ENTER INFO
   let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
-  if (banner.Status == 1) {
-    activeBanner = true
-  }
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   res.render("pay_invoices", {
     pageName: "Pay Invoices",
     dashboardPage: true,
@@ -2447,7 +2544,7 @@ exports.pay_invoices = async (req, res) => {
     pictureProfile,
     admin,
     CCMethod,
-    ACHMethod, activeACH, banner, activeBanner
+    ACHMethod,activeACH, banner, activeBanner
   });
 };
 
@@ -2459,7 +2556,7 @@ exports.process_payment = async (req, res) => {
   //Save SQL SYSTEMLOG
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
-  let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "FUNCTION: process_payment-LINE 1153";
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "FUNCTION: process_payment-LINE 1153";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   //START PROCCESS PAYMENT
@@ -2535,7 +2632,7 @@ exports.process_payment = async (req, res) => {
         console.log(errorLogC); //SHOW IN CONSOLE THE ERROR
         (Description = errorLogD), (Status = 0), (Comment = errorLogC);
         SystemLogL = await DataBasequerys.tSystemLog(
-          UserID,
+          user["EMAIL"].toString(),
           IPAddress,
           LogTypeKey,
           SessionKey,
@@ -2568,7 +2665,7 @@ exports.process_payment = async (req, res) => {
             (Comment = comm),
             (SessionKey = SessionKeyLog);
           SystemLogL = await DataBasequerys.tSystemLog(
-            UserID,
+            user["EMAIL"].toString(),
             IPAddress,
             LogTypeKey,
             SessionKey,
@@ -2636,12 +2733,17 @@ exports.process_payment = async (req, res) => {
                   "Content-Type": "application/json",
                   Connection: 'close',
                   Accept: "application/json",
-                  Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+                  Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
                 },
                 json: true,
               }).then(async (invD) => {
                 return JSON.stringify(invD);
-              })
+              }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2435 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2435";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
             );
 
             //GET AMOUNT APPLIED FOR INVOICE
@@ -2714,15 +2816,20 @@ exports.process_payment = async (req, res) => {
                 rejectUnauthorized: false,
                 headers: {
                   "Content-Type": "application/json",
-                  Accept: "*/*",
                   Connection: 'close',
-                  Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+                  Accept: "*/*",
+                  Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
                   soapaction: "*",
                 },
                 body: xmlB,
               }).then(async (SOAP) => {
                 return JSON.stringify(SOAP);
-              })
+              }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2521 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2521";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
             );
 
             //PARSE XML RESPONSE FROM SOAP X3
@@ -2772,7 +2879,7 @@ exports.process_payment = async (req, res) => {
                     "Inv: " +
                     JSON.stringify(inVError));
                 SystemLogL = await DataBasequerys.tSystemLog(
-                  UserID,
+                  user["EMAIL"].toString(),
                   IPAddress,
                   LogTypeKey,
                   SessionKey,
@@ -2807,7 +2914,7 @@ exports.process_payment = async (req, res) => {
           comm = "Process payment reason:" + data.errorInformation.reason;
           (Description = descp), (Status = 0), (Comment = comm);
           SystemLogL = await DataBasequerys.tSystemLog(
-            UserID,
+            user["EMAIL"].toString(),
             IPAddress,
             LogTypeKey,
             SessionKey,
@@ -2947,7 +3054,7 @@ exports.printInvoice = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -2959,7 +3066,12 @@ exports.printInvoice = async (req, res) => {
       user,
       inv_detail,
     });
-  });
+  }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2763 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2763";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
 };
 
 /** FUNCTION TO RENDER PAYMENTS PAGE */
@@ -2994,12 +3106,18 @@ exports.payments = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
       },
       json: true,
     }).then(async (map_loggin) => {
       return JSON.stringify(map_loggin);
+    }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 2808 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 2808";
+    return res.redirect(`/dashboard/${msg0}`);
     })
+    
   );
   // STORE BPCNUM FORM MAPPINGLOGGING
   let bpcnum = [];
@@ -3032,12 +3150,12 @@ exports.payments = async (req, res) => {
 
   //CLEAN PAYMENTS BLANK
   payments = JSON.stringify(payments.filter((el) => el != ""));
-  let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
-  if (banner.Status == 1) {
-    activeBanner = true
-  }
   //RENDER PAYMENTS PAGE
+  let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   res.render("payments", {
     pageName: "Payments",
     dashboardPage: true,
@@ -3046,7 +3164,7 @@ exports.payments = async (req, res) => {
     user,
     pictureProfile,
     payments,
-    admin, banner, activeBanner
+    admin,banner, activeBanner
   });
 };
 
@@ -3057,7 +3175,6 @@ exports.settingsPreview = async (req, res) => {
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PIC PROFILE
 
   let settings = await DataBaseSq.settingsTable(); //GET SETTING FROM SQL TABLE
-  console.log("🚀 ~ file: dashboardController.js ~ line 2828 ~ exports.settingsPreview= ~ settings", settings)
 
   let admin = false;
   if (user["ROLE"] == 4) {
@@ -3065,9 +3182,11 @@ exports.settingsPreview = async (req, res) => {
   } else {
     return res.redirect("/dashboard");
   }
-  let file_N = __dirname + "/../config/client.crt";
-  let file_N2 = __dirname + "/../config/client.key";
-
+  //let file_N = "/www/wwwroot/10.99.99.10/repository/invoice_payment/src/config/client.crt";
+  //let file_N2 = "/www/wwwroot/10.99.99.10/repository/invoice_payment/src/config/client.key";
+  let file_N = "C:/Users/isaac/Documents/GitHub/invoice_payment/src/config/client.crt";
+  let file_N2 = "C:/Users/isaac/Documents/GitHub/invoice_payment/src/config/client.key";
+  
   let text0, text1;
   text0 = fs.readFileSync(file_N, "utf8", (error, data) => {
     if (error) throw error;
@@ -3081,15 +3200,13 @@ exports.settingsPreview = async (req, res) => {
   text0 = decrypt(text0);
   let modeEnv = JSON.parse(await DataBaseSq.settingsTableTypeEnvProduction()); //GET SETTING FROM SQL TABLE
   let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
-  console.log("🚀 ~ file: dashboardController.js ~ line 2852 ~ exports.settingsPreview= ~ gateaway", gateaway)
   let hostLink = gateaway[4]['valueSett'];
-  let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
+  let sagex3Folder = req.session.queryFolder;
+    let banner = JSON.parse(await DataBaseSq.bannerSetting());
+  let activeBanner =false
   if (banner.Status == 1) {
     activeBanner = true
   }
-  let sagex3Folder = req.session.queryFolder;
-  //console.log(gateaway)
   //RENDER SYSTEM SETTING PAGE
   res.render("sysSettings", {
     pageName: "System Settings",
@@ -3104,7 +3221,7 @@ exports.settingsPreview = async (req, res) => {
     text1,
     modeEnv,
     gateaway,
-    sagex3Folder, banner, activeBanner, hostLink
+    sagex3Folder,banner,activeBanner,hostLink
   });
 };
 
@@ -3125,13 +3242,13 @@ exports.saveSetting = async (req, res) => {
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
   let enValue = sValue;
-  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id" || sType == "bank_account_number_FP" || sType == "bank_id_FP") {
+  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP") {
     enValue = encrypt(sValue);
   }
   let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable(); // GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
-  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id" || sType == "bank_account_number_FP" || sType == "bank_id_FP"|| sType == "PauseCustomerPaymentMethods") {
+  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP" || sType == "PauseCustomerPaymentMethods") {
     return res.sendStatus(200);
   }
   if (sType == "queryFolder") {
@@ -3140,18 +3257,19 @@ exports.saveEditSetting = async (req, res) => {
   return res.sendStatus(200);
   /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
+
 /**FUNCTION TO SAVE EDIT BANNER  */
 exports.saveEditSettingBanner = async (req, res) => {
-  const { bannerText, colorText, colorBg, status, bannerKey } = req.body;
+  const { bannerText,colorText,colorBg,status,bannerKey } = req.body;
   console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ req.body", req.body)
   let saveSys
-  if (bannerKey != '') {
-    saveSys = await DataBaseSq.EditSettingBanner(bannerText, status, colorBg, colorText, bannerKey); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
-    console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
-  } else {
-    saveSys = await DataBaseSq.saveSettingBanner(bannerText, 'banner', status, colorBg, colorText); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
-    console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
-  }
+  if (bannerKey !='') {
+      saveSys = await DataBaseSq.EditSettingBanner(bannerText, status,colorBg, colorText, bannerKey); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  }else{
+      saveSys = await DataBaseSq.saveSettingBanner(bannerText, 'banner', status,colorBg, colorText); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
+  console.log("🚀 ~ file: dashboardController.js ~ line 2794 ~ exports.saveEditSettingBanner= ~ saveSys", saveSys)
+  } 
   return res.sendStatus(200);
   /// res.send({ settings });//SEND TO AJAX SETTING FOR UPDATE DATATABLE
 };
@@ -3206,48 +3324,53 @@ exports.payments_detail = async (req, res) => {
   //GET FROM X3, INVOICE IN PAYMENTS ARRAY INFO ONE BY ONE
   for (let i = 0; i < payments_dt[0].tPaymentApplication.length; i++) {
     //THIS IS FOR GET INFO 
-    console.log('search ayment invoice details')
-    where_filter_inv =
-      "&where=NUM eq '" +
-      payments_dt[0].tPaymentApplication[i].INVOICENUM +
-      "' "; //WHERE CLAUSE WITH INVNUM,FOR X3
-    //STORE INFO INVOICE IN ARRAY
-    inv_wofilter.push(
-      await request({
-        uri: URI +
-          `YPORTALINVD('${payments_dt[0].tPaymentApplication[i].INVOICENUM}')?representation=YPORTALINVD.$details`,
-        method: "GET",
-        insecure: true,
-        rejectUnauthorized: false,
-        headers: {
-          "Content-Type": "application/json",
-          Connection: 'close',
-          Accept: "application/json",
-          Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        },
-        json: true,
-      }).then(async (inv_wofilter2) => {
-        console.log('inv_wofilter2')
-        // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
-        if (inv_wofilter2.length == 0) {
-          (Description = "Error get invoice for pay"),
-            (Status = 1),
-            (Comment =
-              "Invoice query response blank or closed inv trying to pay. - Line 1915");
-          SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-          return false;
-        }
-        return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
-      })
-    );
+      console.log('search ayment invoice details')
+      where_filter_inv =
+        "&where=NUM eq '" +
+        payments_dt[0].tPaymentApplication[i].INVOICENUM +
+        "' "; //WHERE CLAUSE WITH INVNUM,FOR X3
+      //STORE INFO INVOICE IN ARRAY
+      inv_wofilter.push(
+        await request({
+          uri: URI +
+            `YPORTALINVD('${payments_dt[0].tPaymentApplication[i].INVOICENUM}')?representation=YPORTALINVD.$details`,
+          method: "GET",
+          insecure: true,
+          rejectUnauthorized: false,
+          headers: {
+            "Content-Type": "application/json",
+            Connection: 'close',
+            Accept: "application/json",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          },
+          json: true,
+        }).then(async (inv_wofilter2) => {
+          console.log('inv_wofilter2')
+          // IF RESPONSE BLANK, SAVE IN SQL LOGSYSTEM ERROR AND RETURN
+          if (inv_wofilter2.length == 0) {
+            (Description = "Error get invoice for pay"),
+              (Status = 1),
+              (Comment =
+                "Invoice query response blank or closed inv trying to pay. - Line 1915");
+            SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            return false;
+          }
+          return inv_wofilter2; //RETURN INFO INVOICE IN ARRAY
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 3024 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 3024";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
+      );
   }
   let payments_st = JSON.stringify(payments_dt), //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
     inv_wofilter_st = JSON.stringify(inv_wofilter); //CONVERT ARRAY INVOICES INFO IN STRING FOR DATATABLE
-  let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
-  if (banner.Status == 1) {
-    activeBanner = true
-  }
+let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   //RENDER PAGE
   res.render("detail_payments", {
     pageName: "Payments Details",
@@ -3260,7 +3383,7 @@ exports.payments_detail = async (req, res) => {
     admin,
     inv_wofilter,
     payments_st,
-    inv_wofilter_st, banner, activeBanner
+    inv_wofilter_st,banner, activeBanner
   });
 };
 
@@ -3309,18 +3432,18 @@ exports.status_payments_detail = async (req, res) => {
     console.log(searchLog)
     if (!searchLog) {
       payments_dt[0].tPaymentApplication[i].errorLog = 'N/A'
-    } else {
-      payments_dt[0].tPaymentApplication[i].errorLog = searchLog
+    }else {
+     payments_dt[0].tPaymentApplication[i].errorLog = searchLog 
     }
-
+    
   }
 
   let payments_st = JSON.stringify(payments_dt); //CONVERT ARRAY PAYMENTS IN STRING FOR DATATABLE
-  let banner = JSON.parse(await DataBaseSq.bannerSetting());
-  let activeBanner = false
-  if (banner.Status == 1) {
-    activeBanner = true
-  }
+let banner = JSON.parse(await DataBaseSq.bannerSetting());
+    let activeBanner =false
+    if (banner.Status == 1) {
+      activeBanner = true
+    }
   //RENDER PAGE
   res.render("statusPayment", {
     pageName: "Status Payments Details",
@@ -3332,7 +3455,7 @@ exports.status_payments_detail = async (req, res) => {
     payments_dt,
     admin,
     inv_wofilter,
-    payments_st, banner, activeBanner
+    payments_st,banner,activeBanner
   });
 };
 
@@ -3360,7 +3483,7 @@ exports.Print_payments_detail = async (req, res) => {
     Status = 1,
     Comment = "FUNCTION: payments_detail-line 1864";
   var SystemLogL = await DataBasequerys.tSystemLog(
-    UserID,
+    user["EMAIL"].toString(),
     IPAddress,
     LogTypeKey,
     SessionKey,
@@ -3416,7 +3539,7 @@ exports.Print_payments_detail = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -3427,7 +3550,7 @@ exports.Print_payments_detail = async (req, res) => {
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. - Line 1915");
             SystemLogL = await DataBasequerys.tSystemLog(
-              UserID,
+              user["EMAIL"].toString(),
               IPAddress,
               LogTypeKey,
               SessionKey,
@@ -3438,7 +3561,12 @@ exports.Print_payments_detail = async (req, res) => {
             return false;
           }
           return inv_wofilter2["$resources"][0]; //RETURN INFO INVOICE IN ARRAY
-        })
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 3221 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 3221";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
       );
     } else {
       //GET INFO OPEN INVOICES OR WITH STATUS SOAP 0
@@ -3461,7 +3589,7 @@ exports.Print_payments_detail = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
+            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -3472,7 +3600,7 @@ exports.Print_payments_detail = async (req, res) => {
               (Comment =
                 "Invoice query response blank or closed inv trying to pay. - Line 1957");
             SystemLogL = await DataBasequerys.tSystemLog(
-              UserID,
+              user["EMAIL"].toString(),
               IPAddress,
               LogTypeKey,
               SessionKey,
@@ -3483,7 +3611,12 @@ exports.Print_payments_detail = async (req, res) => {
             return false;
           }
           return inv_wofilter2["$resources"][0]; //RETURN INFO INVOICES TO ARRAY
-        })
+        }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 3271 ~ = ~ err", err)
+
+        var msg0 =  "Please contact support, sageX3 response Error-line 3271";
+    return res.redirect(`/dashboard/${msg0}`);
+    })
       );
     }
   }
@@ -3509,6 +3642,7 @@ exports.Print_payments_detail = async (req, res) => {
 };
 
 /**FUNCTION TO PROCESS PAYMENT WITH WELLS FARGO */
+/**FUNCTION TO PROCESS PAYMENT WITH WELLS FARGO */
 exports.process_payment_WF = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
 
@@ -3516,7 +3650,7 @@ exports.process_payment_WF = async (req, res) => {
   //Save SQL SYSTEMLOG
   var ip = req.connection.remoteAddress;
   const SessionKeyLog = req.session.SessionLog;
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting process payment with wells fargo", Status = 1, Comment = "FUNCTION: process_payment_WF-LINE 2009";
+  let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting process payment with wells fargo", Status = 1, Comment = "FUNCTION: process_payment_WF-LINE 2009";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
   let apikey;
@@ -3542,7 +3676,6 @@ exports.process_payment_WF = async (req, res) => {
   //START PROCCESS PAYMENT
   var { bank_id, bank_account_number, totalAmountcard, inv, appliedAmount, reasonLessAmta, userIDInv, NamePayer_Bank, Payname, legalNameAccount } = req.body;
   console.log("🚀 ~ file: dashboardController.js ~ line 3158 ~ exports.process_payment_WF= ~ req.body", req.body)
-  //console.log(req.body)
   let consult_paymentID = JSON.parse(await DataBaseSq.GetLastPaymenTIDWF()); //GET Last PaymentID WF to create next
   console.log(consult_paymentID);
   let prepare_idWF;
@@ -3566,11 +3699,11 @@ exports.process_payment_WF = async (req, res) => {
   //SEND PAYMENT TO WF API
   let WF_TransactionID = JSON.parse(
     await WFCCtrl.WF(totalAmountcard, apikey, legalNameAccount, bank_id, bank_account_number, prepare_idWF).then((response) => {
-      console.log("🚀 ~ file: dashboardController.js ~ line 3183 ~ awaitWFCCtrl.WF ~ response", response)
+      console.log("🚀 ~ file: dashboardController.js ~ line 3177 ~ awaitWFCCtrl.WF ~ response", response)
       return JSON.stringify(response);
     })
   );
-  console.log("🚀 ~ file: dashboardController.js ~ line 3186 ~ exports.process_payment_WF= ~ WF_TransactionID", WF_TransactionID)
+  console.log("🚀 ~ file: dashboardController.js ~ line 3181 ~ exports.process_payment_WF= ~ WF_TransactionID", WF_TransactionID)
 
   let back_side_res = WF_TransactionID["x-backside-transport"],
     payment_id = WF_TransactionID["payment-id"];
@@ -3587,10 +3720,10 @@ exports.process_payment_WF = async (req, res) => {
       "- process payment";
     console.log(errorLogD); //SHOW IN CONSOLE THE ERROR
     let errorLogC = WF_TransactionID["errors"][0]["description"];
-    console.log("🚀 ~ file: dashboardController.js ~ line 3204 ~ exports.process_payment_WF= ~ errorLogC", errorLogC); //SHOW IN CONSOLE THE ERROR
+    console.log("🚀 ~ file: dashboardController.js ~ line 3198 ~ exports.process_payment_WF= ~ errorLogC", errorLogC); //SHOW IN CONSOLE THE ERROR
     (Description = errorLogD), (Status = 0), (Comment = errorLogC);
     SystemLogL = await DataBasequerys.tSystemLog(
-      UserID,
+      user["EMAIL"].toString(),
       IPAddress,
       LogTypeKey,
       SessionKey,
@@ -3626,10 +3759,10 @@ exports.process_payment_WF = async (req, res) => {
     //SHOW CONSOLE INFO ABOUT PAYMENT
     console.log("--Sucess in SQL: " + paymentKey);
     return res.send({ error, WF_TransactionID, SystemLogL, paymentKey }); //SEND RESPONSE TO AJAX REQUEST
-  } else {
-    (Description = 'process_payment_WF:WF_TransactionID'), (Status = 0), (Comment = 'Error lines 3187-3244/WF_TransactionID');
+  }else{
+    (Description = 'process_payment_WF:WF_TransactionID'), (Status = 0), (Comment = 'Error lines 3187-3238/WF_TransactionID');
     SystemLogL = await DataBasequerys.tSystemLog(
-      UserID,
+      user["EMAIL"].toString(),
       IPAddress,
       LogTypeKey,
       SessionKey,
@@ -3639,12 +3772,11 @@ exports.process_payment_WF = async (req, res) => {
     );
     SystemLogL = JSON.parse(SystemLogL);
     return res.send({
-      WF_TransactionID_Error: 'Error: WF_TransactionID failed in process_payment_WF, please contact support.- ',
+      WF_TransactionID_Error:'Error: WF_TransactionID failed in process_payment_WF, please contact support.- ',
       SystemLogL
     }); // RETURN RESPONSE TO AJAX
   }
 };
-
 /**FUNCTION TO CHANGE CRON TASK SERVER (WF VERIFY) */
 exports.changeCronServer = async (req, res) => {
   // var process = require('child_process');
@@ -3677,54 +3809,59 @@ exports.resendX3 = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init resendX3", Status = 1, Comment = "FUNCTION: resendX3-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-  console.log(req.body)
-  const { tPaymentPmtKey, INVOICENUM, AppliedAmount, ShortDescription } = req.body
-  var i_file = "", inv_detail, amountPayment;
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM,   AppliedAmount,  ShortDescription} = req.body
+    var i_file = "",inv_detail,amountPayment;
   let today = moment().format("YYYYMMDD");//FORMAY DATE: 20220101
   var statusSOAP = [];//ALMACENATE IN ARRAY SOAP STATUS RESPONSE
   const parser = new xml2js.Parser({
     explicitArray: true,
   });//THIS FUNCTION IS FOR PARSER XML 
+  
+  var msgErroSOAP = [],inVError = [];
 
-  var msgErroSOAP = [], inVError = [];
+    statusSOAP.pop()
+    console.log('reSendX3')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+    // FIRTS GET INVOICE DETAIL FROM X3
+    inv_detail = JSON.parse(
+      await request({
+        uri:
+          URI +
+          `YPORTALINVD('${INVOICENUM}')?representation=YPORTALINVD.$details`,
+        method: "GET",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "application/json",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        },
+        json: true,
+      }).then(async (invD) => {
+        return JSON.stringify(invD);
+      }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 3502 ~ = ~ err", err)
 
-  statusSOAP.pop()
-  console.log('reSendX3')
-  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-  console.log(Payment)
-  // FIRTS GET INVOICE DETAIL FROM X3
-  inv_detail = JSON.parse(
-    await request({
-      uri:
-        URI +
-        `YPORTALINVD('${INVOICENUM}')?representation=YPORTALINVD.$details`,
-      method: "GET",
-      insecure: true,
-      rejectUnauthorized: false,
-      headers: {
-        "Content-Type": "application/json",
-        Connection: 'close',
-        Accept: "application/json",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-      },
-      json: true,
-    }).then(async (invD) => {
-      return JSON.stringify(invD);
+        var msg0 =  "Please contact support, sageX3 response Error-line 3502";
+    return res.redirect(`/dashboard/${msg0}`);
     })
-  );
-  //GET AMOUNT APPLIED FOR INVOICE
-  amountPayment = Number.parseFloat(AppliedAmount).toFixed(2);
-  let bankAccount = decrypt(Payment['bank_account_number']);//DECRYPT
-  let Lastfour = bankAccount.slice(-4);// GET LAST FOR NUMBER 
-  let reasonLeast = ShortDescription;
-
-
-  i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${Payment['ProcessorTranID']};${Payment['TransactionID']};ACH${Lastfour};10204|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLeast.toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;000;BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`; //I_FILE
-
-  console.log(i_file);//CHECK I_FILE
-
-  //PREPARE THE XML FOR SAVE IN SOAP X3, ENTER THE I_FILE VARIABLE
-  let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
+    );
+    //GET AMOUNT APPLIED FOR INVOICE
+    amountPayment = Number.parseFloat(AppliedAmount).toFixed(2);
+    let bankAccount = decrypt(Payment['bank_account_number']);//DECRYPT
+    let Lastfour = bankAccount.slice(-4);// GET LAST FOR NUMBER 
+    let reasonLeast = ShortDescription;
+  
+  
+    i_file = `P;;RECPT;${inv_detail.BPCINV};ENG;10501;S001;${inv_detail.CUR};${amountPayment};${today};${Payment['ProcessorTranID']};${Payment['TransactionID']};ACH${Lastfour};10204|D;PAYRC;${inv_detail.GTE};${inv_detail.NUM};${inv_detail.CUR};${amountPayment};${reasonLeast.toUpperCase()}|A;LOC;${inv_detail.SIVSIHC_ANA[0].CCE};DPT;${inv_detail.SIVSIHC_ANA[1].CCE};BRN;000;BSU;${inv_detail.SIVSIHC_ANA[3].CCE};SBU;${inv_detail.SIVSIHC_ANA[4].CCE};${amountPayment}|END`; //I_FILE
+  
+    console.log(i_file);//CHECK I_FILE
+  
+    //PREPARE THE XML FOR SAVE IN SOAP X3, ENTER THE I_FILE VARIABLE
+    let xmlB = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://www.adonix.com/WSS">
   <soapenv:Header/>
   <soapenv:Body>
   <wss:run soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -3751,84 +3888,89 @@ exports.resendX3 = async (req, res) => {
   </wss:run>
   </soapenv:Body>
   </soapenv:Envelope>`;
+  
+    //SEND TO SOAP X3 THE XML WIHT THE PAYMENT INFO, AND GET RESPONSE
+    var SOAPP = JSON.parse(
+      await request({
+        uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
+        method: "POST",
+        insecure: true,
+        rejectUnauthorized: false,
+        headers: {
+          "Content-Type": "application/json",
+          Connection: 'close',
+          Accept: "*/*",
+          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          soapaction: "*",
+        },
+        body: xmlB,
+      }).then(async (SOAP) => {
+        return JSON.stringify(SOAP);
+      }).catch((err)=>{
+    console.log("🚀 ~ file: .js ~ line 3566 ~ = ~ err", err)
 
-  //SEND TO SOAP X3 THE XML WIHT THE PAYMENT INFO, AND GET RESPONSE
-  var SOAPP = JSON.parse(
-    await request({
-      uri: `https://sawoffice.technolify.com:8443/soap-generic/syracuse/collaboration/syracuse/CAdxWebServiceXmlCC`,
-      method: "POST",
-      insecure: true,
-      rejectUnauthorized: false,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
-        Authorization: "Basic UE9SVEFMREVWOns1SEE3dmYsTkFqUW8zKWY=",
-        soapaction: "*",
-        Connection: 'close',
-      },
-      body: xmlB,
-    }).then(async (SOAP) => {
-      return JSON.stringify(SOAP);
+        var msg0 =  "Please contact support, sageX3 response Error-line 3566";
+    return res.redirect(`/dashboard/${msg0}`);
     })
-  );
+    );
   var newSystemLog
-  //PARSE XML RESPONSE FROM SOAP X3
-  parser.parseString(SOAPP, async function (err, result) {
-    if (result["soapenv:Envelope"]["soapenv:Body"][0]["wss:runResponse"][0]["runReturn"][0]["status"][0]["_"] == "1") {
-      //IF STATUS RESPONSE IS 1, PUSH IN ARRAY STATUS FOR THAT INVOICE
-      statusSOAP.push({
-        status:
-          result["soapenv:Envelope"]["soapenv:Body"][0][
-          "wss:runResponse"
-          ][0]["runReturn"][0]["status"][0]["_"],
-        error: msgErroSOAP,
-      });
-      console.log('Line 145')
-      console.log(statusSOAP)
-      return statusSOAP;
-    } else {
-      //IF STATUS RESPONSE IS 0, CHECK OUT THE MESSAGE RES FROM SOAP AND STORE IN ARRAY "msgErroSOAP"
-      for (let i = 0; i < result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"].length; i++) {
-
-        msgErroSOAP.push(
-          result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"][
-          i
-          ]["message"][0]
-        );
+    //PARSE XML RESPONSE FROM SOAP X3
+    parser.parseString(SOAPP, async function (err, result) {
+      if (result["soapenv:Envelope"]["soapenv:Body"][0]["wss:runResponse"][0]["runReturn"][0]["status"][0]["_"] == "1") {
+        //IF STATUS RESPONSE IS 1, PUSH IN ARRAY STATUS FOR THAT INVOICE
+        statusSOAP.push({
+          status:
+            result["soapenv:Envelope"]["soapenv:Body"][0][
+            "wss:runResponse"
+            ][0]["runReturn"][0]["status"][0]["_"],
+          error: msgErroSOAP,
+        });
+        console.log('Line 145')
+        console.log(statusSOAP)
+        return statusSOAP;
+      } else {
+        //IF STATUS RESPONSE IS 0, CHECK OUT THE MESSAGE RES FROM SOAP AND STORE IN ARRAY "msgErroSOAP"
+        for (let i = 0; i < result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"].length; i++) {
+  
+          msgErroSOAP.push(
+            result["soapenv:Envelope"]["soapenv:Body"][0]["multiRef"][
+            i
+            ]["message"][0]
+          );
+        }
+  
+        inVError.push(inv_detail.NUM);//STORE THE INVOICE IS IN ERROR
+        statusSOAP.push({
+          status:
+            result["soapenv:Envelope"]["soapenv:Body"][0][
+            "wss:runResponse"
+            ][0]["runReturn"][0]["status"][0]["_"],
+          error: msgErroSOAP,
+          invError: inVError,
+        });//STORE IN ARRAY: STATUS SOAP, MSG ERROR FROM X3, INVOICE NUM WITH ERROR
+        
+            console.log(newSystemLog)
+            statusSOAP.push({newSystemLog : newSystemLog});
       }
 
-      inVError.push(inv_detail.NUM);//STORE THE INVOICE IS IN ERROR
-      statusSOAP.push({
-        status:
-          result["soapenv:Envelope"]["soapenv:Body"][0][
-          "wss:runResponse"
-          ][0]["runReturn"][0]["status"][0]["_"],
-        error: msgErroSOAP,
-        invError: inVError,
-      });//STORE IN ARRAY: STATUS SOAP, MSG ERROR FROM X3, INVOICE NUM WITH ERROR
-
-      console.log(newSystemLog)
-      statusSOAP.push({ newSystemLog: newSystemLog });
-    }
-
-    return statusSOAP;
-  });
-  console.log("ss : " + JSON.stringify(statusSOAP));// IN CONSOLE CHECKOUT PAYMENT X3 SOAP STATUS RESPONSE
-  console.log('--------------------')
+      return statusSOAP;
+    });
+    console.log("ss : " + JSON.stringify(statusSOAP));// IN CONSOLE CHECKOUT PAYMENT X3 SOAP STATUS RESPONSE
+    console.log('--------------------')
   console.log(statusSOAP[0]['status'])
-
+  
   let extraida = JSON.stringify(statusSOAP[0]['error']).substring(0, 70);
-  //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
-  Description = "Resend SOAP ",
-    Status = 1,
-    Comment = extraida + "-Inv: " + INVOICENUM;
-  newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  console.log(newSystemLog)
-  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'], newSystemLog));
-  console.log(paymentAplication)
+        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+       Description = "Resend SOAP ",
+          Status = 1,
+          Comment =extraida + "-Inv: " + INVOICENUM;
+            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            console.log(newSystemLog)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(inv_detail.NUM, tPaymentPmtKey, statusSOAP[0]['status'],newSystemLog));
+    console.log(paymentAplication)
 
-  res.send({ statusx3: statusSOAP[0]['status'], error: statusSOAP[0]['error'] })
+  res.send({statusx3: statusSOAP[0]['status'], error:statusSOAP[0]['error']})
 };
 /**FUNCTION TO cancelPayment PAYMENTS DETAIL PAGE */
 exports.cancelPayment = async (req, res) => {
@@ -3842,16 +3984,16 @@ exports.cancelPayment = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init cancelPayment", Status = 1, Comment = "FUNCTION: cancelPayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-  console.log(req.body)
-  const { tPaymentPmtKey, INVOICENUM } = req.body
-  console.log('finalizePayment')
-  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-  console.log(Payment)
-  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 2));
-  console.log(paymentAplication)
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM} = req.body
+    console.log('finalizePayment')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 2));
+    console.log(paymentAplication)
 
-  res.send({ paymentAplication })
+  res.send({paymentAplication})
 };
 /**FUNCTION TO finalizePayment PAYMENTS DETAIL PAGE */
 exports.finalizePayment = async (req, res) => {
@@ -3865,32 +4007,32 @@ exports.finalizePayment = async (req, res) => {
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init finalizePayment", Status = 1, Comment = "FUNCTION: finalizePayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
-  console.log(req.body)
-  const { tPaymentPmtKey, INVOICENUM } = req.body
-  console.log('finalizePayment')
-  let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
-  console.log(Payment)
-  var newSystemLog
-  //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
-  Description = "finalizePayment",
-    Status = 1,
-    Comment = "finalizePayment-Inv: " + INVOICENUM;
-  newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
-  console.log(newSystemLog)
-  //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
-  var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1, newSystemLog));
-  console.log(paymentAplication)
+    console.log(req.body)
+    const {tPaymentPmtKey,INVOICENUM} = req.body
+    console.log('finalizePayment')
+    let Payment = JSON.parse(await DataBaseSq.Get_tPaymentsBypmtKey(tPaymentPmtKey))
+    console.log(Payment)
+  var newSystemLog  
+        //SAVE IN SQL SYSTEM LOG, SOAP ERROR WITH THE MSG RESPONSE
+       Description = "finalizePayment",
+          Status = 1,
+          Comment = "finalizePayment-Inv: " + INVOICENUM;
+            newSystemLog = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+            console.log(newSystemLog)
+    //UPDATE INVOICE PAID IN SQL TABLE PAYMENT APPLICATION
+    var paymentAplication = JSON.parse(await DataBaseSq.UpdPaymentApplication(INVOICENUM, tPaymentPmtKey, 1,newSystemLog));
+    console.log(paymentAplication)
 
-  res.send({ paymentAplication })
+  res.send({paymentAplication})
 };
 
 /**FUNCTION TO save SystemLog */
 exports.saveSystemLog = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //USER INFO
-  console.log('saveSystemLog line 3480:', req.body)
-  const { description, comment } = req.body;
-  console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ comment", comment)
-  console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
+console.log('saveSystemLog line 3480:', req.body)
+const {description,  comment} = req.body;
+console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ comment", comment)
+console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
   var ip = req.connection.remoteAddress;
@@ -3898,6 +4040,48 @@ exports.saveSystemLog = async (req, res) => {
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ SystemLogL", SystemLogL)
 
+   
+  res.send({SystemLogL})
+};
 
-  res.send({ SystemLogL })
+exports.statusWFCheckAPI = async (req, res) => {
+  let URI = URLHost + req.session.queryFolder + "/";
+  const user = res.locals.user["$resources"][0];
+  let param = req.params.idp
+  console.log('line param',param);
+
+  let status
+  let apikey;
+  let modeEnv = JSON.parse(
+    await DataBaseSq.settingsTableTypeEnvProduction()
+  );
+  if (req.cookies.wf && modeEnv.Status == 1) {
+    apikey = req.cookies.wf;
+  } else {
+    let gateaway = JSON.parse(await DataBaseSq.settingsgateway());
+    let hostLink = gateaway[4]["valueSett"];
+    let WF_APIKey = JSON.parse(
+      await WFCCtrl.APYKeyGet(hostLink).then((response) => {
+        return JSON.stringify(response);
+      })
+    );
+    apikey = WF_APIKey["access_token"];
+    if (modeEnv.Status == 1) {
+      res.cookie("wf", WF_APIKey["access_token"], {
+        maxAge: WF_APIKey["expires_in"],
+      });
+    }
+  }
+
+    status = JSON.parse(await WFCCtrl.GetStatus(apikey, param).then((response) => {
+      return JSON.stringify(response);
+    }))
+    console.log('line 4077',status);
+    //SAVE SQL TABLE SYSTEMLOG
+  const SessionKeyLog = req.session.SessionLog;
+  var ip = req.connection.remoteAddress;
+  let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = 'statusWFCheckAPI', Status = 1, Comment = JSON.stringify(status).substring(0, 250);
+  var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
+
+    res.send(status)
 };

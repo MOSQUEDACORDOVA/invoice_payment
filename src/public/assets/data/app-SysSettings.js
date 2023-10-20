@@ -236,9 +236,9 @@ $(function () {
         contentType: false,
         processData: false,
       success: function (data, textStatus, jqXHR) {
-        console.log(data);
+        console.log(data)
         if (data == 'OK') {
-          swal.fire('Certificate and Key success update')
+          swal.fire('Certificate success update')
         }
       },
       error: function (jqXHR, textStatus) {
@@ -246,8 +246,7 @@ $(function () {
       }
     });
   })
-
-  $('#PauseCustomerPaymentMethods').change(function(e){
+$('#PauseCustomerPaymentMethods').change(function(e){
     let PauseCustomerPaymentMethods=0;
     if ($('#PauseCustomerPaymentMethods').is(':checked')) {
       PauseCustomerPaymentMethods =1;
@@ -451,7 +450,7 @@ $(function () {
       }
     });
   });
-  $('#bank_account_number_FP').on('change', function(e) {
+    $('#bank_account_number_FP').on('change', function(e) {
     let id = e.currentTarget['dataset']['id'];
     let value = e.target.value;
     let data = new FormData();
@@ -503,7 +502,7 @@ $(function () {
       }
     });
   });
-  $('#bank_id_FP').on('change', function(e) {
+    $('#bank_id_FP').on('change', function(e) {
     let id = e.currentTarget['dataset']['id'];
     let value = e.target.value;
     let data = new FormData();
@@ -623,9 +622,9 @@ console.log('here Cron')
       }
     });
        
-    }); 
-
-
+    });
+    
+    
 /**BUTOON SAVE BANNER */
 $('#btnsaveBanner').on('click', () => {
   var bannerText = $('#bannerText').val()
@@ -667,5 +666,5 @@ var bannerKey  = $('#bannerKey').val()
   });
 })
 
-    /**END FUNCTION READY */});
+/**END FUNCTION READY */});
 

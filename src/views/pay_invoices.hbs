@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="content-body">
-            {{#if activeBanner}}
+        {{#if activeBanner}}
             <div class="alert alert-primary alert-dismissible fade show" style="background-color: {{banner.colorBg}} !important;" role="alert">
               <div class="alert-body" style="color: {{banner.colorText}} !important;">
                 {{banner.valueSett}}
@@ -55,7 +55,7 @@
                         <div id="place-orderx" class="list-view product-checkout">
                             <!-- Checkout Place Order Left starts -->
                             <div class="checkout-items">
-
+                            
                                 <a href="/dashboard" class="btn btn-primary waves-effect waves-float waves-light d-none" id="returnItems">
                                 <span class="bs-stepper-box">
                                 <i data-feather="arrow-left" class=""></i>
@@ -172,10 +172,10 @@
                                                 <label class="form-check-label" for="CCCheck">Credit/Debit/ATM
                                                     Card</label>
                                             </div>
-                                            <div class="form-check form-check-inline mb-1 d-none">
+                                            <div class="form-check form-check-inline mb-1 ">
                                                 <input name="collapsible-payment" class="form-check-input" type="radio"
                                                     value="" id="ACHBankCheck" checked/>
-                                                <label class="form-check-label" for="ACHBankCheck" >ACH Bank</label>
+                                                <label class="form-check-label" for="ACHBankCheck">ACH Bank</label>
                                             </div>
                                         </div>
                                     </div>
@@ -219,7 +219,7 @@
                                             </div>
                                         </div>
                                         <div id="ACHOptions" class="">
-                                            {{#each activeACH as |pay_met i|}}
+                                            {{#each ACHMethod as |pay_met i|}}
                                             <h6 class="card-holder-name my-75">{{#decryptData PAYNAME}}{{/decryptData}}
                                             </h6>
                                             <div class="form-check">
@@ -233,13 +233,11 @@
                                                 </label>
                                             </div>
                                             {{/each}}
-
                                             <div class="{{#if activeACH}}col-3{{else}}col-6{{/if}}">
-                                            {{#if activeACH}}
+                                                {{#if activeACH}}
 
                                                 <button type="button" class="btn btn-primary btn-cvv mb-50 mt-2"
                                                     id="btn_continueACH">Continue</button>
-                                                    
                                                     {{else}}
                                                     <label>There are no payment methods available for use. Please add and verify one on the payment methods page to process payment for these invoices</label>
                                                     <a href="/payments_methods" class="btn btn-primary btn-cvv mb-50 mt-2"
@@ -248,14 +246,14 @@
                                             </div>
                                         </div>
 
-                                        {{!-- <hr class="my-2" /> --}}
+                                        <hr class="my-2" />
                                         <button class="btn btn-outline-primary waves-effect d-none" id="bn_loading"
                                             disabled="" style="border: transparent !important;">
                                             <span class="spinner-grow spinner-grow-sm" role="status"
                                                 aria-hidden="true"></span>
                                             <span class="ms-25 align-middle">Processing payment, please wait..</span>
                                         </button>
-                                        {{!-- <div class="d-flex align-items-center">
+                                       {{!-- <div class="d-flex align-items-center">
                                             <div class="d-none form-check form-switch form-check-primary me-25">
                                                 <input type="checkbox" class="form-check-input diferentCardcheck"
                                                     id="diferentCardcheck" />
@@ -277,7 +275,7 @@
                                             </div>
                                             <label class="form-check-label fw-bolder" for="bankOptionCheck"> Use
                                                 Bank Account</label>
-                                        </div> --}}
+                                        </div>--}}
                                         <div class="d-flex align-items-center">
 
                                         </div>
@@ -452,14 +450,6 @@
                                                     value="{{user.FNAME}} {{user.LNAME}}" hidden>
                                                 <input class="userIDInv" name="userIDInv" hidden>
                                                 <input type="text" name="typeM" id="typeM" value="ACH" hidden>
-
-                                                <div class="col-6 mt-0">
-                                                <label class="form-label" for="legalNameAccount">Legal Name on Account</label>
-                                                <input id="legalNameAccount" name="legalNameAccount"
-                                                    class="form-control add-credit-card-mask" type="text"
-                                                    placeholder="Legal Name on Account" aria-describedby="addCard2"
-                                                    data-msg="Please enter your Legal Name on Account" required  />
-                                            </div>
                                                 <div class="col-6 mt-0">
                                                     <label class="form-label" for="addCardNumber">Nick Name</label>
                                                     <input id="payName" name="payName"

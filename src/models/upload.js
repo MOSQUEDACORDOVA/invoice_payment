@@ -38,7 +38,7 @@ class FileController
           res.end(JSON.stringify({ status: 'error', message: error }));
             return;
           }
-            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName, fileName: fileName });// RETURN SUCCESS AND UBICATION DIR FILE
+            return res.status(200).send({ status: 'success', path:'/../public/assets/uploads/' + fileName, fileName: fileName });// RETURN SUCCESS AND UBICATION DIRFILE
           
        });
      } catch (e) {

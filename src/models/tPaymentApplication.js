@@ -27,7 +27,7 @@ const tPaymentApplication = db.define('tPaymentApplication', {
 		type: DataTypes.STRING(50),
 		allowNull: true,
 	},
-	tlogKey: {
+		tlogKey: {
 		type: DataTypes.INTEGER(),
 		allowNull: true,
 	},
