@@ -227,8 +227,7 @@ dataTable --}}
                                     <div class="d-flex flex-column me-1">
                                         <label class="form-check-label" for="customSwitch3">Pause Customer Payment Methods (On/Off) </label>
                                         <div class="form-check form-check-primary form-switch">
-                                            <input type="checkbox" data-id="{{gateaway.9.id}}" class="form-check-input" id="PauseCustomerPaymentMethods" value="1" {{#checkedSwitch
-                                                    gateaway.9.valueSett}}{{/checkedSwitch}}>
+                                            <input type="checkbox" data-id="{{gateaway.9.id}}" class="form-check-input" id="PauseCustomerPaymentMethods" value="1" {{#checkedSwitch gateaway.9.valueSett}}{{/checkedSwitch}}>{{#checkedSwitchLabel gateaway.9.valueSett}}{{/checkedSwitchLabel}}
                                         </div>
                                     </div>
                                 </div>
