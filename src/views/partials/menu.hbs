@@ -94,6 +94,10 @@
                     href="/sysSettings"><i data-feather="settings"></i><span class="menu-title text-truncate"
                         data-i18n="Email">System Settings</span></a>
             </li>{{/if}}
+            {{#if admin}} <li class="{{#if logsPage}}active{{/if}} nav-item"><a class="d-flex align-items-center"
+                    href="/logsView"><i data-feather="file-text"></i><span class="menu-title text-truncate"
+                        data-i18n="logs">Logs</span></a>
+            </li>{{/if}}
         </ul>
     </div>
 </div>

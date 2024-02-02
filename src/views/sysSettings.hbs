@@ -221,13 +221,25 @@ dataTable --}}
 
                                             </div>
                                         </div>
+                                         <div class="col-12 p-0">
+                                            <div class="">
+                                                <label class="form-label" for="gatewayEntity">Authorization X3</label>
+                                                <div class="input-group input-group-merge ">
+                                                    <input type="text" id="Authorization_X3"
+                                                        data-id="{{gateaway.10.id}}" class="form-control"
+                                                        name="fname-icon" placeholder="Authorization X3"
+                                                        value="{{#decryptData gateaway.10.valueSett}}{{/decryptData}}" />
+                                                </div>
+
+                                            </div>
+                                        </div>
                                            <div class="col-12 mt-1">
                                     <input type="hidden" class="form-control" name="bannerKey" id="bannerKey" value="{{banner.id}}">
                                 <div class="d-flex">
                                     <div class="d-flex flex-column me-1">
-                                        <label class="form-check-label" for="customSwitch3">Pause Customer Payment Methods (On/Off) </label>
+                                        <label class="form-check-label" for="customSwitch3">Customer Payment Methods (On/Off) </label>
                                         <div class="form-check form-check-primary form-switch">
-                                            <input type="checkbox" data-id="{{gateaway.9.id}}" class="form-check-input" id="PauseCustomerPaymentMethods" value="1" {{#checkedSwitch gateaway.9.valueSett}}{{/checkedSwitch}}>{{#checkedSwitchLabel gateaway.9.valueSett}}{{/checkedSwitchLabel}}
+                                            <input type="checkbox" data-id="{{gateaway.9.id}}" class="form-check-input" id="PauseCustomerPaymentMethods" value="1" {{#checkedSwitch gateaway.9.valueSett}}{{/checkedSwitch}}>{{#checkedSwitchLabel gateaway.9.valueSett}} {{/checkedSwitchLabel}}
                                         </div>
                                     </div>
                                 </div>

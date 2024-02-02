@@ -183,7 +183,7 @@ module.exports = {
   settingsgateway(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findAll({where:{[Op.or]: [
-        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'},{typeSett:'bank_id'},{typeSett:'bank_account_number'},{typeSett:'bank_id_FP'},{typeSett:'bank_account_number_FP'},{typeSett:'PauseCustomerPaymentMethods'}
+        {typeSett:'gatewayCompanyId'},{typeSett:'gatewayEntity'},{typeSett:'consumerKey'},{typeSett:'consumerSecret'},{typeSett:'hostLink'},{typeSett:'bank_id'},{typeSett:'bank_account_number'},{typeSett:'bank_id_FP'},{typeSett:'bank_account_number_FP'},{typeSett:'PauseCustomerPaymentMethods'},{typeSett:'Authorization_X3'}
       ] },order: [ [ 'id', 'ASC' ]]})
         .then((response) => {
           let data_p = JSON.stringify(response);
@@ -197,6 +197,18 @@ module.exports = {
   settingsqueryFolder(){
     return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
       tSettings.findOne({attributes:['valueSett'],where:{typeSett:'queryFolder'} })
+        .then((response) => {
+          let data_p = JSON.stringify(response);
+          resolve(data_p);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  settingsAuthorization_X3(){
+    return new Promise((resolve, reject) => {// SELECT ALL SETTINGS
+      tSettings.findOne({attributes:['valueSett'],where:{typeSett:'Authorization_X3'} })
         .then((response) => {
           let data_p = JSON.stringify(response);
           resolve(data_p);

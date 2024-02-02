@@ -1,0 +1,38 @@
+<!-- BEGIN: Content-->
+<div class="app-content content ">
+    <div class="content-wrapper container-xxl p-0">
+        <div class="content-body">
+        {{#if activeBanner}}
+            <div class="alert alert-primary alert-dismissible fade show" style="background-color: {{banner.colorBg}} !important;" role="alert">
+              <div class="alert-body" style="color: {{banner.colorText}} !important;">
+                {{banner.valueSett}}
+                </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {{/if}}
+            <section class="invoice-list-wrapper">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table dt-column-search" id="logsTable">
+                            <thead>
+                                <tr>
+                                    <th>tlogKey</th>
+                                    <th>LogDate</th>
+                                    <th>UserID</th>
+                                    <th>LogTypeKey</th>
+                                    <th>IPAddress</th>
+                                    <th>SessionKey</th>
+                                    <th>Description</th>
+                                    <th>Comment</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+{{#if admin}}<span id="admin"></span>{{/if}}
+<!-- Modal -->

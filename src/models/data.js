@@ -269,6 +269,38 @@ module.exports = {
         connection.connect();
       });
     },
+    getLogTypeTable() {
+
+      return new Promise((resolve, reject) => {
+        var connection = new Connection(db);
+        connection.on('connect', function (err) {
+          // If no error, then good to proceed.
+          var KeyLog
+          var request = new Request(`SELECT * FROM [tLogType] W`, function (err, response) {
+            if (err) {
+              console.log(err);
+            }
+          });
+          var result = [];
+          request.on('row', function (columns) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            result.push(rowObject);
+          });
+          request.on('done', function (rowCount, more) {
+          });
+          // Close the connection after the final event emitted by the request, after the callback passes
+          request.on("requestCompleted", function (rowCount, more) {
+            resolve(result)
+            connection.close();
+          });
+          connection.execSql(request);
+        });
+        connection.connect();
+      });
+    },
 
   //INSERT OR UPDATE PIC PROFILE 
   uploadPicProfile(email, picture, type) {
@@ -346,4 +378,104 @@ module.exports = {
       connection.connect();
     });
   },
+
+  dtQuery(query) {
+    return new Promise((resolve, reject) => {
+      var connection = new Connection(db);
+      var id
+      connection.on('connect', function (err) {
+        // If no error, then good to proceed.
+        let data = [];
+        var request = new Request(query, function (err, rowCount,rows) {
+          if (err) {
+            console.log(err);
+          }
+        });
+        
+        request.on('row', function (columns) {
+          var rowObject = {};
+          columns.forEach(function (column) {
+            rowObject[column.metadata.colName] = column.value;
+          }); 
+          data.push(rowObject);
+
+        });
+
+        request.on('done', function (rowCount, more) {
+        });
+        // Close the connection after the final event emitted by the request, after the callback passes
+        request.on("requestCompleted", function (rowCount, more) {
+          resolve(data)
+          connection.close();
+        });
+        connection.execSql(request);
+      });
+      connection.connect();
+    });
+  },
+  countTableWfilter(table, search) {
+    return new Promise((resolve, reject) => {
+      var connection = new Connection(db);
+      var id
+      connection.on('connect', function (err) {
+        // If no error, then good to proceed.
+        let data =[]
+        var request = new Request(`SELECT COUNT(*) AS total_count FROM ${table} where ${search}`, (err, rowCount) => {
+          if (err) {
+            console.log(err);
+          }
+      
+        });
+        request.on('row', function (columns) {
+          columns.forEach(function (column) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            data.push(rowObject);
+          }); 
+        });
+        // Close the connection after the final event emitted by the request, after the callback passes
+        request.on("requestCompleted", function (rowCount, more) {
+          resolve(data[0])
+          connection.close();
+        });
+        connection.execSql(request);
+      });
+      connection.connect();
+    });
+  },
+  countTable(table) {
+    return new Promise((resolve, reject) => {
+      var connection = new Connection(db);
+      var id
+      connection.on('connect', function (err) {
+        // If no error, then good to proceed.
+        let data =[]
+        var request = new Request(`SELECT COUNT(*) AS total_count FROM ${table}`, (err, rowCount) => {
+          if (err) {
+            console.log(err);
+          }
+      
+        });
+        request.on('row', function (columns) {
+          columns.forEach(function (column) {
+            var rowObject = {};
+            columns.forEach(function (column) {
+              rowObject[column.metadata.colName] = column.value;
+            });
+            data.push(rowObject);
+          }); 
+        });
+        // Close the connection after the final event emitted by the request, after the callback passes
+        request.on("requestCompleted", function (rowCount, more) {
+          resolve(data[0])
+          connection.close();
+        });
+        connection.execSql(request);
+      });
+      connection.connect();
+    });
+  },
+  
 };

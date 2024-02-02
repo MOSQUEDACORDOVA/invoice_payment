@@ -291,7 +291,10 @@
                                                             <h6 class="mb-0">{{#decryptData PAYNAME}}{{/decryptData}}
                                                             </h6>
                                                             {{!-- {{#virifiedACH verify}}{{/virifiedACH}} --}}
-                                                            {{#if VERIFIED}}<span class="badge badge-light-success ms-50">Verified</span>{{else}}<span class="badge badge-light-warning ms-50">Not Verified</span>{{/if}}
+                                                            {{#if VERIFIED}}<span
+                                                                class="badge badge-light-success ms-50">Verified</span>{{else}}<span
+                                                                class="badge badge-light-warning ms-50">Not
+                                                                Verified</span>{{/if}}
                                                         </div>
                                                         <span class="card-number">{{#cardHide
                                                             BANKACCT}}{{/cardHide}}</span>
@@ -307,9 +310,14 @@
                                                                 Edit
                                                             </button>
                                                             <a class="btn btn-outline-secondary me-75"
-                                                                onclick="deleteACH('{{PAYID}}','{{$uuid}}')" href="#">Delete</a>
-                                                            {{!-- {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}} --}}
-                                                            {{#if VERIFIED}}<a class="btn btn-outline-success verified">Verified</a>{{else}}<a class="btn btn-outline-info" onclick ="verifyPM('{{PAYID}}')" >Verify</a>{{/if}}
+                                                                onclick="deleteACH('{{PAYID}}','{{$uuid}}')"
+                                                                href="#">Delete</a>
+                                                            {{!-- {{#virifiedACHBtn verify PAYID}}{{/virifiedACHBtn}}
+                                                            --}}
+                                                            {{#if VERIFIED}}<a
+                                                                class="btn btn-outline-success verified">Verified</a>{{else}}<a
+                                                                class="btn btn-outline-info"
+                                                                onclick="verifyPM('{{PAYID}}')">Verify</a>{{/if}}
 
                                                         </div>
                                                     </div>
@@ -434,7 +442,7 @@
         $('#formBankOptions').append(IDPay)
     })
 
-    $('button[type=reset]').on('click',()=>{
+    $('button[type=reset]').on('click', () => {
         $('#legalNameAccount').attr('readonly', false)
         $('#bank_id').attr('readonly', false)
         $('#bank_account_number').attr('readonly', false)
@@ -472,7 +480,7 @@
             }
         });
 
-        $('#formBankOptions').on('submit', function (e) {
+        $('#formBankOptions').on('submit', async function (e) {
             var isValid = $('#formBankOptions').valid();
 
             e.preventDefault();
@@ -483,21 +491,35 @@
                 bank_id = bank_id.padStart(9, "0");
                 $('#bank_id').val(bank_id)
             }
-
+            //Checking PauseCustomerPaymentMethods
+            let PauseCustomerPaymentMethods = await fetch(`/PauseCustomerPaymentMethods`)
+                .then((res) => res.json())
+                .then((data) => {
+                    return data
+                });
+            console.log('infoDni 34', PauseCustomerPaymentMethods['PauseCustomerPaymentMethods'])
+            console.log('isValid 34', isValid)
+            if (PauseCustomerPaymentMethods['PauseCustomerPaymentMethods'] === "0" || PauseCustomerPaymentMethods['PauseCustomerPaymentMethods'] === 0) {
+                swal.fire('Payments Methods are paused. Please contact your system adminstrator')
+                return
+            }
+            if (!isValid) {
+                return
+            }
             Swal.fire({
                 title: `You are attempting to add a new ACH Bank account to your account. `,
-        html: `Please read the terms and conditions below:
+                html: `Please read the terms and conditions below:
         <br><p style= "text-align: left">1) You are either the bank account owner or authorized on behalf of the owner to use this bank account to process payments <br>
         2) You have access to the bank account below to verify the two validation transactions that will be sent to this bank account.<br>
         3) You understand that the validation transactions will be both debited and credited from this bank account.<br>
         
         By pressing confirm below, you are confirming the above transactions are true. To proceed, press confirm. Otherwise, press cancel.</p>`,
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#007EA8',
-        cancelButtonColor: '#C24B63',
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#007EA8',
+                cancelButtonColor: '#C24B63',
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
             }).then((result) => {
 
                 if (result.isConfirmed) {
@@ -530,29 +552,29 @@
             }
         })
     }
- function isNumberKey(txt, evt) {
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
+    function isNumberKey(txt, evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
 
-        if (charCode == 8 && $(txt).val().length == 2 ){
-                           return false;  
-          }
-          if ( charCode == 46 && $(txt).val().length == 2){
-                           return false;  
-          }
-      if (charCode == 46) {
-        //Check if the text already contains the . character
-        if (txt.value.indexOf('.') === -1) {
-          return true;
-        } 
-      } else {
-        
-          
+        if (charCode == 8 && $(txt).val().length == 2) {
+            return false;
+        }
+        if (charCode == 46 && $(txt).val().length == 2) {
+            return false;
+        }
+        if (charCode == 46) {
+            //Check if the text already contains the . character
+            if (txt.value.indexOf('.') === -1) {
+                return true;
+            }
+        } else {
 
-        if (charCode > 31 &&
-          (charCode < 48 || charCode > 57 && charCode <96))
-          return false;
-      }
-      return true;
+
+
+            if (charCode > 31 &&
+                (charCode < 48 || charCode > 57 && charCode < 96))
+                return false;
+        }
+        return true;
     }
 
     function verifyPM(payID) {
@@ -597,28 +619,28 @@
             }
 
         });
-/*var input = document.getElementById("amount01");
-  input.focus();
-  var len = input.value.length;
-  input.setSelectionRange(len, len);
- input.addEventListener("click", function() {
-    var len = input.value.length;
-    input.setSelectionRange(len, len);
-  });
-  var input2 = document.getElementById("amount02");
-  input2.focus();
-  var len2 = input2.value.length;
-  input2.setSelectionRange(len, len);
-   input2.addEventListener("click", function() {
-    var len2 = input2.value.length;
-    input2.setSelectionRange(len, len);
-  });*/
-/* const input = document.getElementById('amount01');
-
-const end = input.value.length;
-
-// ✅ Move focus to END of input field
-input.setSelectionRange(end, end);
-input.focus();*/
-  }
+        /*var input = document.getElementById("amount01");
+          input.focus();
+          var len = input.value.length;
+          input.setSelectionRange(len, len);
+         input.addEventListener("click", function() {
+            var len = input.value.length;
+            input.setSelectionRange(len, len);
+          });
+          var input2 = document.getElementById("amount02");
+          input2.focus();
+          var len2 = input2.value.length;
+          input2.setSelectionRange(len, len);
+           input2.addEventListener("click", function() {
+            var len2 = input2.value.length;
+            input2.setSelectionRange(len, len);
+          });*/
+        /* const input = document.getElementById('amount01');
+        
+        const end = input.value.length;
+        
+        // ✅ Move focus to END of input field
+        input.setSelectionRange(end, end);
+        input.focus();*/
+    }
 </script>

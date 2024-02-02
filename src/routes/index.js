@@ -3,6 +3,7 @@ const router = require('express').Router();//USE EXPRESS ROUTER
 const userController = require('../controllers/userController');//LOGGIN AND REGISTER USER FUNCTIONS
 const authController = require('../controllers/authController');//AUTH FUNCTIONS
 const dashboardController = require('../controllers/dashboardController');//PRINCIPALS FUNCTIONS
+const logsController = require('../controllers/logsController');//PRINCIPALS FUNCTIONS
 const mailCtrl = require('../controllers/mailCtrl');//EMAIL FUNCTIONS (SEND EMAIL)
 const FileController = require('../models/upload');//FUNCTION TO UPLOAD FILES
 const fileController = new FileController();
@@ -101,5 +102,13 @@ router.post('/saveEditBanner', authController.authenticatedUser, dashboardContro
 
 router.get('/changeCronServer',authController.authenticatedUser, dashboardController.changeCronServer);
 router.get('/statusWFCheckAPI/:idp',authController.authenticatedUser, dashboardController.statusWFCheckAPI);
+router.get('/PauseCustomerPaymentMethods',authController.authenticatedUser, dashboardController.PauseCustomerPaymentMethods);
+
+
+//LogsView
+router.get('/logsView',authController.authenticatedUser, logsController.logsView);
+router.get('/getLogType',authController.authenticatedUser, logsController.getLogType);
+router.get('/getLogsDataTable',authController.authenticatedUser, logsController.getLogsDataTable);
+
 
 module.exports = router;

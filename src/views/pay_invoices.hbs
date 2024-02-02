@@ -220,14 +220,14 @@
                                         </div>
                                         <div id="ACHOptions" class="">
                                             {{#each ACHMethod as |pay_met i|}}
-                                            <h6 class="card-holder-name my-75">{{#decryptData PAYNAME}}{{/decryptData}}
+                                            <h6 class="card-holder-name my-75" id="nameach{{PAYID}}">{{#decryptData PAYNAME}}{{/decryptData}}
                                             </h6>
                                             <div class="form-check">
                                                 <input type="radio" id="{{PAYID}}" name="paymentOptionsACH"
                                                     class="form-check-input paymentOptionsACH"
                                                     data-bankacct="{{#decryptData BANKACCT}}{{/decryptData}}"
                                                     data-bankrout="{{#decryptData BANKROUT}}{{/decryptData}}"
-                                                    data-name="{{PAYNAME}}" data-id="{{PAYID}}" />
+                                                    data-name="{{PAYNAME}}" data-id="{{PAYID}}" data-verified="{{VERIFIED}}"/>
                                                 <label class="form-check-label" for="{{PAYID}}"> {{#cardHide
                                                     BANKACCT}}{{/cardHide}}
                                                 </label>
@@ -599,7 +599,36 @@
 <!-- END: Content-->
 <script src="../../../assets/data/pay_inv_functions.js">  </script>
 <script>
+// Espera a que se cargue completamente el DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Encuentra todos los elementos input de tipo radio con la clase 'paymentOptionsACH'
+    const radios = document.querySelectorAll('input[type="radio"].paymentOptionsACH');
+console.log('entro aqui')
+    // Itera sobre los elementos encontrados
+    radios.forEach(radio => {
+        // Obtén el valor de data-verified
+        const isVerified = radio.getAttribute('data-verified');
 
+        // Verifica si data-verified es igual a 'false'
+        if (isVerified === 'false') {
+            console.log('entro isVerified',isVerified)
+            const labelForRadio = document.querySelector(`label[for="${radio.id}"]`);
+            const h6ForRadio = document.querySelector(`h6[id="nameach${radio.id}"]`);
+
+            // Remueve el radio del DOM
+            radio.remove();
+             postData('/saveSystemLog', { description: "paymentOptionsACH",comment:"paymentOptionsACH: PAYID-" + radio.id+ " was removed cause is not verify"})
+            if (labelForRadio) {
+                labelForRadio.remove();
+                h6ForRadio.remove()
+            }
+        }else{
+            console.log('entro2 isVerified',isVerified)
+             postData('/saveSystemLog', { description: "paymentOptionsACH",comment:"paymentOptionsACH: PAYID-" + radio.id+ " is verify"})
+
+        }
+    });
+});
     $('#ACHBankCheck').on('change', (e) => {
         /**show the different card form */
         $('#CCoptions').addClass('collapse')
@@ -610,4 +639,5 @@
         $('#ACHOptions').addClass('collapse')
         $('#CCoptions').removeClass('collapse')
     })
+    
 </script>

@@ -59,12 +59,16 @@ exports.dashboard = async (req, res) => {
   if (req.params.msg) {
     msg = req.params.msg;
   }
-
+  if (req.cookies.errorMsg) {
+    msg = req.cookies.errorMsg
+  }
   const user = res.locals.user["$resources"][0]; //User info
+  console.log("🚀 ~ file: dashboardController.js:66 ~ exports.dashboard= ~ user:", user)
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //Pic Profile
 
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
+  console.log("🚀 ~ file: dashboardController.js:70 ~ exports.dashboard= ~ req.connection:", user['ipAddress'])
   let query_consulting = "&where=ID eq " + user["ID"].toString() + ""; //Clause where with email
   let where_filter_inv = "", //Prepare the var for consulting invoices
     count = 0;
@@ -73,7 +77,7 @@ exports.dashboard = async (req, res) => {
     admin = true;
   }
   //Declare and send log to SystemLo
-  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 71-";
+  let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Function: Dashboard", Status = 1, Comment = "Starting- line 80-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let Yportal = 'YPORTALINV',portalRepresentation = 'YPORTALINVO';
   if (user["ROLE"] == 4 || user["ROLE"] == 5) {
@@ -101,7 +105,7 @@ exports.dashboard = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (inv_wofilter) => {
@@ -150,7 +154,7 @@ activeBanner
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -214,7 +218,7 @@ exports.openInvMore = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
   //console.log(user)
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let query_consulting = "&where=ID eq " + user["ID"].toString() + ""; //Clause where with email
   let where_filter_inv = "", //Prepare the var for consulting invoices
     count = 0;
@@ -246,7 +250,7 @@ exports.openInvMore = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (inv_wofilter) => {
@@ -274,7 +278,7 @@ exports.openInvMore = async (req, res) => {
           "Content-Type": "application/json",       
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -328,7 +332,7 @@ exports.openInvMore = async (req, res) => {
 exports.paymentsL = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:paymentsL ", Status = 1, Comment = "Starting- line 270-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
@@ -349,7 +353,7 @@ exports.paymentsL = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (map_loggin) => {
@@ -400,7 +404,7 @@ exports.paymentsL = async (req, res) => {
 exports.next_pageIO2 = async (req, res) => {
   const user = res.locals.user["$resources"][0]; // User info
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:next_pageIO2 ", Status = 1, Comment = "Starting- line 348-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -433,7 +437,7 @@ exports.next_pageIO2 = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -462,7 +466,7 @@ exports.next_pageIO2 = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (map_loggin) => {
@@ -502,7 +506,7 @@ exports.next_pageIO2 = async (req, res) => {
 exports.next_pageIC2 = async (req, res) => {
   const user = res.locals.user["$resources"][0]; // User info
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:next_pageIC2 ", Status = 1, Comment = "Starting- line 392-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
@@ -535,7 +539,7 @@ exports.next_pageIC2 = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -564,7 +568,7 @@ exports.next_pageIC2 = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (map_loggin) => {
@@ -604,7 +608,7 @@ exports.next_pageIC2 = async (req, res) => {
 exports.searchOpenInvO = async (req, res) => {
   const user = res.locals.user["$resources"][0]; // User info
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "FUNCTION:searchOpenInvO ", Status = 1, Comment = "Starting- line 440-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -658,7 +662,7 @@ exports.searchOpenInvO = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -690,7 +694,7 @@ exports.searchOpenInvO = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (map_loggin) => {
@@ -753,7 +757,7 @@ exports.searchOpenInvO = async (req, res) => {
 exports.searchCloseInvC = async (req, res) => {
   const user = res.locals.user["$resources"][0]; // User info
   const SessionKeyLog = req.session.SessionLog; // SessionKey from SQL Table
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   //Declare and send log to SystemLo
   let UserID = user["ID"].toString(),IPAddress = ip,LogTypeKey = 5,SessionKey = SessionKeyLog,Description = "FUNCTION:searchCloseInvC ",Status = 1,Comment = "Starting- line 440-";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(),IPAddress,LogTypeKey,SessionKey,Description,Status,Comment );
@@ -804,7 +808,7 @@ exports.searchCloseInvC = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -836,7 +840,7 @@ exports.searchCloseInvC = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (map_loggin) => {
@@ -904,7 +908,7 @@ exports.close_invoices = async (req, res) => {
     admin = true;
   }
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let query_consulting = "&where=ID eq " + user["ID"].toString() + "";
   let where_filter_inv = "",
     count = 0;
@@ -936,7 +940,7 @@ exports.close_invoices = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (inv_wofilter) => {
@@ -988,7 +992,7 @@ exports.close_invoices = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (map_loggin) => {
@@ -1051,7 +1055,7 @@ exports.inoviceO_detail = async (req, res) => {
   if (user["ROLE"] == 4) {
     admin = true;
   }
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let inv_num = req.params.inv_num; //Invoice NUM to consult
 
   //SAVE SYSTEMLOG SQL
@@ -1068,7 +1072,7 @@ exports.inoviceO_detail = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -1091,7 +1095,7 @@ exports.inoviceO_detail = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -1149,7 +1153,7 @@ exports.inoviceC_detail = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //USER INFO
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //PIC PROFILE
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   var admin = false;
   if (user["ROLE"] == 4) {
     admin = true;
@@ -1170,7 +1174,7 @@ exports.inoviceC_detail = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -1189,7 +1193,7 @@ exports.inoviceC_detail = async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (map_loggin) => {
@@ -1248,13 +1252,15 @@ exports.pay_methods = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
   const pictureProfile = res.locals.user["$resources"][1]["pic"]; //Pic profile
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   var admin = false;
   let msg
   if (user["ROLE"] == 4) {
     admin = true;
   }
-
+  if (req.cookies.errorMsg) {
+    msg = req.cookies.errorMsg
+  }
   let query_consulting = "&where=ID eq " + user["ID"].toString() + ""; //Where clause with EMAIL
   let count = 1000;
 
@@ -1276,7 +1282,7 @@ exports.pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (pay_methods) => {
@@ -1354,8 +1360,14 @@ exports.add_pay_methods = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
   const user = res.locals.user["$resources"][0]; //User info
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
-
+  var ip = user['ipAddress'];
+  const PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.settingsgateway());
+  console.log('PauseCustomerPaymentMethods 1260:', PauseCustomerPaymentMethods[9]['valueSett'])
+  if (PauseCustomerPaymentMethods[9]['valueSett'] == 0) {
+    res.cookie('errorMsg', 'Payments Methods are paused. Please contact your system adminstrator',  { maxAge: 3000 });
+    res.redirect('/payments_methods');
+    return
+  }
   //console.log(user)
   let query_consulting = "&where=ID eq " + user["ID"] + "";
   let count = 1000;
@@ -1377,7 +1389,7 @@ exports.add_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (list_pays) => {
@@ -1437,7 +1449,7 @@ exports.add_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       body: {
         ID: user.ID,
@@ -1512,7 +1524,7 @@ exports.add_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       body: {
         PAYTYPE: typeMP,
@@ -1675,7 +1687,7 @@ exports.verify_PM = async (req, res) => {
   let PaymentMethodID = req.params.IDPay;
   const user = res.locals.user["$resources"][0]; //User info
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 9, SessionKey = SessionKeyLog, Description = "Verify Payments Methods", Status = 1, Comment = "Function: verify_PM - line 1586";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(PaymentMethodID, UserID));
@@ -1772,7 +1784,7 @@ exports.verify_PM = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (list_pays) => {
@@ -1878,7 +1890,7 @@ exports.verify_PM = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       body: {
         "VERIFIED": true
@@ -1915,10 +1927,9 @@ exports.verify_PM = async (req, res) => {
 exports.edit_pay_methods = async (req, res) => {
   let URI = URLHost + req.session.queryFolder + "/";
   const user = res.locals.user["$resources"][0];
-
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(),
     IPAddress = ip,
     LogTypeKey = 9,
@@ -1935,6 +1946,12 @@ exports.edit_pay_methods = async (req, res) => {
     Status,
     Comment
   );
+  const PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.settingsgateway());
+  if (PauseCustomerPaymentMethods[9]['valueSett'] == 0) {
+    res.cookie('errorMsg', 'Payments Methods are paused. Please contact your system adminstrator',  { maxAge: 3000 });
+    res.redirect('/payments_methods');
+    return
+  }
   var typeMP = req.body.typeM;
   //console.log(typeMP)
   if (typeMP == "CC") {
@@ -1970,7 +1987,7 @@ exports.edit_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       body: {
         PAYTYPE: typeMP,
@@ -2038,7 +2055,7 @@ exports.edit_pay_methods = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       body: {
         PAYTYPE: typeMP,
@@ -2092,7 +2109,7 @@ exports.delete_pay_methods = async (req, res) => {
 
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(),
     IPAddress = ip,
     LogTypeKey = 6,
@@ -2101,6 +2118,12 @@ exports.delete_pay_methods = async (req, res) => {
     Status = 1,
     Comment = "Function: delete_pay_methods- line 1988";
   var SystemLogL = await DataBasequerys.tSystemLog(UserID,IPAddress,LogTypeKey,SessionKey,Description,Status,Comment);
+  const PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.settingsgateway());
+  if (PauseCustomerPaymentMethods[9]['valueSett'] == 0) {
+    res.cookie('errorMsg', 'Payments Methods are paused. Please contact your system adminstrator',  { maxAge: 3000 });
+    res.redirect('/payments_methods');
+    return
+  }
   const payID = req.params.IDPay;
   const IUUD = req.params.IUUD;
   let search = JSON.parse(await DataBaseSq.verifyPaymentMethodID(payID, UserID));
@@ -2180,7 +2203,7 @@ exports.delete_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (list_pays) => {
@@ -2285,7 +2308,7 @@ exports.delete_pay_methods = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (delete_pay_methods) => {
@@ -2309,7 +2332,7 @@ exports.pay_invoices = async (req, res) => {
 
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(),
     IPAddress = ip,
     LogTypeKey = 6,
@@ -2341,7 +2364,7 @@ exports.pay_invoices = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (pay_methods) => {
@@ -2383,7 +2406,7 @@ exports.pay_invoices = async (req, res) => {
   let search =[]
   console.log("🚀 ~ file: dashboardController.js ~ line 2020 ~ exports.pay_invoices= ~ ACHMethod", ACHMethod)
     for (let i = 0; i < ACHMethod.length; i++) {
-      if (ACHMethod[i]['VERIFIED']  ) {
+      if (ACHMethod[i]['VERIFIED'] == true ) {
         activeACH.push(ACHMethod[i]);
       }
       // search[0] = JSON.parse(await DataBaseSq.verifyPaymentMethodIDProcess(ACHMethod[i]['PAYID'], UserID));
@@ -2431,7 +2454,7 @@ exports.pay_invoices = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -2471,7 +2494,7 @@ exports.pay_invoices = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (inv_wofilter2) => {
@@ -2554,7 +2577,7 @@ exports.process_payment = async (req, res) => {
   const user = res.locals.user["$resources"][0]; //User info
 
   //Save SQL SYSTEMLOG
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   const SessionKeyLog = req.session.SessionLog;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting with process payment", Status = 1, Comment = "FUNCTION: process_payment-LINE 1153";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -2733,7 +2756,7 @@ exports.process_payment = async (req, res) => {
                   "Content-Type": "application/json",
                   Connection: 'close',
                   Accept: "application/json",
-                  Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+                  Authorization: "Basic " +req.session.Authorization_X3,
                 },
                 json: true,
               }).then(async (invD) => {
@@ -2818,7 +2841,7 @@ exports.process_payment = async (req, res) => {
                   "Content-Type": "application/json",
                   Connection: 'close',
                   Accept: "*/*",
-                  Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+                  Authorization: "Basic " +req.session.Authorization_X3,
                   soapaction: "*",
                 },
                 body: xmlB,
@@ -2967,7 +2990,7 @@ exports.applied_amount = async (req, res) => {
 
   // SAVE SQL SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Applied amount int process", Status = 1, Comment = "FUNCITON: applied_amount - LINE 1760";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
@@ -3005,7 +3028,7 @@ exports.save_PicProfile = async (req, res) => {
 
   //SAVE IN SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Saving pic profile", Status = 1, Comment = "FUNCTION: save_PicProfile - LINE 1614";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment
   );
@@ -3038,7 +3061,7 @@ exports.printInvoice = async (req, res) => {
 
   //SAVE SQL SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   // console.log(user);
   let inv_num = req.params.inv;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 5, SessionKey = SessionKeyLog, Description = "Request invoice details from X3 for print", Status = 1, Comment = "FUNCTION: printInvoice - LINE 1658";
@@ -3054,7 +3077,7 @@ exports.printInvoice = async (req, res) => {
       "Content-Type": "application/json",
       Connection: 'close',
       Accept: "application/json",
-      Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+      Authorization: "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then(async (inv_detail) => {
@@ -3082,7 +3105,7 @@ exports.payments = async (req, res) => {
 
   //SAVE SQL LOGSYSTEM
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Request payments methods from SQL TABLE", Status = 1, Comment = "FUNCTION: payments - LINE 1708";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
@@ -3106,7 +3129,7 @@ exports.payments = async (req, res) => {
         "Content-Type": "application/json",
         Connection: 'close',
         Accept: "application/json",
-        Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+        Authorization: "Basic " +req.session.Authorization_X3,
       },
       json: true,
     }).then(async (map_loggin) => {
@@ -3186,7 +3209,7 @@ exports.settingsPreview = async (req, res) => {
   //let file_N2 = "/www/wwwroot/10.99.99.10/repository/invoice_payment/src/config/client.key";
   let file_N = "C:/Users/isaac/Documents/GitHub/invoice_payment/src/config/client.crt";
   let file_N2 = "C:/Users/isaac/Documents/GitHub/invoice_payment/src/config/client.key";
-  
+
   let text0, text1;
   text0 = fs.readFileSync(file_N, "utf8", (error, data) => {
     if (error) throw error;
@@ -3242,13 +3265,13 @@ exports.saveSetting = async (req, res) => {
 exports.saveEditSetting = async (req, res) => {
   const { sValue, sType, sStatus, sId } = req.body;
   let enValue = sValue;
-  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP") {
+  if (sType == "gatewayCompanyId" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP" || sType == "Authorization_X3") {
     enValue = encrypt(sValue);
   }
   let saveSys = await DataBaseSq.saveEditSetting(enValue, sType, sStatus, sId); //SAVE IN SQL TABLE EDITED SETTINGS SYSTEM
 
   let settings = await DataBaseSq.settingsTable(); // GET SETTINGS FOR UPDATE DATABLE AFTER INSERT THE NEW SETTING
-  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP" || sType == "PauseCustomerPaymentMethods") {
+  if (sType == "gatewayCompanyId" || sType == "Env" || sType == "gatewayEntity" || sType == "consumerKey" || sType == "consumerSecret" || sType == "bank_account_number" || sType == "bank_id"  || sType == "bank_account_number_FP" || sType == "bank_id_FP" || sType == "PauseCustomerPaymentMethods" || sType == "Authorization_X3") {
     return res.sendStatus(200);
   }
   if (sType == "queryFolder") {
@@ -3296,7 +3319,7 @@ exports.payments_detail = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init consulting payments details", Status = 1, Comment = "FUNCTION: payments_detail-line 1864";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -3341,7 +3364,7 @@ exports.payments_detail = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -3399,7 +3422,7 @@ exports.status_payments_detail = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init consulting payments details", Status = 1, Comment = "FUNCTION: payments_detail-line 1864";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -3473,7 +3496,7 @@ exports.Print_payments_detail = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(),
     IPAddress = ip,
@@ -3539,7 +3562,7 @@ exports.Print_payments_detail = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -3589,7 +3612,7 @@ exports.Print_payments_detail = async (req, res) => {
             "Content-Type": "application/json",
             Connection: 'close',
             Accept: "application/json",
-            Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+            Authorization: "Basic " +req.session.Authorization_X3,
           },
           json: true,
         }).then(async (inv_wofilter2) => {
@@ -3648,7 +3671,7 @@ exports.process_payment_WF = async (req, res) => {
 
   const user = res.locals.user["$resources"][0]; //User info
   //Save SQL SYSTEMLOG
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   const SessionKeyLog = req.session.SessionLog;
   let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 7, SessionKey = SessionKeyLog, Description = "Connecting process payment with wells fargo", Status = 1, Comment = "FUNCTION: process_payment_WF-LINE 2009";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -3804,7 +3827,7 @@ exports.resendX3 = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init resendX3", Status = 1, Comment = "FUNCTION: resendX3-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -3837,7 +3860,7 @@ exports.resendX3 = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "application/json",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
         },
         json: true,
       }).then(async (invD) => {
@@ -3900,7 +3923,7 @@ exports.resendX3 = async (req, res) => {
           "Content-Type": "application/json",
           Connection: 'close',
           Accept: "*/*",
-          Authorization: "Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW",
+          Authorization: "Basic " +req.session.Authorization_X3,
           soapaction: "*",
         },
         body: xmlB,
@@ -3979,7 +4002,7 @@ exports.cancelPayment = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init cancelPayment", Status = 1, Comment = "FUNCTION: cancelPayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -4002,7 +4025,7 @@ exports.finalizePayment = async (req, res) => {
 
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let count = 1000;
   let UserID = user["ID"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = "Init finalizePayment", Status = 1, Comment = "FUNCTION: finalizePayment-line ";
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
@@ -4035,7 +4058,7 @@ console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSyste
 console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ description", description)
   //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = description, Status = 1, Comment = comment;
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
   console.log("🚀 ~ file: dashboardController.js ~ line 3486 ~ exports.saveSystemLog= ~ SystemLogL", SystemLogL)
@@ -4079,9 +4102,19 @@ exports.statusWFCheckAPI = async (req, res) => {
     console.log('line 4077',status);
     //SAVE SQL TABLE SYSTEMLOG
   const SessionKeyLog = req.session.SessionLog;
-  var ip = req.connection.remoteAddress;
+  var ip = user['ipAddress'];
   let UserID = user["EMAIL"].toString(), IPAddress = ip, LogTypeKey = 6, SessionKey = SessionKeyLog, Description = 'statusWFCheckAPI', Status = 1, Comment = JSON.stringify(status).substring(0, 250);
   var SystemLogL = await DataBasequerys.tSystemLog(user["EMAIL"].toString(), IPAddress, LogTypeKey, SessionKey, Description, Status, Comment);
 
     res.send(status)
+};
+
+exports.PauseCustomerPaymentMethods = async (req, res) => {
+
+  //get PauseCustomerPaymentMethods (1039 id)
+  let PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.editSetting(1039)); //GET INFO FROM SQL TABLE OF SETTING SYSTEM BY ID
+
+  res.send({
+    PauseCustomerPaymentMethods: PauseCustomerPaymentMethods['valueSett']
+  }); //SEND TO AJAX
 };

@@ -250,7 +250,6 @@ $('#PauseCustomerPaymentMethods').change(function(e){
     let PauseCustomerPaymentMethods=0;
     if ($('#PauseCustomerPaymentMethods').is(':checked')) {
       PauseCustomerPaymentMethods =1;
-      
     }
     console.log(PauseCustomerPaymentMethods)
     let data = new FormData();
@@ -272,6 +271,9 @@ $('#PauseCustomerPaymentMethods').change(function(e){
         console.log(data);
         if (data == 'OK') {
           swal.fire('Pause Customer Payment Methods success update')
+        }
+        if (PauseCustomerPaymentMethods==0) {
+          $('#pauseInactive').addClass('d-none')
         }
       },
       error: function (jqXHR, textStatus) {
@@ -666,5 +668,32 @@ var bannerKey  = $('#bannerKey').val()
   });
 })
 
+//Authorization_X3:
+$('#Authorization_X3').on('change', function(e) {
+  let id = e.currentTarget['dataset']['id'];
+  let value = e.target.value;
+  let data = new FormData();
+  data.append('sId',id);
+  data.append('sValue',value);
+  data.append('sType','Authorization_X3')
+  data.append('sStatus','1')
+  $.ajax({
+    url: `/saveEditSetting`,
+    type: 'POST',
+    data: data,
+    cache: false,
+      contentType: false,
+      processData: false,
+    success: function (data, textStatus, jqXHR) {
+   //   console.log(data)
+      if (data == 'OK') {
+        swal.fire('Authorization_X3 success update')
+      }
+    },
+    error: function (jqXHR, textStatus) {
+      console.log('error:' + jqXHR)
+    }
+  });
+});
 /**END FUNCTION READY */});
 

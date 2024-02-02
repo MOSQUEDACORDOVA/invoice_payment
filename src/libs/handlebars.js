@@ -169,6 +169,13 @@ module.exports = {
 		}
 		return checked;
 	},
+	checkedSwitchLabel: (value)=> {
+		let checked;
+		if (value == 1) {
+			checked = '<label class="text-danger" id="pauseInactive">Payment method is active currently</label>'
+		}
+		return checked;
+	},
 	envCert: (value)=> {
 		let checked;
 		if (value == 0) {

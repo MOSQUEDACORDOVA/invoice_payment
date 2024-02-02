@@ -6,7 +6,9 @@ var URLHost = `https://sawoffice.technolify.com:8443/api1/x3/erp/`; //URI query 
 var DataBasequerys = require('../models/data');// Functions for X3 querys
 var DataBaseSq = require("../models/dataSequelize"); // Functions for SQL querys with sequelize
 const { encrypt, decrypt } = require('./crypto');
-const ecoSys = require('../../ecosystem.config')
+const ecoSys = require('../../ecosystem.config');
+const axios = require('axios');
+
 /** FUNCTION TO RENDER LOGGIN PAGE */
 exports.formLogin = async (req, res) => {
   let error = false
@@ -39,19 +41,19 @@ exports.resetPassFine = async (req, res) => {
     pageName: "Reset Pass Fine",
     layout: "page-form",
     postResetPass: true,
-   // mail
+    // mail
   });
 };
 /**FUNCTION TO LOGGIN USER */
 exports.loginUser2 = async (req, res) => {
-  let URI = URLHost + req.session.queryFolder+"/";
+  let URI = URLHost + req.session.queryFolder + "/";
   //USE PASSPORT TO AUTHENTICATE
   passport.authenticate("local", function (err, user, info) {
     if (err) {
       return next(err);
     }
     if (!user) {
-      
+
       req.flash("error", info.message)
       req.session.errorLogin = req.flash();
       return res.redirect("/login");
@@ -63,38 +65,38 @@ exports.loginUser2 = async (req, res) => {
       // user['$resources'] = [{ EMAIL: 'cescarsega1@gmail.com', ROLE: 1 }] //ONLY FOR TEST, ERASER LATER
       //CONSULTING PIC PROFILE FROM SQL TABLE
       var consultingPic = await DataBasequerys.consultingPicProfile(user['$resources'][0]['EMAIL'])
+      const response = await axios.get('https://api.ipify.org?format=json');
+      const data = response.data;
+      const ipAddress = data.ip;
       if (consultingPic) {
         user['$resources'].push({ pic: consultingPic })
       } else {
         user['$resources'].push({ pic: 'pic_pr.png' })//THIS IS GENERIC PICTURE
       }
 
-      var ip = req.connection.remoteAddress;
+      var ip = ipAddress;
       if (user['$resources'] == "") {
         //IF USER DON'T EXIST RETURN TO LOGGIN AND SHOW MSG
         req.flash("error", `User don't exist`)
         req.session.errorLogin = req.flash()
         return res.redirect('/login')
       }
-    
-     console.log('userlinea 79', user['$resources'][0]);
+
+      console.log('userlinea 79', user['$resources'][0]);
       //SAVE SQL TABLE SESSIONLOG
       const SessionLog = await DataBasequerys.tSessionLog(user['$resources'][0]['EMAIL'], user['$resources'][0]['ROLE'])
 
       req.session.SessionLog = SessionLog //STORE IN SESSION THE SESSION LOG ID TO USE IN SYSTEMLOG SQL
-    console.log(SessionLog)
+      console.log(SessionLog)
       //SAVE SQL LOGSYSTEM
-      let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN SUCCESS", Status = 1, Comment = "Function: loginUser2- line 64";
-      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)  
-      
-      
+      let UserID = user['$resources'][0]['EMAIL'], IPAddress = ip, LogTypeKey = 1, SessionKey = SessionLog, Description = "LOGGIN", Status = 1, Comment = "Success";
+      const SystemLogLogin = await DataBasequerys.tSystemLog(UserID, IPAddress, LogTypeKey, SessionKey, Description, Status, Comment)
+
       //Checkout menu option state
-
       const PauseCustomerPaymentMethods = JSON.parse(await DataBaseSq.settingsgateway());
-console.log('line 92 user constroller login', PauseCustomerPaymentMethods[9]['valueSett'])
-user['$resources'][0].PauseCustomerPMethods= PauseCustomerPaymentMethods[9]['valueSett']
-
-
+      console.log('line 92 user constroller login', PauseCustomerPaymentMethods[9]['valueSett'])
+      user['$resources'][0].PauseCustomerPMethods = PauseCustomerPaymentMethods[9]['valueSett']
+      user['$resources'][0].ipAddress = ipAddress
       res.redirect('/dashboard')//REDIRECT TO OPEN INVOICES PAGE
     });
   })(req, res);
@@ -112,7 +114,7 @@ exports.formSearchAccount = (req, res) => {
 
 /**FUNCTION SEND TOKEN BY EMAIL IF USER INFOR IS OK */
 exports.sendToken = async (req, res) => {
-  let URI = URLHost + req.session.queryFolder+"/";
+  let URI = URLHost + req.session.queryFolder + "/";
   // CHECK OUT IF USER EXIST
   const { email } = req.body;
 
@@ -125,7 +127,7 @@ exports.sendToken = async (req, res) => {
       'Content-Type': 'application/json',
       Connection: 'close',
       'Accept': 'application/json',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+      'Authorization': "Basic " +req.session.Authorization_X3,
     },
     json: true,
   }).then((response) => {
@@ -153,7 +155,7 @@ exports.sendToken = async (req, res) => {
       'Content-Type': 'application/json',
       Connection: 'close',
       'Accept': '*/*',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+      'Authorization': "Basic " +req.session.Authorization_X3,
     },
     body: {
       "TOKEN": token,
@@ -172,7 +174,7 @@ exports.sendToken = async (req, res) => {
 
 /**FUNCTION TO RENDER RESET PASS PAGE- CHECK OUT TOKEN */
 exports.resetPasswordForm = async (req, res) => {
-  let URI = URLHost + req.session.queryFolder+"/";
+  let URI = URLHost + req.session.queryFolder + "/";
   let token = req.params.token
   //Check out if token is validate in X3 Loggin query
   const usuario = await request({
@@ -184,7 +186,7 @@ exports.resetPasswordForm = async (req, res) => {
       'Content-Type': 'application/json',
       Connection: 'close',
       'Accept': 'application/json',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+      'Authorization': "Basic " +req.session.Authorization_X3,
     },
     json: true,
   })
@@ -205,37 +207,37 @@ exports.resetPasswordForm = async (req, res) => {
 
 /**FUNCTION TO SAVE NEW PASSWORD */
 exports.updatePassword = async (req, res) => {
-  let URI = URLHost + req.session.queryFolder+"/";
+  let URI = URLHost + req.session.queryFolder + "/";
   let password_new, email, token, query_consulting
-if (req.body.currentpassword) {
-  let currentpassword = req.body.currentpassword
-  let user = res.locals.user["$resources"][0];
-  const getuser = await request({
-    uri: URI + "YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=EMAIL eq '"+user.EMAIL+"'",
-    method:'GET',
-    insecure: true,
-    rejectUnauthorized: false,
-    headers: {
-      'Content-Type': 'application/json',
-      Connection: 'close',
-      'Accept': 'application/json',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+  if (req.body.currentpassword) {
+    let currentpassword = req.body.currentpassword
+    let user = res.locals.user["$resources"][0];
+    const getuser = await request({
+      uri: URI + "YPORTALUSR?representation=YPORTALUSR.$query&count=10000&where=EMAIL eq '" + user.EMAIL + "'",
+      method: 'GET',
+      insecure: true,
+      rejectUnauthorized: false,
+      headers: {
+        'Content-Type': 'application/json',
+        Connection: 'close',
+        'Accept': 'application/json',
+        'Authorization': "Basic " +req.session.Authorization_X3,
       },
-    json: true,
+      json: true,
     })
     let decryptPass = decrypt(getuser['$resources'][0]['PASS'])
     if (currentpassword !== decryptPass) {
-    return res.send({status:0,message: 'Current Password wrong'}); 
+      return res.send({ status: 0, message: 'Current Password wrong' });
     }
-}
+  }
   password_new = encrypt(req.body.password);// Encrypt password
   if (req.body.currentpassword) {
     let user = res.locals.user["$resources"][0];
-email = user.EMAIL
-  }else{
+    email = user.EMAIL
+  } else {
     email = req.body.email
   }
-  
+
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
   // Save new password
   let save_pass = JSON.parse(await request({
@@ -247,7 +249,7 @@ email = user.EMAIL
       'Content-Type': 'application/json',
       Connection: 'close',
       'Accept': '*/*',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+      'Authorization': "Basic " +req.session.Authorization_X3,
     },
     body: {
       "PASS": password_new,
@@ -259,12 +261,12 @@ email = user.EMAIL
   }))
   console.log(save_pass)
   if (req.body.currentpassword) {
-    return res.send({status:1,message: 'Current Password was changed, please loggin again with the new password'});
-      }else{
-        req.session.errorLogin = req.flash("error", "Your password changed successfully");
-        return res.redirect("/reset-pass-fine");
-      }
- 
+    return res.send({ status: 1, message: 'Current Password was changed, please loggin again with the new password' });
+  } else {
+    req.session.errorLogin = req.flash("error", "Your password changed successfully");
+    return res.redirect("/reset-pass-fine");
+  }
+
 };
 
 /**FUNCTION TO CLOSE SESSION */
@@ -276,8 +278,8 @@ exports.closeSesion = (req, res) => {
 
 /** FUNCTION TO UPDATER USER INFO */
 exports.UpdateUser = async (req, res) => {
-  let URI = URLHost + req.session.queryFolder+"/";
-  
+  let URI = URLHost + req.session.queryFolder + "/";
+
   const user = res.locals.user['$resources'][0]
   email = user.EMAIL
   query_consulting = `YPORTALUSR('${email}')?representation=YPORTALUSR.$edit`
@@ -293,7 +295,7 @@ exports.UpdateUser = async (req, res) => {
       'Content-Type': 'application/json',
       Connection: 'close',
       'Accept': '*/*',
-      'Authorization': 'Basic U0Y6NHRwVyFFK2RXLVJmTTQwcWFW',
+      'Authorization': "Basic " +req.session.Authorization_X3,
     },
     body: {
       "FNAME": firstName_edit_profile,
